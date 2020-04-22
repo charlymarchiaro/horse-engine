@@ -1,0 +1,9 @@
+version: '3'
+services: 
+  scraper:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./scraper
+    ports:
+      - '6800:6800'

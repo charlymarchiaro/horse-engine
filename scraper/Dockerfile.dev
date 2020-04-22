@@ -1,0 +1,3 @@
+FROM vimagick/scrapyd
+
+COPY ./scrapyd.conf /etc/scrapyd/
