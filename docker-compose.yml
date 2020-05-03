@@ -7,3 +7,9 @@ services:
       context: ./scraper
     ports:
       - '6800:6800'
+    environment:
+      - DB_USER=sa
+      - DB_DRIVER=ODBC Driver 17 for SQL Server
+      - DB_SERVER=192.168.65.2
+      - DB_HORSE_SCRAPER_DATABASE_NAME=horse_scraper
+      - DB_PASSWORD=superclave
