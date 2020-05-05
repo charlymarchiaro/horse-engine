@@ -12,6 +12,7 @@ services:
       - POSTGRES_USER=sa
       - POSTGRES_PASSWORD=superclave
       - POSTGRES_DB=horse_engine
+
   pgadmin:
     image: "dpage/pgadmin4:latest"
     volumes:
@@ -21,11 +22,12 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=superclave
     ports:
       - "7777:80"
-  scraper:
+
+  scrapyd:
     restart: always
     build:
       dockerfile: Dockerfile.dev
-      context: ./scraper
+      context: ./scrapyd
     ports:
       - "6800:6800"
     environment:
@@ -34,6 +36,13 @@ services:
       - DB_SERVER=postgres
       - DB_PORT=5432
       - DB_NAME=horse_engine
+
+  scraper:
+    depends_on:
+      - "scrapyd"
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./scraper
 
 volumes:
   db-data:

@@ -13,9 +13,4 @@ RUN cd /etc/scrapyd; \
     [ -f dependencies.txt ] && xargs -r apt-get purge -y --auto-remove < dependencies.txt; \
     [ -f packages.txt -o -f dependencies.txt ] && rm -rf /var/lib/apt/lists/*
 
-
-COPY ./horse_scraper /etc/
-
-WORKDIR /etc/horse_scraper
-
-CMD ["scrapyd-client",  "deploy"]
+COPY ./scrapyd.conf /etc/scrapyd/
