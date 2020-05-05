@@ -37,7 +37,7 @@ services:
       - DB_PORT=5432
       - DB_NAME=horse_engine
 
-  scraper:
+  scrapyd-client:
     depends_on:
       - "scrapyd"
     build:
@@ -51,7 +51,7 @@ services:
     volumes:
       - './client:/app'
     ports:
-      - "4200:4200"
+      - "4444:4200"
 
 volumes:
   db-data:
