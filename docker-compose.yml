@@ -44,6 +44,15 @@ services:
       dockerfile: Dockerfile.dev
       context: ./scraper
 
+  client:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./client
+    volumes:
+      - './client:/app'
+    ports:
+      - "4200:4200"
+
 volumes:
   db-data:
     driver: local
