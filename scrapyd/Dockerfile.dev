@@ -14,3 +14,6 @@ RUN cd /etc/scrapyd; \
     [ -f packages.txt -o -f dependencies.txt ] && rm -rf /var/lib/apt/lists/*
 
 COPY ./scrapyd.conf /etc/scrapyd/
+
+ENV TZ="America/Argentina/Buenos_Aires"
+RUN date
