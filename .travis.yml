@@ -1,0 +1,42 @@
+sudo: required
+services:
+  - docker
+
+env:
+  global:
+    - SHA=$(git rev-parse HEAD)
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
+
+before_install:
+  # Decrypt service-account.json.enc file
+  - openssl aes-256-cbc -K $encrypted_0c35eebf403c_key -iv $encrypted_0c35eebf403c_iv -in service-account.json.enc -out service-account.json -d
+
+  # Install Google Cloud SDK
+  - curl https://sdk.cloud.google.com | bash > /dev/null;
+  - source $HOME/google-cloud-sdk/path.bash.inc
+
+  # Update kubectl
+  - gcloud components update kubectl
+
+  # Login and setup Google Cloud
+  - gcloud auth activate-service-account --key-file service-account.json
+  - gcloud config set project horse-engine-273123
+  - gcloud config set compute/zone southamerica-east1-a
+  - gcloud container clusters get-credentials horse-engine-cluster
+
+  # Login to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+  # Build test images
+  - docker build -t charlymarchiaro/horse-engine-client-test -f ./client/Dockerfile.dev ./client
+
+script:
+  # Run tests
+  - docker run charlymarchiaro/horse-engine-client-test npm test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
+
+deploy:
+  # Run script deploy.sh
+  provider: script
+  script: bash ./deploy.sh
+  on:
+    branch: master
