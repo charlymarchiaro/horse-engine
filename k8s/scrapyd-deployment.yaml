@@ -17,6 +17,9 @@ spec:
           image: charlymarchiaro/horse-engine-scrapyd
           ports:
             - containerPort: 6800
+          resources:
+            requests:
+              cpu: 10m
           env:
             - name: DB_USER
               value: sa

@@ -17,3 +17,6 @@ spec:
           image: charlymarchiaro/horse-engine-client
           ports:
             - containerPort: 4200
+          resources:
+            requests:
+              cpu: 10m

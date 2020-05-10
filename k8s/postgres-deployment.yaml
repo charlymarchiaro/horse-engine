@@ -21,6 +21,9 @@ spec:
           image: charlymarchiaro/horse-engine-postgres
           ports:
             - containerPort: 5432
+          resources:
+            requests:
+              cpu: 10m
           volumeMounts:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/data

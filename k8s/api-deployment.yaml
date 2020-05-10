@@ -17,6 +17,9 @@ spec:
           image: charlymarchiaro/horse-engine-api
           ports:
             - containerPort: 5000
+          resources:
+            requests:
+              cpu: 10m
           env:
             - name: PGHOST
               value: postgres-cluster-ip-service

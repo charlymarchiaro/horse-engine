@@ -21,7 +21,10 @@ spec:
           image: dpage/pgadmin4:latest
           ports:
             - containerPort: 80
-            
+          resources:
+            requests:
+              cpu: 10m
+
           volumeMounts:
             - name: pgadmin-storage
               mountPath: /var/lib/pgadmin
