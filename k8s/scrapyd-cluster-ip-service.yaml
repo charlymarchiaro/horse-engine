@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: scrapyd-cluster-ip-service
+spec:
+  type: ClusterIP
+  selector:
+    component: scrapyd
+  ports:
+    - port: 6800
+      targetPort: 6800

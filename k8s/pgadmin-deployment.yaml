@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgadmin-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: pgadmin
+  template:
+    metadata:
+      labels:
+        component: pgadmin
+    spec:
+      volumes:
+        - name: pgadmin-storage
+          persistentVolumeClaim:
+            claimName: database-pvc
+      containers:
+        - name: pgadmin
+          image: dpage/pgadmin4:latest
+          ports:
+            - containerPort: 80
+            
+          volumeMounts:
+            - name: pgadmin-storage
+              mountPath: /var/lib/pgadmin
+              subPath: pgadmin
+          env:
+            # - name: PGADMIN_LISTEN_PORT
+            #   value: "7777"
+            - name: PGADMIN_DEFAULT_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: pgadmin-default-email
+                  key: PGADMIN_DEFAULT_EMAIL
+            - name: PGADMIN_DEFAULT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pgadmin-default-password
+                  key: PGADMIN_DEFAULT_PASSWORD

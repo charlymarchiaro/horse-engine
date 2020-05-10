@@ -14,8 +14,16 @@ RUN cd /etc/scrapyd; \
     [ -f packages.txt -o -f dependencies.txt ] && rm -rf /var/lib/apt/lists/*
 
 
+COPY ./scrapyd.conf /etc/scrapyd/
+
 COPY ./horse_scraper /etc/
 
-WORKDIR /etc/horse_scraper
 
-CMD ["scrapyd-client",  "deploy"]
+ENV TZ="America/Argentina/Buenos_Aires"
+RUN date
+
+ADD start.sh /
+RUN chmod +x /start.sh
+
+CMD ["/start.sh"]
+

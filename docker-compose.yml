@@ -44,6 +44,19 @@ services:
       dockerfile: Dockerfile.dev
       context: ./scraper
 
+  api:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./api
+    ports:
+      - "5000:5000"
+    environment:
+      - PGUSER=sa
+      - PGPASSWORD=superclave
+      - PGHOST=postgres
+      - PGPORT=5432
+      - PGDATABASE=horse_engine
+
   client:
     build:
       dockerfile: Dockerfile.dev

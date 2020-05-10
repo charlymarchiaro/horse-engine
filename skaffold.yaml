@@ -1,0 +1,43 @@
+apiVersion: skaffold/v1beta7
+kind: Config
+profiles:
+build:
+  local:
+    # Don't push to dockerhub
+    push: false
+    useBuildkit: true
+  artifacts:
+    - image: charlymarchiaro/horse-engine-client
+      context: client
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        "**/*.js": .
+        "**/*.ts": .
+        "**/*.css": .
+        "**/*.scss": .
+        "**/*.html": .
+
+    - image: charlymarchiaro/horse-engine-api
+      context: api
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        "**/*.js": .
+
+    - image: charlymarchiaro/horse-engine-scrapyd
+      context: scraper
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        "**/*.py": .
+        "**/*.txt": .
+        "**/*.conf": .
+        "**/*.cfg": .
+
+deploy:
+  kubectl:
+    manifests:
+      - k8s/client-deployment.yaml
+      - k8s/api-deployment.yaml
+      - k8s/scrapyd-deployment.yaml

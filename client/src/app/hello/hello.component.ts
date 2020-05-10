@@ -2,6 +2,23 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { BackendService } from '../services/backend.service';
 
+
+
+export const SPIDER_NAMES = [
+  'clarin_crawl',
+  'clarin_sitemap',
+  'cronista_crawl',
+  'cronista_sitemap',
+  'infobae_crawl',
+  'infobae_sitemap',
+  'la_nacion_crawl',
+  'la_nacion_sitemap',
+  'metro951_crawl',
+  'metro951_sitemap',
+];
+
+
+
 @Component({
   selector: 'app-hello',
   templateUrl: './hello.component.html',
@@ -48,33 +65,44 @@ export class HelloComponent implements OnInit, OnDestroy {
   }
 
 
+  public onListJobsClick() {
+    this.listJobs();
+  }
+
+
+  public onTestBackendClick() {
+    this.testBackend();
+  }
+
+
   private listAllSpiders() {
     this.backendService.listAllSpiders().subscribe(
-      response => console.log(response.spiders)
+      response => console.log(response)
     );
   }
 
 
   private scheduleAllSpiders() {
-
-    const spiderNames = [
-      'clarin_crawl',
-      'clarin_sitemap',
-      'cronista_crawl',
-      'cronista_sitemap',
-      'infobae_crawl',
-      'infobae_sitemap',
-      'la_nacion_crawl',
-      'la_nacion_sitemap',
-      'metro951_crawl',
-      'metro951_sitemap',
-    ];
-
-    for (const spiderName of spiderNames) {
+    for (const spiderName of SPIDER_NAMES) {
       this.backendService.scheduleSpider(spiderName).subscribe(
         response => console.log(response)
       );
     }
+  }
+
+
+  private listJobs() {
+    this.backendService.listJobs().subscribe(
+      response => console.log(response)
+    );
+  }
+
+
+
+  private testBackend() {
+    this.backendService.testBackend().subscribe(
+      response => console.log(response)
+    );
   }
 
 

@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: api
+  template:
+    metadata:
+      labels:
+        component: api
+    spec:
+      containers:
+        - name: api
+          image: charlymarchiaro/horse-engine-api
+          ports:
+            - containerPort: 5000
+          env:
+            - name: PGHOST
+              value: postgres-cluster-ip-service
+            - name: PGPORT
+              value: "5432"
+            - name: PGUSER
+              value: sa
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pgpassword
+                  key: PGPASSWORD
+            - name: PGDATABASE
+              value: horse_engine
+            - name: SCRAPYD_HOST
+              value: scrapyd-cluster-ip-service
+            - name: SCRAPYD_PORT
+              value: "6800"
