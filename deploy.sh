@@ -13,8 +13,8 @@ docker push charlymarchiaro/horse-engine-api:$SHA
 docker push charlymarchiaro/horse-engine-postgres:$SHA
 docker push charlymarchiaro/horse-engine-scrapyd:$SHA
 
-kubectl apply -f k8s
-kubectl set image deployments/client-deployment client=charlymarchiaro/horse-engine-client:$SHA
-kubectl set image deployments/api-deployment api=charlymarchiaro/horse-engine-api:$SHA
-kubectl set image deployments/postgres-deployment postgres=charlymarchiaro/horse-engine-postgres:$SHA
-kubectl set image deployments/postgres-deployment postgres=charlymarchiaro/horse-engine-scrapyd:$SHA
+# kubectl apply -f k8s
+# kubectl set image deployments/client-deployment client=charlymarchiaro/horse-engine-client:$SHA
+# kubectl set image deployments/api-deployment api=charlymarchiaro/horse-engine-api:$SHA
+# kubectl set image deployments/postgres-deployment postgres=charlymarchiaro/horse-engine-postgres:$SHA
+# kubectl set image deployments/scrapyd-deployment scrapyd=charlymarchiaro/horse-engine-scrapyd:$SHA
