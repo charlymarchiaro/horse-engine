@@ -26,7 +26,7 @@ build:
         "**/*.js": .
 
     - image: charlymarchiaro/horse-engine-scrapyd
-      context: scraper
+      context: scrapyd
       docker:
         dockerfile: Dockerfile.dev
       sync:
