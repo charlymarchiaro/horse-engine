@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 
-const API_URL = 'http://localhost/api';
-const SCRAPYD_URL = 'http://localhost/scrapyd';
 
 @Injectable({
   providedIn: 'root'
@@ -19,14 +16,14 @@ export class BackendService {
 
   public testBackend() {
     return this.http.get<any>(
-      API_URL + '/backend/test'
+      '/api/backend/test'
     );
   }
 
 
   public listAllSpiders() {
     return this.http.get<{ node_name: string, status: string, spiders: string[] }>(
-      API_URL + '/list-spiders'
+      '/api/list-spiders'
     );
   }
 
@@ -39,7 +36,7 @@ export class BackendService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
     return this.http.post<any>(
-      API_URL + '/schedule-spider',
+      '/api/schedule-spider',
       params,
       { headers }
     );
@@ -48,7 +45,7 @@ export class BackendService {
 
   public listJobs() {
     return this.http.get<{ node_name: string, status: string, spiders: string[] }>(
-      API_URL + '/list-jobs'
+      '/api/list-jobs'
     );
   }
 }
