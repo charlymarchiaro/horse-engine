@@ -11,7 +11,17 @@ export class BackendService {
 
   constructor(
     private http: HttpClient,
-  ) { }
+  ) {
+
+    this.http.get(
+      '/api',
+      { responseType: 'text' }
+    )
+      .subscribe(
+        response => console.log(response),
+        error => console.error(error)
+      );
+  }
 
 
   public testBackend() {
