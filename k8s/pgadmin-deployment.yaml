@@ -18,7 +18,7 @@ spec:
             claimName: database-pvc
       containers:
         - name: pgadmin
-          image: dpage/pgadmin4:latest
+          image: charlymarchiaro/pgadmin 
           ports:
             - containerPort: 80
           resources:
@@ -30,8 +30,6 @@ spec:
               mountPath: /var/lib/pgadmin
               subPath: pgadmin
           env:
-            # - name: PGADMIN_LISTEN_PORT
-            #   value: "7777"
             - name: PGADMIN_DEFAULT_EMAIL
               valueFrom:
                 secretKeyRef:
