@@ -1,5 +1,7 @@
 const keys = require('./keys');
 
+const { Pool } = require('pg');
+
 var fetchUrl = require("fetch").fetchUrl;
 
 const SCRAPYD_URL = 'http://' + keys.scrapydHost + ':' + keys.scrapydPort;
@@ -15,15 +17,14 @@ app.use(bodyParser.json());
 
 
 // Postgres Client Setup
-const { Pool } = require('pg');
-const pgClient = new Pool({
-  user: keys.pgUser,
+const pool = new Pool({
   host: keys.pgHost,
-  database: keys.pgDatabase,
-  password: keys.pgPassword,
   port: keys.pgPort,
+  user: keys.pgUser,
+  password: keys.password,
 });
-pgClient.on('error', () => console.log('Lost PG connection'));
+
+pool.on('error', () => console.log('Lost PG connection'));
 
 
 // Express Route Handlers
@@ -33,8 +34,11 @@ app.get('/', (req, res) => {
 
 
 app.get('/backend/test', async (req, res) => {
+
+  console.log('Testing DB connection...');
+
   try {
-    const values = await pgClient.query(`
+    const values = await pool.query(`
     SELECT id, source_name, url, title, text, last_updated, scraped_at, spider_name, parse_function, result, error, error_details
     FROM public.scraped_articles
     LIMIT 100;
