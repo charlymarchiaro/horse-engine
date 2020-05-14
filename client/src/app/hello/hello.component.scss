@@ -1,0 +1,27 @@
+#container {
+    #control-panel {
+    }
+
+    #database-query-results{
+
+    }
+    
+    #jobs-list {
+        display: flex;
+        flex-direction: column;
+
+        .job-info-placeholder {
+            padding: 5px;
+            font-family: monospace;
+            font-size: 13p;
+        }
+    }
+
+    hr {
+        color: #e0e0e0;
+        background-color: #e0e0e0;
+        height: 1px;
+        border: none;
+        margin: 2px;
+    }
+}

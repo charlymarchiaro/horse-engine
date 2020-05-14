@@ -1,0 +1,32 @@
+<div
+  id="container"
+>
+
+  <div
+    id=table
+    *ngIf="data && data.length > 0"
+  >
+    <table>
+      <tr>
+        <th
+          *ngFor="let fieldName of objectKeys(data[0])"
+        >
+          {{fieldName}}
+        </th>
+      </tr>
+
+      <tr
+        *ngFor="let row of data"
+      >
+        <td
+          *ngFor="let value of objectValues(row)"
+        >
+          {{value}}
+        </td>
+      </tr>
+    </table>
+
+  </div>
+
+</div>
+

@@ -1,0 +1,21 @@
+#container {
+    padding: 5px 0;
+
+    #table {
+        font-family: monospace;
+        font-size: 13px;
+
+        th {
+            text-align: left;
+        }
+
+        tr td {
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        td {
+            padding: 0 3px;
+        }
+    }
+}

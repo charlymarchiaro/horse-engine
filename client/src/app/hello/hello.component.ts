@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { BackendService } from '../services/backend.service';
+import { JobsListInfo } from '../model/scrapyd/scrapyd.model';
+import { DatabaseQueryResultsRow } from '../model/shared/database.model';
 
 
 
@@ -18,6 +20,8 @@ export const SPIDER_NAMES = [
 ];
 
 
+export const NUMBER_OF_DISPLAYED_ARTICLES = 10;
+
 
 @Component({
   selector: 'app-hello',
@@ -26,32 +30,36 @@ export const SPIDER_NAMES = [
 })
 export class HelloComponent implements OnInit, OnDestroy {
 
+  private jobsPollingTimer;
+  private lastScrapedArticlesInfoTimer;
 
-  private timer;
-
-  public time: string;
-  public backendMessage: string;
+  public jobsListInfo: JobsListInfo;
+  public lastScrapedArticlesInfo: DatabaseQueryResultsRow[] = [];
 
 
   constructor(
-    private datePipe: DatePipe,
     private backendService: BackendService,
   ) { }
 
 
   ngOnInit() {
-    this.timer = setInterval(
-      () => this.updateTime(),
+    this.jobsPollingTimer = setInterval(
+      () => this.updateJobsInfo(),
       1000
     );
 
-    this.updateTime();
-    this.listAllSpiders();
+    this.lastScrapedArticlesInfoTimer = setInterval(
+      () => this.updateLastScrapedArticlesInfo(),
+      2000
+    );
+
+    this.updateJobsInfo();
+    this.updateLastScrapedArticlesInfo();
   }
 
 
   ngOnDestroy() {
-    clearInterval(this.timer);
+    clearInterval(this.jobsPollingTimer);
   }
 
 
@@ -67,6 +75,11 @@ export class HelloComponent implements OnInit, OnDestroy {
 
   public onListJobsClick() {
     this.listJobs();
+  }
+
+
+  public onCancelAllJobsClick() {
+    this.cancelAllJobs();
   }
 
 
@@ -98,6 +111,11 @@ export class HelloComponent implements OnInit, OnDestroy {
   }
 
 
+  private cancelAllJobs() {
+    this.backendService.cancelAllJobs();
+  }
+
+
 
   private testBackend() {
     this.backendService.testBackend().subscribe(
@@ -106,7 +124,17 @@ export class HelloComponent implements OnInit, OnDestroy {
   }
 
 
-  private updateTime() {
-    this.time = this.datePipe.transform(Date.now(), 'medium');
+  private updateJobsInfo() {
+    this.backendService.listJobs().subscribe(
+      info => this.jobsListInfo = info
+    );
+  }
+
+
+  private updateLastScrapedArticlesInfo() {
+    this.backendService.getLastScrapedArticlesInfo(NUMBER_OF_DISPLAYED_ARTICLES)
+      .subscribe(
+        response => this.lastScrapedArticlesInfo = response.data
+      );
   }
 }

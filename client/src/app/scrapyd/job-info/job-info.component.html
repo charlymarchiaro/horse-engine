@@ -1,0 +1,32 @@
+<div
+  id="container"
+>
+  <div
+    id="info"
+    *ngIf="jobInfo"
+  >
+    <div
+      class="id-field"
+    >
+      <strong>Id:</strong> {{jobInfo.id}}
+    </div>
+
+    <div
+      class="spider-field"
+    >
+      <strong>Spider:</strong> {{jobInfo.spider}}
+    </div>
+
+    <div
+      class="start-time-field"
+    >
+      <strong>Start time:</strong> {{jobInfo.start_time || '-'}}
+    </div>
+
+    <div
+      class="end-time-field"
+    >
+      <strong>End time:</strong> {{jobInfo.end_time || '-'}}
+    </div>
+  </div>
+</div>

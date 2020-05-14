@@ -1,29 +1,100 @@
-<p>{{time}}</p>
-
-<button
-  (click)="onTestBackendClick()"
+<div
+  id="container"
 >
-  Test backend
-</button>
+  <div
+    id="control-panel"
+  >
+    <button
+      (click)="onTestBackendClick()"
+    >
+      Test backend
+    </button>
 
-<button
-  (click)="onListAllSpidersClick()"
->
-  List all spiders
-</button>
+    <button
+      (click)="onListAllSpidersClick()"
+    >
+      List all spiders
+    </button>
 
-<button
-  (click)="onScheduleAllSpidersClick()"
->
-  Schedule all spiders
-</button>
+    <button
+      (click)="onScheduleAllSpidersClick()"
+    >
+      Schedule all spiders
+    </button>
 
-<button
-  (click)="onListJobsClick()"
->
-  List jobs
-</button>
+    <button
+      (click)="onListJobsClick()"
+    >
+      List jobs
+    </button>
 
-<div>
-  Respuesta del backend: &nbsp; <span style="font-family: 'Courier New', Courier, monospace;">{{backendMessage}}</span>
-</div>
+    <button
+      (click)="onCancelAllJobsClick()"
+    >
+      Cancel all jobs
+    </button>
+  </div>
+
+
+  <div
+    id="database-query-results"
+  >
+    <br>
+    <strong>Last scraped articles:</strong>
+    <app-database-query-results
+      [data]="lastScrapedArticlesInfo"
+    ></app-database-query-results>
+  </div>
+
+  <hr>
+
+  <div
+    id="jobs-list"
+    *ngIf="jobsListInfo"
+  >
+    <br>
+    <strong>Pending jobs ({{jobsListInfo.pending.length}}):</strong>
+    <app-job-info
+      *ngFor="let jobInfo of jobsListInfo.pending"
+      [jobInfo]="jobInfo"      
+    ></app-job-info>
+    <div
+      class="job-info-placeholder"
+      *ngIf="jobsListInfo.pending.length === 0"
+    >
+      There are no jobs.
+    </div>
+    
+    <hr>
+
+    <br>
+    <strong>Running jobs ({{jobsListInfo.running.length}}):</strong>
+    <app-job-info
+      *ngFor="let jobInfo of jobsListInfo.running"
+      [jobInfo]="jobInfo"
+    ></app-job-info>
+    <div
+      class="job-info-placeholder"
+      *ngIf="jobsListInfo.running.length === 0"
+    >
+      There are no jobs.
+    </div>
+    
+    <hr>
+
+    <br>
+    <strong>Finished jobs ({{jobsListInfo.finished.length}}):</strong>
+    <app-job-info
+      *ngFor="let jobInfo of jobsListInfo.finished"
+      [jobInfo]="jobInfo"
+    ></app-job-info>
+    <div
+      class="job-info-placeholder"
+      *ngIf="jobsListInfo.finished.length === 0"
+    >
+      There are no jobs.
+    </div>
+  
+  </div>
+
+</div> 

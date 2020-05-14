@@ -1,0 +1,26 @@
+#container {
+    font-family: Monospace;
+    padding: 5px;
+
+    #info {
+        display: flex;
+        font-size: 13px;
+
+        .id-field{
+            min-width: 300px;
+        }
+
+        .spider-field{
+            min-width: 220px;
+        }
+
+        .start-time-field{
+            min-width: 300px;
+        }
+
+        .end-time-field{
+            min-width: 300px;
+        }
+
+    }
+}

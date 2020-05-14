@@ -51,6 +51,40 @@ app.get('/backend/test', async (req, res) => {
 });
 
 
+app.post('/last-scraped-articles-info', async (req, res) => {
+
+  try {
+    const numberOfArticles = req.body.numberOfArticles;
+
+    const data = await pool.query(
+      `
+      SELECT 
+          id, 
+          source_name, 
+          CONCAT(LEFT(url, 20), '...') AS url, 
+          CONCAT(LEFT(title, 20), '...') AS title, 
+          CONCAT(LEFT(text, 20), '...') AS text, 
+          last_updated, 
+          scraped_at, 
+          spider_name, 
+          parse_function, 
+          result, 
+          error, 
+          error_details
+      FROM public.scraped_articles
+      ORDER BY scraped_at DESC
+      LIMIT $1
+      `,
+      [numberOfArticles]
+    );
+
+    res.send({ data: data.rows });
+  } catch (e) {
+    res.send(e);
+  }
+});
+
+
 app.get('/list-spiders', async (req, res) => {
   try {
     fetchUrl(
@@ -92,6 +126,20 @@ app.get('/list-jobs', async (req, res) => {
   }
 });
 
+
+app.post('/cancel-job', async (req, res) => {
+  try {
+    const job = req.body.job;
+
+    fetchUrl(
+      SCRAPYD_URL + '/cancel.json?project=horse_scraper&job=' + job,
+      { method: 'POST' },
+      (error, meta, body) => res.send(body.toString()),
+    );
+  } catch (e) {
+    res.send(e);
+  }
+});
 
 
 
