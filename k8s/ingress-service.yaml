@@ -25,7 +25,3 @@ spec:
             backend:
               serviceName: pgadmin-cluster-ip-service
               servicePort: 7777
-          - path: /scrapyd/?(.*)
-            backend:
-              serviceName: scrapyd-cluster-ip-service
-              servicePort: 6800

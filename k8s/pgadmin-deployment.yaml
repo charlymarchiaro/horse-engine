@@ -18,9 +18,9 @@ spec:
             claimName: database-pvc
       containers:
         - name: pgadmin
-          image: charlymarchiaro/pgadmin 
+          image: charlymarchiaro/pgadmin
           ports:
-            - containerPort: 80
+            - containerPort: 30200
           resources:
             requests:
               cpu: 10m
@@ -40,3 +40,5 @@ spec:
                 secretKeyRef:
                   name: pgadmin-default-password
                   key: PGADMIN_DEFAULT_PASSWORD
+            - name: PGADMIN_LISTEN_PORT
+              value: "30200"
