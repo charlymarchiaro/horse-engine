@@ -4,6 +4,8 @@ import { AppComponent } from './app.component';
 import { HelloComponent } from './hello/hello.component';
 import { DatePipe } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { JobInfoComponent } from './scrapyd/job-info/job-info.component';
+import { DatabaseQueryResultsComponent } from './scrapyd/database-query-results/database-query-results.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -14,7 +16,9 @@ describe('AppComponent', () => {
       ],
       declarations: [
         AppComponent,
-        HelloComponent
+        HelloComponent,
+        JobInfoComponent,
+        DatabaseQueryResultsComponent,
       ],
       providers: [
         DatePipe,

@@ -27,7 +27,6 @@ before_install:
 
   # Build test images
   - docker build -t charlymarchiaro/horse-engine-client-test -f ./client/Dockerfile.dev ./client
-  - docker build -t charlymarchiaro/horse-engine-scrapyd-test -f ./scrapyd/Dockerfile ./scrapyd
 
 script:
   # Run tests
