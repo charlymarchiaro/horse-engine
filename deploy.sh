@@ -1,20 +1,20 @@
-# docker build -t charlymarchiaro/horse-engine-client:latest -t charlymarchiaro/horse-engine-client:$SHA -f ./client/Dockerfile ./client
-# docker build -t charlymarchiaro/horse-engine-api:latest -t charlymarchiaro/horse-engine-api:$SHA -f ./api/Dockerfile ./api
-# docker build -t charlymarchiaro/horse-engine-postgres:latest -t charlymarchiaro/horse-engine-postgres:$SHA -f ./postgres/Dockerfile ./postgres
-# docker build -t charlymarchiaro/pgadmin:latest -t charlymarchiaro/pgadmin:$SHA -f ./pgadmin/Dockerfile ./pgadmin
-# docker build -t charlymarchiaro/horse-engine-scrapyd:latest -t charlymarchiaro/horse-engine-scrapyd:$SHA -f ./scrapyd/Dockerfile ./scrapyd
+docker build -t charlymarchiaro/horse-engine-client:latest -t charlymarchiaro/horse-engine-client:$SHA -f ./client/Dockerfile ./client
+docker build -t charlymarchiaro/horse-engine-api:latest -t charlymarchiaro/horse-engine-api:$SHA -f ./api/Dockerfile ./api
+docker build -t charlymarchiaro/horse-engine-postgres:latest -t charlymarchiaro/horse-engine-postgres:$SHA -f ./postgres/Dockerfile ./postgres
+docker build -t charlymarchiaro/pgadmin:latest -t charlymarchiaro/pgadmin:$SHA -f ./pgadmin/Dockerfile ./pgadmin
+docker build -t charlymarchiaro/horse-engine-scrapyd:latest -t charlymarchiaro/horse-engine-scrapyd:$SHA -f ./scrapyd/Dockerfile ./scrapyd
 
-# docker push charlymarchiaro/horse-engine-client:latest
-# docker push charlymarchiaro/horse-engine-api:latest
-# docker push charlymarchiaro/horse-engine-postgres:latest
-# docker push charlymarchiaro/pgadmin:latest
-# docker push charlymarchiaro/horse-engine-scrapyd:latest
+docker push charlymarchiaro/horse-engine-client:latest
+docker push charlymarchiaro/horse-engine-api:latest
+docker push charlymarchiaro/horse-engine-postgres:latest
+docker push charlymarchiaro/pgadmin:latest
+docker push charlymarchiaro/horse-engine-scrapyd:latest
 
-# docker push charlymarchiaro/horse-engine-client:$SHA
-# docker push charlymarchiaro/horse-engine-api:$SHA
-# docker push charlymarchiaro/horse-engine-postgres:$SHA
-# docker push charlymarchiaro/pgadmin:$SHA
-# docker push charlymarchiaro/horse-engine-scrapyd:$SHA
+docker push charlymarchiaro/horse-engine-client:$SHA
+docker push charlymarchiaro/horse-engine-api:$SHA
+docker push charlymarchiaro/horse-engine-postgres:$SHA
+docker push charlymarchiaro/pgadmin:$SHA
+docker push charlymarchiaro/horse-engine-scrapyd:$SHA
 
 # Decrypt Kubernetes cluster certificate
 echo "$KUBERNETES_CLUSTER_CERTIFICATE" | base64 --decode > cert.crt

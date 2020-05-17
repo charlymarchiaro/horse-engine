@@ -8,24 +8,22 @@ env:
     - CLOUDSDK_CORE_DISABLE_PROMPTS=1
 
 before_install:
-
   # Install Google Cloud SDK
   - curl https://sdk.cloud.google.com | bash > /dev/null;
   - source $HOME/google-cloud-sdk/path.bash.inc
 
-  # # Update kubectl
+  # Update kubectl
   - gcloud components update kubectl
 
   # Login to the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
   # Build test images
-  # - docker build -t charlymarchiaro/horse-engine-client-test -f ./client/Dockerfile.dev ./client
+  - docker build -t charlymarchiaro/horse-engine-client-test -f ./client/Dockerfile.dev ./client
 
 script:
-  skip
   # Run tests
-  # - docker run charlymarchiaro/horse-engine-client-test npm test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
+  - docker run charlymarchiaro/horse-engine-client-test npm test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
 
 deploy:
   # Run script deploy.sh
