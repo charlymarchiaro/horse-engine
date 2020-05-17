@@ -17,16 +17,22 @@ app.use(bodyParser.json());
 
 
 // Postgres Client Setup
+const pgConnString = `postgresql://${keys.pgUser}:${keys.pgPassword}@${keys.pgHost}:${keys.pgPort}/${keys.pgDatabase}`;
+
 const pool = new Pool({
-  host: keys.pgHost,
-  port: keys.pgPort,
-  user: keys.pgUser,
-  password: keys.pgPassword,
-  database: keys.pgDatabase,
-  idleTimeoutMillis: 0,
-  connectionTimeoutMillis: 0,
-  max: 20,
+  connectionString: pgConnString,
 });
+
+// const pool = new Pool({
+//   host: keys.pgHost,
+//   port: keys.pgPort,
+//   user: keys.pgUser,
+//   password: keys.pgPassword,
+//   database: keys.pgDatabase,
+//   idleTimeoutMillis: 0,
+//   connectionTimeoutMillis: 0,
+//   max: 20,
+// });
 
 pool.on('error', (err) => console.log('  >> PG: error - Details: ' + err.message));
 pool.on('connect', (client) => console.log('  >> PG: connect'));
@@ -43,16 +49,17 @@ app.get('/backend/test', async (req, res) => {
 
   console.log('');
   console.log('Testing DB connection...');
-  console.log({
-    host: keys.pgHost,
-    port: keys.pgPort,
-    user: keys.pgUser,
-    password: keys.pgPassword,
-    database: keys.pgDatabase,
-    idleTimeoutMillis: 0,
-    connectionTimeoutMillis: 0,
-    max: 20,
-  });
+  console.log(pgConnString);
+  // console.log({
+  //   host: keys.pgHost,
+  //   port: keys.pgPort,
+  //   user: keys.pgUser,
+  //   password: keys.pgPassword,
+  //   database: keys.pgDatabase,
+  //   idleTimeoutMillis: 0,
+  //   connectionTimeoutMillis: 0,
+  //   max: 20,
+  // });
 
   try {
     const values = await pool.query(`
