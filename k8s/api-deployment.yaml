@@ -21,18 +21,18 @@ spec:
             requests:
               cpu: 10m
           env:
-            - name: PGHOST
+            - name: PG_HOST
               value: postgres-cluster-ip-service
-            - name: PGPORT
+            - name: PG_PORT
               value: "5432"
-            - name: PGUSER
+            - name: PG_USER
               value: sa
-            - name: PGPASSWORD
+            - name: PG_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: pgpassword
                   key: PGPASSWORD
-            - name: PGDATABASE
+            - name: PG_DATABASE
               value: horse_engine
             - name: SCRAPYD_HOST
               value: scrapyd-cluster-ip-service
