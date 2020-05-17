@@ -23,12 +23,15 @@ const pool = new Pool({
   user: keys.pgUser,
   password: keys.pgPassword,
   database: keys.pgDatabase,
+  idleTimeoutMillis: 0,
+  connectionTimeoutMillis: 0,
+  max: 20,
 });
 
 pool.on('error', (err) => console.log('  >> PG: error - Details: ' + err.message));
-// pool.on('connect', (client) => console.log('  >> PG: connect'));
-// pool.on('acquire', (client) => console.log('  >> PG: acquire'));
-// pool.on('remove', (client) => console.log('  >> PG: remove'));
+pool.on('connect', (client) => console.log('  >> PG: connect'));
+pool.on('acquire', (client) => console.log('  >> PG: acquire'));
+pool.on('remove', (client) => console.log('  >> PG: remove'));
 
 // Express Route Handlers
 app.get('/', (req, res) => {
@@ -40,6 +43,16 @@ app.get('/backend/test', async (req, res) => {
 
   console.log('');
   console.log('Testing DB connection...');
+  console.log({
+    host: keys.pgHost,
+    port: keys.pgPort,
+    user: keys.pgUser,
+    password: keys.pgPassword,
+    database: keys.pgDatabase,
+    idleTimeoutMillis: 0,
+    connectionTimeoutMillis: 0,
+    max: 20,
+  });
 
   try {
     const values = await pool.query(`
