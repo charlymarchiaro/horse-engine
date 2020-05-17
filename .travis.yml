@@ -25,7 +25,8 @@ before_install:
   # Build test images
   # - docker build -t charlymarchiaro/horse-engine-client-test -f ./client/Dockerfile.dev ./client
 
-# script:
+script:
+  skip
   # Run tests
   # - docker run charlymarchiaro/horse-engine-client-test npm test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
 
