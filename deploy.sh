@@ -24,7 +24,7 @@ ls
 cat cert.crt
 
 # Apply k8s files
-./kubectl \
+kubectl \
   --kubeconfig=/dev/null \
   --server=$KUBERNETES_SERVER \
   --certificate-authority=cert.crt \
