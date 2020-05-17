@@ -23,11 +23,11 @@ before_install:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
   # Build test images
-  - docker build -t charlymarchiaro/horse-engine-client-test -f ./client/Dockerfile.dev ./client
+  # - docker build -t charlymarchiaro/horse-engine-client-test -f ./client/Dockerfile.dev ./client
 
-script:
+# script:
   # Run tests
-  - docker run charlymarchiaro/horse-engine-client-test npm test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
+  # - docker run charlymarchiaro/horse-engine-client-test npm test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
 
 deploy:
   # Run script deploy.sh
