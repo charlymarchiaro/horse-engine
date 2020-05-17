@@ -8,10 +8,10 @@ env:
 
 before_install:
   # Update docker: https://docs.travis-ci.com/user/docker/
-  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-  - sudo apt-get update
-  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+  # - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  # - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  # - sudo apt-get update
+  # - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
 
   # Install Google Cloud SDK
   - curl https://sdk.cloud.google.com | bash > /dev/null;
@@ -24,11 +24,12 @@ before_install:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
   # Build test images
-  - docker build -t charlymarchiaro/horse-engine-client-test -f ./client/Dockerfile.dev ./client
+  # - docker build -t charlymarchiaro/horse-engine-client-test -f ./client/Dockerfile.dev ./client
 
 script:
+  skip
   # Run tests
-  - docker run charlymarchiaro/horse-engine-client-test npm test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
+  # - docker run charlymarchiaro/horse-engine-client-test npm test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
 
 deploy:
   # Run script deploy.sh
