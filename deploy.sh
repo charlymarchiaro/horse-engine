@@ -19,9 +19,7 @@
 # Decrypt Kubernetes cluster certificate
 echo "$KUBERNETES_CLUSTER_CERTIFICATE" | base64 --decode > cert.crt
 
-ls
-
-cat cert.crt
+echo $AAA
 
 # Apply k8s files
 kubectl \
