@@ -19,11 +19,10 @@
 # Decrypt Kubernetes cluster certificate
 echo "$KUBERNETES_CLUSTER_CERTIFICATE" | base64 --decode > cert.crt
 
-ls
-echo $KUBERNETES_SERVER
-ls
-echo $KUBERNETES_TOKEN
-ls
+# Decrypt service-account.json.enc file
+openssl aes-256-cbc -K $encrypted_069e8a6480f9_key -iv $encrypted_069e8a6480f9_iv -in cicd-token.txt.enc -out cicd-token.txt -d
+KUBERNETES_TOKEN=$(<cicd-token.txt)
+
 
 # Apply k8s files
 kubectl \
