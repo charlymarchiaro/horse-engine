@@ -21,6 +21,8 @@ echo "$KUBERNETES_CLUSTER_CERTIFICATE" | base64 --decode > cert.crt
 
 ls
 
+cat cert.crt
+
 # Apply k8s files
 ./kubectl \
   --kubeconfig=/dev/null \
@@ -30,28 +32,28 @@ ls
     apply -f k8s
 
 # Set images
-./kubectl \
+kubectl \
   --kubeconfig=/dev/null \
   --server=$KUBERNETES_SERVER \
   --certificate-authority=cert.crt \
   --token=$KUBERNETES_TOKEN \
   set image deployments/client-deployment client=charlymarchiaro/horse-engine-client:$SHA
 
-./kubectl \
+kubectl \
   --kubeconfig=/dev/null \
   --server=$KUBERNETES_SERVER \
   --certificate-authority=cert.crt \
   --token=$KUBERNETES_TOKEN \
   set image deployments/api-deployment api=charlymarchiaro/horse-engine-api:$SHA
 
-./kubectl \
+kubectl \
   --kubeconfig=/dev/null \
   --server=$KUBERNETES_SERVER \
   --certificate-authority=cert.crt \
   --token=$KUBERNETES_TOKEN \
   set image deployments/postgres-deployment postgres=charlymarchiaro/horse-engine-postgres:$SHA
 
-./kubectl \
+kubectl \
   --kubeconfig=/dev/null \
   --server=$KUBERNETES_SERVER \
   --certificate-authority=cert.crt \
