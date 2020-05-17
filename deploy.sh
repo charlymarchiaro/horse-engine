@@ -16,6 +16,9 @@ docker push charlymarchiaro/horse-engine-postgres:$SHA
 docker push charlymarchiaro/pgadmin:$SHA
 docker push charlymarchiaro/horse-engine-scrapyd:$SHA
 
+# Decrypt Kubernetes cluster certificate
+echo $KUBERNETES_CLUSTER_CERTIFICATE | base64 -di > cert.crt
+
 # Apply k8s files
 kubectl \
   --kubeconfig=/dev/null \

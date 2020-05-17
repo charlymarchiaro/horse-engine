@@ -12,9 +12,6 @@ before_install:
   - openssl aes-256-cbc -K $encrypted_069e8a6480f9_key -iv $encrypted_069e8a6480f9_iv -in cicd-token.txt.enc -out cicd-token.txt -d
   - KUBERNETES_TOKEN=$(<cicd-token.txt)
 
-  # Decrypt Kubernetes cluster certificate
-  - echo "$KUBERNETES_CLUSTER_CERTIFICATE" | base64 --decode > cert.crt
-
   # Install Google Cloud SDK
   - curl https://sdk.cloud.google.com | bash > /dev/null;
   - source $HOME/google-cloud-sdk/path.bash.inc
