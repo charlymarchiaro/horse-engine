@@ -21,7 +21,7 @@ const pool = new Pool({
   host: keys.pgHost,
   port: keys.pgPort,
   user: keys.pgUser,
-  password: keys.password,
+  password: keys.pgPassword,
   connectionTimeoutMillis: 5000,
   idleTimeoutMillis: 0,
   max: 20,
@@ -42,16 +42,6 @@ app.get('/backend/test', async (req, res) => {
 
   console.log('');
   console.log('Testing DB connection...');
-
-  console.log({
-    host: keys.pgHost,
-    port: keys.pgPort,
-    user: keys.pgUser,
-    password: keys.password,
-    connectionTimeoutMillis: 5000,
-    idleTimeoutMillis: 0,
-    max: 20,
-  });
 
   try {
     const values = await pool.query(`
