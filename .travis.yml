@@ -13,11 +13,11 @@ before_install:
   - KUBERNETES_TOKEN=$(<cicd-token.txt)
 
   # Install Google Cloud SDK
-  # - curl https://sdk.cloud.google.com | bash > /dev/null;
-  # - source $HOME/google-cloud-sdk/path.bash.inc
+  - curl https://sdk.cloud.google.com | bash > /dev/null;
+  - source $HOME/google-cloud-sdk/path.bash.inc
 
   # # Update kubectl
-  # - gcloud components update kubectl
+  - gcloud components update kubectl
 
   # Login to the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
