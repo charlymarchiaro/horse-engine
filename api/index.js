@@ -43,6 +43,16 @@ app.get('/backend/test', async (req, res) => {
   console.log('');
   console.log('Testing DB connection...');
 
+  console.log({
+    host: keys.pgHost,
+    port: keys.pgPort,
+    user: keys.pgUser,
+    password: keys.pgPassword,
+    connectionTimeoutMillis: 5000,
+    idleTimeoutMillis: 0,
+    max: 20,
+  });
+
   try {
     const values = await pool.query(`
     SELECT id, source_name, url, title, text, last_updated, scraped_at, spider_name, parse_function, result, error, error_details
