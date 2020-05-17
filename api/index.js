@@ -22,15 +22,13 @@ const pool = new Pool({
   port: keys.pgPort,
   user: keys.pgUser,
   password: keys.pgPassword,
-  connectionTimeoutMillis: 5000,
-  idleTimeoutMillis: 0,
-  max: 20,
+  database: keys.pgDatabase,
 });
 
 pool.on('error', (err) => console.log('  >> PG: error - Details: ' + err.message));
-pool.on('connect', (client) => console.log('  >> PG: connect'));
-pool.on('acquire', (client) => console.log('  >> PG: acquire'));
-pool.on('remove', (client) => console.log('  >> PG: remove'));
+// pool.on('connect', (client) => console.log('  >> PG: connect'));
+// pool.on('acquire', (client) => console.log('  >> PG: acquire'));
+// pool.on('remove', (client) => console.log('  >> PG: remove'));
 
 // Express Route Handlers
 app.get('/', (req, res) => {
@@ -43,16 +41,6 @@ app.get('/backend/test', async (req, res) => {
   console.log('');
   console.log('Testing DB connection...');
 
-  console.log({
-    host: keys.pgHost,
-    port: keys.pgPort,
-    user: keys.pgUser,
-    password: keys.pgPassword,
-    connectionTimeoutMillis: 5000,
-    idleTimeoutMillis: 0,
-    max: 20,
-  });
-
   try {
     const values = await pool.query(`
     SELECT id, source_name, url, title, text, last_updated, scraped_at, spider_name, parse_function, result, error, error_details
@@ -61,11 +49,12 @@ app.get('/backend/test', async (req, res) => {
   `);
 
     console.log('--> DB connection test result: OK');
-    res.send([keys.pgHost, values.rows]);
+    res.send({ result: 'success', data: values.rows });
+
   } catch (e) {
     console.log('--> DB connection test result: ERROR');
     console.log(e);
-    res.send(e);
+    res.send({ result: 'error', error: e });
   }
 });
 
