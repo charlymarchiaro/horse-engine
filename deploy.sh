@@ -1,3 +1,5 @@
+SHA=$(git rev-parse HEAD)
+
 docker build -t charlymarchiaro/horse-engine-client:latest -t charlymarchiaro/horse-engine-client:$SHA -f ./client/Dockerfile ./client
 docker build -t charlymarchiaro/horse-engine-api:latest -t charlymarchiaro/horse-engine-api:$SHA -f ./api/Dockerfile ./api
 docker build -t charlymarchiaro/horse-engine-postgres:latest -t charlymarchiaro/horse-engine-postgres:$SHA -f ./postgres/Dockerfile ./postgres
