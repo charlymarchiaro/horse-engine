@@ -1,6 +1,6 @@
 module.exports = {
   pgHost: process.env.PG_HOST,
-  pgPort: process.env.PG_PORT,
+  pgPort: parseInt(process.env.PG_PORT),
   pgUser: process.env.PG_USER,
   pgPassword: process.env.PG_PASSWORD,
   pgDatabase: process.env.PG_DATABASE,
