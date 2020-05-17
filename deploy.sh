@@ -20,7 +20,7 @@
 echo "$KUBERNETES_CLUSTER_CERTIFICATE" | base64 --decode > cert.crt
 
 ls
-echo AAA
+echo $AAA
 ls
 
 # Apply k8s files
