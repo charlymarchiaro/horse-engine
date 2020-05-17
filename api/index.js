@@ -22,10 +22,15 @@ const pool = new Pool({
   port: keys.pgPort,
   user: keys.pgUser,
   password: keys.password,
+  connectionTimeoutMillis: 5000,
+  idleTimeoutMillis: 0,
+  max: 20,
 });
 
-pool.on('error', () => console.log('Lost PG connection'));
-
+pool.on('error', (err) => console.log('  >> PG: error - Details: ' + err.message));
+pool.on('connect', (client) => console.log('  >> PG: connect'));
+pool.on('acquire', (client) => console.log('  >> PG: acquire'));
+pool.on('remove', (client) => console.log('  >> PG: remove'));
 
 // Express Route Handlers
 app.get('/', (req, res) => {
@@ -35,6 +40,7 @@ app.get('/', (req, res) => {
 
 app.get('/backend/test', async (req, res) => {
 
+  console.log('');
   console.log('Testing DB connection...');
 
   try {
@@ -44,8 +50,11 @@ app.get('/backend/test', async (req, res) => {
     LIMIT 100;
   `);
 
+    console.log('--> DB connection test result: OK');
     res.send([keys.pgHost, values.rows]);
   } catch (e) {
+    console.log('--> DB connection test result: ERROR');
+    console.log(e);
     res.send(e);
   }
 });
