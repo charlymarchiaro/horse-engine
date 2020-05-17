@@ -16,6 +16,13 @@ spec:
         - name: pgadmin-storage
           persistentVolumeClaim:
             claimName: database-pvc
+      initContainers:
+        - name: pgadmin-data-permission-fix
+          image: busybox
+          command: ["/bin/chmod", "-R", "777", "/data"]
+          volumeMounts:
+            - name: pgadmin-storage
+              mountPath: /data
       containers:
         - name: pgadmin
           image: charlymarchiaro/pgadmin
@@ -24,7 +31,6 @@ spec:
           resources:
             requests:
               cpu: 10m
-
           volumeMounts:
             - name: pgadmin-storage
               mountPath: /var/lib/pgadmin
