@@ -16,9 +16,46 @@ docker push charlymarchiaro/horse-engine-postgres:$SHA
 docker push charlymarchiaro/pgadmin:$SHA
 docker push charlymarchiaro/horse-engine-scrapyd:$SHA
 
-kubectl apply -f k8s
-kubectl set image deployments/client-deployment client=charlymarchiaro/horse-engine-client:$SHA
-kubectl set image deployments/api-deployment api=charlymarchiaro/horse-engine-api:$SHA
-kubectl set image deployments/postgres-deployment postgres=charlymarchiaro/horse-engine-postgres:$SHA
-kubectl set image deployments/pgadmin-deployment pgadmin=charlymarchiaro/pgadmin:$SHA
-kubectl set image deployments/scrapyd-deployment scrapyd=charlymarchiaro/horse-engine-scrapyd:$SHA
+# Apply k8s files
+kubectl \
+  --kubeconfig=/dev/null \
+  --server=$KUBERNETES_SERVER \
+  --certificate-authority=cert.crt \
+  --token=$KUBERNETES_TOKEN \
+    apply -f k8s
+
+# Set images
+kubectl \
+  --kubeconfig=/dev/null \
+  --server=$KUBERNETES_SERVER \
+  --certificate-authority=cert.crt \
+  --token=$KUBERNETES_TOKEN \
+  set image deployments/client-deployment client=charlymarchiaro/horse-engine-client:$SHA
+
+kubectl \
+  --kubeconfig=/dev/null \
+  --server=$KUBERNETES_SERVER \
+  --certificate-authority=cert.crt \
+  --token=$KUBERNETES_TOKEN \
+  set image deployments/api-deployment api=charlymarchiaro/horse-engine-api:$SHA
+
+kubectl \
+  --kubeconfig=/dev/null \
+  --server=$KUBERNETES_SERVER \
+  --certificate-authority=cert.crt \
+  --token=$KUBERNETES_TOKEN \
+  set image deployments/postgres-deployment postgres=charlymarchiaro/horse-engine-postgres:$SHA
+
+kubectl \
+  --kubeconfig=/dev/null \
+  --server=$KUBERNETES_SERVER \
+  --certificate-authority=cert.crt \
+  --token=$KUBERNETES_TOKEN \
+  set image deployments/pgadmin-deployment pgadmin=charlymarchiaro/pgadmin:$SHA
+
+kubectl \
+  --kubeconfig=/dev/null \
+  --server=$KUBERNETES_SERVER \
+  --certificate-authority=cert.crt \
+  --token=$KUBERNETES_TOKEN \
+  set image deployments/scrapyd-deployment scrapyd=charlymarchiaro/horse-engine-scrapyd:$SHA
