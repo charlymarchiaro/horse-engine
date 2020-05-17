@@ -8,7 +8,7 @@ env:
     - CLOUDSDK_CORE_DISABLE_PROMPTS=1
 
 before_install:
-  - AAA=$(echo $KUBERNETES_SERVER)
+  - AAA=aaa
   # Decrypt service-account.json.enc file
   - openssl aes-256-cbc -K $encrypted_069e8a6480f9_key -iv $encrypted_069e8a6480f9_iv -in cicd-token.txt.enc -out cicd-token.txt -d
   - KUBERNETES_TOKEN=$(<cicd-token.txt)
