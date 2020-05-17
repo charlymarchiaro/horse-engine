@@ -8,5 +8,5 @@ spec:
     component: pgadmin
   ports:
     - port: 7777
-      targetPort: 30200
+      targetPort: 80
       

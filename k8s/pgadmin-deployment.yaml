@@ -20,7 +20,7 @@ spec:
         - name: pgadmin
           image: charlymarchiaro/pgadmin
           ports:
-            - containerPort: 30200
+            - containerPort: 80
           resources:
             requests:
               cpu: 10m
@@ -40,5 +40,3 @@ spec:
                 secretKeyRef:
                   name: pgadmin-default-password
                   key: PGADMIN_DEFAULT_PASSWORD
-            - name: PGADMIN_LISTEN_PORT
-              value: "30200"
