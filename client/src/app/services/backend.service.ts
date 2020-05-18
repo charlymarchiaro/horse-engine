@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { JobsListInfo, JobScheduleInfo, SpidersListInfo } from '../model/scrapyd/scrapyd.model';
-import { DatabaseQueryResultsRow } from '../model/shared/database.model';
+import { JobsListInfo, JobScheduleInfo, SpidersListInfo } from '../components/scraping-monitor/model/scrapyd/scrapyd.model';
+import { DatabaseQueryResultsRow } from '../components/scraping-monitor/model/shared/database.model';
+
 
 
 

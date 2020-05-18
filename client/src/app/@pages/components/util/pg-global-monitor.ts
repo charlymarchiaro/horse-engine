@@ -1,0 +1,40 @@
+import { EventEmitter } from '@angular/core';
+
+export interface Position {
+  x: number;
+  y: number;
+}
+
+export class pgGlobalMonitorService {
+  counter = 0;
+  lastClickPos: Position = {
+    x: 0,
+    y: 0
+  };
+
+  _navItemSource: EventEmitter<string> = new EventEmitter();
+
+  getGlobalCount(): number {
+    return ++this.counter;
+  }
+
+  setDocumentOverflowHidden(status: boolean): void {
+    document.body.style.overflow = status ? 'hidden' : '';
+  }
+
+  _observeGlobalEvents(): void {
+    document.addEventListener('click', e => {
+      this.lastClickPos = {
+        x: e.clientX,
+        y: e.clientY
+      };
+      this._navItemSource.emit('documentClick');
+    });
+  }
+
+  constructor() {
+    this._observeGlobalEvents();
+  }
+}
+
+export default new pgGlobalMonitorService();

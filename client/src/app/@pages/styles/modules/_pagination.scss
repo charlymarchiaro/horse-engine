@@ -1,0 +1,23 @@
+.page-item {
+  .page-link {
+    font-size: 12px;
+    padding: 10px;
+    border: none;
+    background: transparent;
+    color: $color-contrast-high;
+    opacity: 0.35;
+    border-radius: 3px;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+  &.active {
+    .page-link {
+      opacity: 1;
+      background: transparent;
+      font-weight: bold;
+      color: $color-contrast-high;
+    }
+  }
+}

@@ -1,0 +1,285 @@
+<!-- WRAP LAYOUT IF BOXED -->
+<div class="container" *ngIf="_boxed; else basicLayoutBlock">
+  <ng-container *ngTemplateOutlet="contentTpl"></ng-container>
+</div>
+<ng-template #basicLayoutBlock>
+  <ng-container *ngTemplateOutlet="contentTpl"></ng-container>
+</ng-template>
+
+<!-- YOUR LAYOUT CONTENT GOES INSIDE HERE -->
+<ng-template #contentTpl>
+  <pg-sidebar>
+    <ng-template #sideBarOverlay>
+      <div class="row">
+        <div class="col-xs-6 no-padding">
+          <a href="javascript:void(0)" class="p-l-40"><img src="assets/img/demo/social_app.svg" alt="socail">
+          </a>
+        </div>
+        <div class="col-xs-6 no-padding">
+          <a href="javascript:void(0)" class="p-l-10"><img src="assets/img/demo/email_app.svg" alt="socail">
+          </a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-6 m-t-20 no-padding">
+          <a href="javascript:void(0)" class="p-l-40"><img src="assets/img/demo/calendar_app.svg" alt="socail">
+          </a>
+        </div>
+        <div class="col-xs-6 m-t-20 no-padding">
+          <a href="javascript:void(0)" class="p-l-10"><img src="assets/img/demo/add_more.svg" alt="socail">
+          </a>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template #sideBarHeader>
+      <img src="assets/img/logo_white.png" alt="logo" class="brand" pgRetina src1x="assets/img/logo_white.png"
+        src2x="assets/img/logo_white_2x.png" width="78" height="22">
+      <div class="sidebar-header-controls">
+        <button type="button" class="btn btn-xs sidebar-slide-toggle btn-link m-l-20 hidden-md-down"
+          data-pages-toggle="#appMenu">
+          <i class="pg-icon">chevron_down</i>
+        </button>
+        <button type="button"
+          class="btn btn-link d-lg-inline-block d-xlg-inline-block d-md-inline-block d-sm-none d-none"
+          data-toggle-pin="sidebar" (click)="toggleMenuPin()">
+          <i class="pg-icon"></i>
+        </button>
+      </div>
+    </ng-template>
+    <ng-template #menuItems>
+      <pg-menu-items [Items]="menuLinks"></pg-menu-items>
+    </ng-template>
+  </pg-sidebar>
+
+  <page-container>
+    <pg-header [boxed]="_boxed">
+      <!-- START MOBILE SIDEBAR TOGGLE -->
+      <a href="javascript:void(0);" class="btn-icon-link toggle-sidebar d-lg-none" (click)="toggleMobileSidebar()">
+        <i class="pg-icon">menu</i>
+      </a>
+      <!-- END MOBILE SIDEBAR TOGGLE -->
+      <div class="">
+        <!-- START EMAIL MOBILE TOGGLE -->
+        <a href="javascript:void(0);" class="toggle-secondary-sidebar align-items-center"
+          (click)="toggleSecondarySideBar()" *ngIf="_layoutOption === 'email'">
+          <span class="d-flex align-items-center">
+            Inbox <span class="text-info">(12)</span> <span class="pg-icon">drop_down</span>
+          </span>
+        </a>
+        <!-- END EMAIL MOBILE TOGGLE -->
+
+        <div class="brand inline" [class.d-none]="_layoutOption === 'email'">
+          <img src="assets/img/logo.png" alt="logo" pgRetina src1x="assets/img/logo.png" src2x="assets/img/logo_2x.png"
+            width="78" height="22">
+        </div>
+        <!-- START NOTIFICATION LIST -->
+        <ul class="d-lg-inline-block d-none notification-list no-margin  b-grey b-l b-r no-style p-l-20 p-r-20">
+          <li class="p-r-10 inline">
+            <div class="dropdown" dropdown>
+              <a href="javascript:;" id="notification-center" class="header-icon btn-icon-link" dropdownToggle>
+                <i class="pg-icon">world</i>
+                <span class="bubble"></span>
+              </a>
+              <!-- START Notification Dropdown -->
+              <div *dropdownMenu class="dropdown-menu notification-toggle">
+                <!-- START Notification -->
+                <div class="notification-panel">
+                  <!-- START Notification Body-->
+                  <div class="notification-body scrollable">
+                    <!-- START Notification Item-->
+                    <div class="notification-item unread clearfix">
+                      <!-- START Notification Item-->
+                      <div class="heading open">
+                        <a href="#" class="text-complete pull-left d-flex align-items-center">
+                          <i class="pg-icon m-r-10">map</i>
+                          <span class="bold">Carrot Design</span>
+                          <span class="fs-12 m-l-10">David Nester</span>
+                        </a>
+                        <div class="pull-right">
+                          <div class="thumbnail-wrapper d16 circular inline m-t-15 m-r-10 toggle-more-details">
+                            <div><i class="pg-icon">chevron_down</i>
+                            </div>
+                          </div>
+                          <span class=" time">few sec ago</span>
+                        </div>
+                        <div class="more-details">
+                          <div class="more-details-inner">
+                            <h5 class="semi-bold fs-16">“Apple’s Motivation - Innovation <br>
+                              distinguishes between <br>
+                              A leader and a follower.”</h5>
+                            <p class="small hint-text">
+                              Commented on john Smiths wall.
+                              <br> via pages framework.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- END Notification Item-->
+                      <!-- START Notification Item Right Side-->
+                      <div class="option" tooltip="mark as read" placement="right">
+                        <a href="javascript:void(0)" class="mark"></a>
+                      </div>
+                      <!-- END Notification Item Right Side-->
+                    </div>
+                    <!-- START Notification Body-->
+                    <!-- START Notification Item-->
+                    <div class="notification-item  clearfix">
+                      <div class="heading">
+                        <a href="javascript:void(0)" class="text-danger pull-left">
+                          <i class="pg-icon m-r-10">alert_warning</i>
+                          <span class="bold">98% Server Load</span>
+                          <span class="fs-12 m-l-10">Take Action</span>
+                        </a>
+                        <span class="pull-right time">2 mins ago</span>
+                      </div>
+                      <!-- START Notification Item Right Side-->
+                      <div class="option">
+                        <a href="javascript:void(0)" class="mark"></a>
+                      </div>
+                      <!-- END Notification Item Right Side-->
+                    </div>
+                    <!-- END Notification Item-->
+                    <!-- START Notification Item-->
+                    <div class="notification-item  clearfix">
+                      <div class="heading">
+                        <a href="javascript:void(0)" class="text-warning pull-left">
+                          <i class="pg-icon m-r-10">alert_warning</i>
+                          <span class="bold">Warning Notification</span>
+                          <span class="fs-12 m-l-10">Buy Now</span>
+                        </a>
+                        <span class="pull-right time">yesterday</span>
+                      </div>
+                      <!-- START Notification Item Right Side-->
+                      <div class="option">
+                        <a href="javascript:void(0)" class="mark"></a>
+                      </div>
+                      <!-- END Notification Item Right Side-->
+                    </div>
+                    <!-- END Notification Item-->
+                    <!-- START Notification Item-->
+                    <div class="notification-item unread clearfix">
+                      <div class="heading">
+                        <div class="thumbnail-wrapper d24 circular b-white m-r-5 b-a b-white m-t-10 m-r-10">
+                          <img width="30" height="30" src2x="assets/img/profiles/1x.jpg" pgRetina
+                            src1x="assets/img/profiles/1.jpg" alt="" src="assets/img/profiles/1.jpg">
+                        </div>
+                        <a href="javascript:void(0)" class="text-complete pull-left">
+                          <span class="bold">Revox Design Labs</span>
+                          <span class="fs-12 m-l-10">Owners</span>
+                        </a>
+                        <span class="pull-right time">11:00pm</span>
+                      </div>
+                      <!-- START Notification Item Right Side-->
+                      <div class="option" tooltip="mark as read" placement="right">
+                        <a href="javascript:void(0)" class="mark"></a>
+                      </div>
+                      <!-- END Notification Item Right Side-->
+                    </div>
+                    <!-- END Notification Item-->
+                  </div>
+                  <!-- END Notification Body-->
+                  <!-- START Notification Footer-->
+                  <div class="notification-footer text-center">
+                    <a href="javascript:void(0)" class="">Read all notifications</a>
+                    <a data-toggle="refresh" class="portlet-refresh text-black pull-right" href="javascript:void(0)">
+                      <i class="pg-refresh_new"></i>
+                    </a>
+                  </div>
+                  <!-- START Notification Footer-->
+                </div>
+                <!-- END Notification -->
+              </div>
+              <!-- END Notification Dropdown -->
+            </div>
+          </li>
+
+          <ng-template [ngIf]="_layoutOption != 'email'">
+            <li class="p-r-10 inline">
+              <a href="javascript:void(0)" class="header-icon btn-icon-link">
+                <i class="pg-icon">link_alt</i>
+              </a>
+            </li>
+            <li class="p-r-10 inline">
+              <a href="javascript:void(0)" class="header-icon btn-icon-link">
+                <i class="pg-icon">grid_alt</i>
+              </a>
+            </li>
+          </ng-template>
+
+          <ng-template [ngIf]="_layoutOption == 'email'">
+            <li class="inline">
+              <a href="javascript:void(0)" id="mark-email" class="mark-email btn-icon-link m-l-10"><i
+                  class="pg-icon">edit</i></a>
+            </li>
+          </ng-template>
+        </ul>
+        <!-- END NOTIFICATIONS LIST -->
+        <a href="javascript:void(0)" class="search-link d-lg-inline-block d-none" (click)="openSearch($event)">
+          <i class="pg-icon">search</i>Type anywhere to <span class="bold">search</span>
+        </a>
+      </div>
+      <div class="d-flex align-items-center">
+        <!-- START User Info-->
+        <div class="dropdown pull-right d-lg-block d-none" dropdown>
+          <button class="profile-dropdown-toggle" type="button" dropdownToggle id="profileDropdown"
+            aria-label="profile dropdown">
+            <span class="thumbnail-wrapper d32 circular inline">
+              <img src="assets/img/profiles/avatar.jpg" alt="" pgRetina src1x="assets/img/profiles/avatar.jpg"
+                src2x="assets/img/profiles/avatar_small2x.jpg" width="32" height="32">
+            </span>
+          </button>
+          <div class="dropdown-menu dropdown-menu-right profile-dropdown" *dropdownMenu role="menu">
+            <a href="#" class="dropdown-item"><span>Signed in as <br /><b>David Aunsberg</b></span></a>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item">Your Profile</a>
+            <a href="#" class="dropdown-item">Your Activity</a>
+            <a href="#" class="dropdown-item">Your Archive</a>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item">Features</a>
+            <a href="#" class="dropdown-item">Help</a>
+            <a href="#" class="dropdown-item">Settings</a>
+            <a href="#" class="dropdown-item">Logout</a>
+            <div class="dropdown-divider"></div>
+            <span class="dropdown-item fs-12 hint-text">Last edited by David<br />on Friday at 5:27PM</span>
+          </div>
+        </div>
+        <!-- END User Info-->
+        <a href="javascript:void(0)" class="header-icon btn-icon-link m-l-5 sm-no-margin d-inline-block btn-icon-link"
+          (click)="openQuickView($event)">
+          <i class="pg-icon">menu_add</i>
+        </a>
+      </div>
+    </pg-header>
+    <div class="page-content-wrapper {{_pageContainerClass}}">
+      <!-- START PAGE CONTENT -->
+      <div class="content {{_contentClass}}">
+        <router-outlet></router-outlet>
+      </div>
+      <!-- END PAGE CONTENT -->
+      <ng-template [ngIf]="_footer">
+        <!-- START COPYRIGHT -->
+        <div class=" container-fluid container-fixed-lg footer">
+          <div class="copyright sm-text-center">
+            <p class="small no-margin pull-left sm-pull-reset">
+              <span class="hint-text">Copyright &copy; 2017</span>&nbsp;<span class="font-montserrat">REVOX</span>.
+              <span class="hint-text">All rights
+                reserved.</span> <span class="sm-block"><a class="m-l-10 m-r-10" href="javascript:void(0)">Terms of
+                  use</a> <span class="muted">|</span> <a class="m-l-10" href="javascript:void(0)">Privacy
+                  Policy</a></span>
+            </p>
+
+            <p class="small no-margin pull-right sm-pull-reset">
+              Hand-crafted <span class="hint-text">&amp; made with Love</span>
+            </p>
+
+            <div class="clearfix">
+            </div>
+          </div>
+        </div>
+        <!-- END COPYRIGHT -->
+      </ng-template>
+    </div>
+  </page-container>
+  <app-search-overlay></app-search-overlay>
+  <app-quickview></app-quickview>
+</ng-template>

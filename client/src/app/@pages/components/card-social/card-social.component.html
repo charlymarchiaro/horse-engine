@@ -1,0 +1,147 @@
+<div *ngIf="_type === 'widget'" class="card social-card share {{_additionalClasses}}" data-social="item">
+  <div class="card-header ">
+    <h5 class="{{_titleClass}} pull-left fs-12 d-flex">{{_title}}
+      <i class="pg-icon text-complete">circle_fill</i>
+    </h5>
+    <div class="pull-right small hint-text d-flex">
+      {{_comments}}
+      <i class="pg-icon">comment</i>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+  <div class="card-description">
+    <h3>{{_body}}</h3>
+    <ng-template [ngTemplateOutlet]="CustomBody"></ng-template>
+  </div>
+  <div class="card-footer clearfix">
+    <div class="pull-left">via
+      <span class="{{_titleClass}}">{{_source}}</span>
+    </div>
+    <div class="pull-right hint-text">
+      {{_timestamp}}
+    </div>
+    <div class="clearfix"></div>
+  </div>
+</div>
+
+
+<div *ngIf="_type == 'text'" class="card social-card share  {{_additionalClasses}}">
+  <!-- START ITEM -->
+  <div class="circle" data-toggle="tooltip" title="Label" data-container="body">
+  </div>
+  <div class="card-header clearfix">
+    <div class="user-pic">
+      <ng-template [ngTemplateOutlet]="AuthorAvatar"></ng-template>
+    </div>
+    <h5>{{_author}}</h5>
+    <h6 class="d-flex align-items-center">{{_activity}}
+      <i class="pg-icon">map</i>
+      <span class="location semi-bold"> {{_location}}</span>
+    </h6>
+  </div>
+  <div class="card-description">
+    <ng-template [ngTemplateOutlet]="CustomBody"></ng-template>
+    <div class="via">{{_source}}</div>
+  </div>
+  <div *ngIf="_image.length > 0" class="card-content">
+      <ul class="buttons ">
+        <li>
+          <a href="javascript:void(0)">
+            <i class="pg-icon">expand</i>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)">
+            <i class="pg-icon">heart</i>
+          </a>
+        </li>
+      </ul>
+      <img alt="Social post" src="{{_image}}">
+  </div>
+  <div *ngIf="_image.length > 0" class="card-footer clearfix">
+      <div class="time">{{_timestamp}}</div>
+      <ul class="reactions">
+        <li>
+          <a href="javascript:void(0)" class="d-flex align-items-center">{{_comments}}
+            <i class="pg-icon">comment</i>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)" class="d-flex align-items-center">{{_likes}}
+            <i class="pg-icon">heart</i>
+          </a>
+        </li>
+      </ul>
+    </div>
+  <!-- END ITEM -->
+</div>
+
+<div  *ngIf="_type == 'image'" class="card social-card share {{_additionalClasses}}">
+    <!-- START ITEM -->
+    <div class="circle" data-toggle="tooltip" title="Label" data-container="body">
+	</div>
+	<div class="card-content flex-1" data-pages-bg-image [ngStyle]="{'background-image':'url('+_image+')'}">
+		<ul class="buttons ">
+		  <li>
+			<a href="#"> <i class="pg-icon">expand</i>
+			</a>
+		  </li>
+		  <li>
+			<a href="#"><i class="pg-icon">heart</i>
+			</a>
+		  </li>
+		</ul>
+	</div>
+    <div class="card-description">
+      <p>{{_body}}</p>
+      <ng-template [ngTemplateOutlet]="CustomBody"></ng-template>
+    </div>
+    <div class="card-footer clearfix">
+      <div class="time">{{_timestamp}}</div>
+      <ul class="reactions">
+        <li>
+          <a href="javascript:void(0)" class="d-flex align-items-center">{{_comments}}
+            <i class="pg-icon">comment</i>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)" class="d-flex align-items-center">{{_likes}}
+            <i class="pg-icon">heart</i>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="card-header clearfix last">
+      <div class="user-pic">
+        <ng-template [ngTemplateOutlet]="AuthorAvatar"></ng-template>
+      </div>
+      <h5>{{_author}}</h5>
+      <h6 class="d-flex align-items-center">{{_activity}}</h6>
+    </div>
+    <!-- END ITEM -->
+  </div>
+
+
+
+  <div  *ngIf="_type == 'status'" class="card social-card status {{_additionalClasses}}">
+      <!-- START ITEM -->
+      <div class="circle" data-toggle="tooltip" title="Label" data-container="body">
+      </div>
+      <h5>{{_author}} {{_activity}}
+        <span class="hint-text">{{_timestamp}}</span>
+      </h5>
+      <h2>{{_body}}</h2>
+      <ul class="reactions">
+        <li>
+          <a href="javascript:void(0)" class="d-flex align-items-center">{{_comments}}
+            <i class="pg-icon">comment</i>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)" class="d-flex align-items-center">{{_likes}}
+            <i class="pg-icon">heart</i>
+          </a>
+        </li>
+      </ul>
+      <!-- END ITEM -->
+    </div>
