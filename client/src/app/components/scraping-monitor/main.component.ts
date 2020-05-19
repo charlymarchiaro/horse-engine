@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
-import { JobsListInfo } from '../model/scrapyd/scrapyd.model';
-import { DatabaseQueryResultsRow } from '../model/shared/database.model';
-import { BackendService } from '../../../services/backend.service';
+import { JobsListInfo } from './model/scrapyd/scrapyd.model';
+import { DatabaseQueryResultsRow } from './model/shared/database.model';
+import { BackendService } from '../../services/backend.service';
 
 
 

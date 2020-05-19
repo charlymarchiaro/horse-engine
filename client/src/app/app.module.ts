@@ -59,8 +59,13 @@ import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { BlankCorporateComponent } from './@pages/layouts/blank-corporate/blank-corporate.component';
 import { BlankSimplywhiteComponent } from './@pages/layouts/blank-simplywhite/blank-simplywhite.component';
 import { BlankCasualComponent } from './@pages/layouts/blank-casual/blank-casual.component';
+
+
+// App modules
 import { AppServicesModule } from './services/app-services.module';
 import { ScrapingMonitorModule } from './components/scraping-monitor/scraping-monitor.module';
+import { KeywordSearchModule } from './components/keyword-search/keyword-search.module';
+import { DashboardModule } from './components/dashboard/dashboard.module';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -121,6 +126,8 @@ export class AppHammerConfig extends HammerGestureConfig {
     // App modules
     AppServicesModule,
     ScrapingMonitorModule,
+    KeywordSearchModule,
+    DashboardModule,
   ],
   providers: [QuickviewService, pagesToggleService, {
     provide: PERFECT_SCROLLBAR_CONFIG,
