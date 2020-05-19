@@ -37,6 +37,9 @@ export class ArticleFilteringConditionComponent implements OnInit {
     ];
 
 
+  public isValid: boolean;
+
+
   @Input() public condition: ArticleFilteringCondition;
   @Output() public remove = new EventEmitter();
   @Output() public change = new EventEmitter<ChangeEventArgs>();
@@ -58,13 +61,15 @@ export class ArticleFilteringConditionComponent implements OnInit {
 
 
   onChange() {
+    this.validate();
+
     this.change.emit({
       condition: this.condition,
-      isValid: this.isDataValid()
+      isValid: this.isValid
     });
     console.log({
       condition: this.condition,
-      isValid: this.isDataValid()
+      isValid: this.isValid
     })
   }
 
@@ -74,8 +79,8 @@ export class ArticleFilteringConditionComponent implements OnInit {
   }
 
 
-  private isDataValid(): boolean {
-    return (
+  private validate() {
+    this.isValid = (
       !!this.condition.part
       && !!this.condition.matchCondition
       && !!this.condition.textToMatch

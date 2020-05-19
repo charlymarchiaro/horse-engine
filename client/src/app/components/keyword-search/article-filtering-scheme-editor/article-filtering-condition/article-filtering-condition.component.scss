@@ -3,6 +3,11 @@
     align-items: baseline;
     line-height: 42px;
 
+    .validation-icon {
+        align-self: center;
+        max-width: 30px;
+    }
+
     pg-select {
         width: 200px;
     }

@@ -2,6 +2,18 @@
   id="container"
   *ngIf="condition">
 
+  <!-- Is valid -->
+  <div
+    *ngIf="isValid"
+    class="material-icons row-element validation-icon">
+    check_circle_outline
+  </div>
+  <div
+    *ngIf="!isValid"
+    class="material-icons row-element validation-icon">
+    error_outline
+  </div>
+
   <!-- Article part -->
   <pg-select
     class="row-element"
