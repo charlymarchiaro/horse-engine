@@ -1,0 +1,65 @@
+<div
+  id="container"
+  *ngIf="condition">
+
+  <!-- Article part -->
+  <pg-select
+    class="row-element"
+    [(ngModel)]="condition.part"
+    (ngModelChange)="onChange()"
+    [PlaceHolder]="'Article part'"
+    ShowSearch>
+    <pg-option
+      *ngFor="let option of articlePartOptions"
+      [Label]="option.label"
+      [Value]="option.value"
+      [Disabled]="option.disabled">
+    </pg-option>
+  </pg-select>
+
+  <!-- Match condition -->
+  <pg-select
+    class="row-element"
+    [(ngModel)]="condition.matchCondition"
+    (ngModelChange)="onChange()"
+    [PlaceHolder]="'Match condition'"
+    ShowSearch>
+    <pg-option
+      *ngFor="let option of matchConditionOptions"
+      [Label]="option.label"
+      [Value]="option.value"
+      [Disabled]="option.disabled">
+    </pg-option>
+  </pg-select>
+
+  <!-- Text to match -->
+  <input
+    id="text-to-match"
+    class="form-control row-element"
+    type="text"
+    guide="true"
+    placeholder="Text to match"
+    [(ngModel)]="condition.textToMatch"
+    (ngModelChange)="onChange()">
+
+  <!-- Case sensitive -->
+  <div
+    class="form-check row-element"
+    (click)="condition.caseSensitive = !condition.caseSensitive; onChange()">
+    <input
+      id="case-sensitive"
+      type="checkbox"
+      [checked]="condition.caseSensitive">
+    <label for="defaultCheck">Case sensitive</label>
+  </div>
+
+  <!-- Remove -->
+  <button
+    id="remove-button"
+    class="btn btn-default"
+    type="button"
+    ngbTooltip="Tooltip on top"
+    (click)="onRemoveClick()">
+    <span class="material-icons">clear</span>
+  </button>
+</div>
