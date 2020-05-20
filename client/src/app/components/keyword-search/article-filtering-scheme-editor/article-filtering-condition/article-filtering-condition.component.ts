@@ -73,16 +73,11 @@ export class ArticleFilteringConditionComponent implements OnInit, OnChanges {
       condition: this.condition,
       isValid: this.isValid
     });
-    console.log({
-      condition: this.condition,
-      isValid: this.isValid
-    })
   }
 
 
   onRemoveClick() {
     this.remove.emit();
-    console.log('remove')
   }
 
 

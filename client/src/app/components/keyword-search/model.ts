@@ -32,5 +32,4 @@ export interface DateSpan {
  */
 export interface ArticleFilteringScheme {
   conditions: ArticleFilteringCondition[][];
-  dateSpan: DateSpan;
 }

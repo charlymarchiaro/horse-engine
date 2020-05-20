@@ -5,14 +5,6 @@ import { isNullOrUndefined } from 'util';
 
 
 
-const EMPTY_CONDITION: ArticleFilteringCondition = {
-  part: null,
-  matchCondition: null,
-  textToMatch: null,
-  caseSensitive: true,
-};
-
-
 @Component({
   selector: 'app-article-filtering-scheme-editor',
   templateUrl: './article-filtering-scheme-editor.component.html',
@@ -24,35 +16,42 @@ export class ArticleFilteringSchemeEditorComponent implements OnInit {
   public isValid: boolean;
 
 
-  @Input() public scheme: ArticleFilteringScheme;
+  public scheme: ArticleFilteringScheme;
 
 
   constructor(
     public dialogRef: MatDialogRef<ArticleFilteringSchemeEditorComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { a: string }) { }
+    @Inject(MAT_DIALOG_DATA) public data: {
+      scheme: ArticleFilteringScheme
+    }) {
 
+    if (!!data.scheme) {
 
-  ngOnInit() {
-    this.scheme = {
-      conditions: [[EMPTY_CONDITION]],
-      dateSpan: {
-        fromDateIncl: null,
-        toDateIncl: null,
-      }
-    };
+      this.scheme = data.scheme;
+
+    } else {
+
+      this.scheme = {
+        conditions: [[this.getEmptyCondition()]],
+      };
+    }
 
     this.validate();
   }
 
 
+  ngOnInit() {
+  }
+
+
   public onAddAndClick(andGroupIndex: number) {
-    this.scheme.conditions[andGroupIndex].push(EMPTY_CONDITION);
+    this.scheme.conditions[andGroupIndex].push(this.getEmptyCondition());
     this.validate();
   }
 
 
   public onAddOrClick() {
-    this.scheme.conditions.push([EMPTY_CONDITION]);
+    this.scheme.conditions.push([this.getEmptyCondition()]);
     this.validate();
   }
 
@@ -85,7 +84,6 @@ export class ArticleFilteringSchemeEditorComponent implements OnInit {
 
 
   private validate() {
-
     for (const andGroup of this.scheme.conditions) {
       for (const condition of andGroup) {
         if (
@@ -103,4 +101,13 @@ export class ArticleFilteringSchemeEditorComponent implements OnInit {
     this.isValid = true;
   }
 
+
+  private getEmptyCondition(): ArticleFilteringCondition {
+    return {
+      part: null,
+      matchCondition: null,
+      textToMatch: null,
+      caseSensitive: true,
+    };
+  }
 }

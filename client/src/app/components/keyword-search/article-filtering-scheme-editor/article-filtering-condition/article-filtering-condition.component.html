@@ -16,8 +16,7 @@
 
   <!-- Article part -->
   <pg-select
-    id="article-part"
-    class="row-element"
+    class="row-element article-part"
     [(ngModel)]="condition.part"
     (ngModelChange)="onChange()"
     [PlaceHolder]="'Article part'"
@@ -32,8 +31,7 @@
 
   <!-- Match condition -->
   <pg-select
-    id="match-condition"
-    class="row-element"
+    class="row-element match-condition"
     [(ngModel)]="condition.matchCondition"
     (ngModelChange)="onChange()"
     [PlaceHolder]="'Match condition'"
@@ -48,8 +46,7 @@
 
   <!-- Text to match -->
   <input
-    id="text-to-match"
-    class="form-control row-element"
+    class="form-control row-element text-to-match"
     type="text"
     guide="true"
     placeholder="Text to match"
@@ -69,8 +66,7 @@
 
   <!-- Remove -->
   <button
-    id="remove-button"
-    class="btn btn-default"
+    class="btn btn-default remove-button"
     type="button"
     matTooltip="Remove condition"
     (click)="onRemoveClick()"

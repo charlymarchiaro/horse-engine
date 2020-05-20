@@ -1,0 +1,26 @@
+#container {
+    display: flex;
+
+    #scheme-preview {
+        flex-grow: 1;
+        height: 150px;
+        padding: 10px;
+        border: 1px inset;
+        background-color: white;
+        font-size: 14px;
+        font-family: monospace;
+        overflow: scroll;
+    }
+
+    #right-panel {
+        display: flex;
+        flex-direction: column;
+        width: 100px;
+        margin: 0 10px;
+        padding-bottom: 18px;
+    }
+
+    .separator {
+        flex-grow: 1;
+    }
+}

@@ -1,0 +1,40 @@
+<div id="container">
+  <div id="scheme-preview">
+
+    <!-- Scheme string -->
+    <div
+      *ngIf="schemeString"
+      [innerHTML]="schemeString">
+    </div>
+
+    <!-- Scheme string -->
+    <div *ngIf="!schemeString">
+      No filtering scheme, click Edit to create.
+    </div>
+  </div>
+
+  <div id="right-panel">
+    <button
+      class="btn btn-primary"
+      type="button"
+      (click)="onSubmitClick()"
+      [disabled]="!scheme">
+      Submit
+    </button>
+
+    <div class="separator"></div>
+
+    <button
+      class="btn btn-default"
+      type="button"
+      (click)="onEditClick()">
+      Edit
+    </button>
+    <button
+      class="btn btn-default"
+      type="button"
+      (click)="onClearClick()">
+      Clear
+    </button>
+  </div>
+</div>

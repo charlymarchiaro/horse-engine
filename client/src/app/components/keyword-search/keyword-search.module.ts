@@ -7,11 +7,12 @@ import { ArticleFilteringConditionComponent } from './article-filtering-scheme-e
 import { pgSelectModule } from '../../@pages/components/select/select.module';
 import { TextMaskModule } from 'angular2-text-mask';
 import { MaterialComponentsModule } from '../../material-components.module';
+import { FilteringSchemePreviewComponent } from './filtering-scheme-preview/filtering-scheme-preview.component';
 
 
 
 @NgModule({
-  declarations: [MainComponent, ArticleFilteringSchemeEditorComponent, ArticleFilteringConditionComponent],
+  declarations: [MainComponent, ArticleFilteringSchemeEditorComponent, ArticleFilteringConditionComponent, FilteringSchemePreviewComponent],
   imports: [
     CommonModule,
     FormsModule,

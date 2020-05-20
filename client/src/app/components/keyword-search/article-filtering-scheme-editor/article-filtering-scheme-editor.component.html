@@ -42,15 +42,15 @@
   <mat-dialog-actions align="end">
     <button
       mat-button
-      mat-dialog-close>
-      Cancel
-    </button>
-    <button
-      mat-button
-      [mat-dialog-close]="true"
+      [mat-dialog-close]="scheme"
       cdkFocusInitial
       [disabled]="!isValid">
       Ok
+    </button>
+    <button
+      mat-button
+      [mat-dialog-close]="null">
+      Cancel
     </button>
   </mat-dialog-actions>
 </div>
