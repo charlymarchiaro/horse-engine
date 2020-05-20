@@ -6,6 +6,7 @@ import { ArticleFilteringSchemeEditorComponent } from './article-filtering-schem
 import { ArticleFilteringConditionComponent } from './article-filtering-scheme-editor/article-filtering-condition/article-filtering-condition.component';
 import { pgSelectModule } from '../../@pages/components/select/select.module';
 import { TextMaskModule } from 'angular2-text-mask';
+import { MaterialComponentsModule } from '../../material-components.module';
 
 
 
@@ -14,11 +15,15 @@ import { TextMaskModule } from 'angular2-text-mask';
   imports: [
     CommonModule,
     FormsModule,
+    MaterialComponentsModule,
     pgSelectModule,
     TextMaskModule,
   ],
   exports: [
     MainComponent,
+  ],
+  entryComponents: [
+    ArticleFilteringSchemeEditorComponent,
   ]
 })
 export class KeywordSearchModule { }

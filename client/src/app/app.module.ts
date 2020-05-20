@@ -66,6 +66,7 @@ import { AppServicesModule } from './services/app-services.module';
 import { ScrapingMonitorModule } from './components/scraping-monitor/scraping-monitor.module';
 import { KeywordSearchModule } from './components/keyword-search/keyword-search.module';
 import { DashboardModule } from './components/dashboard/dashboard.module';
+import { MaterialComponentsModule } from './material-components.module';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -103,6 +104,7 @@ export class AppHammerConfig extends HammerGestureConfig {
     HttpModule,
     HttpClientModule,
     SharedModule,
+    MaterialComponentsModule,
     ProgressModule,
     pgListViewModule,
     pgCardModule,

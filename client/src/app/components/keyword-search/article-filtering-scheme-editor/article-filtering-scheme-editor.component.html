@@ -1,5 +1,56 @@
-<p>article-filtering-scheme-editor works!</p>
-<app-article-filtering-condition></app-article-filtering-condition>
-<app-article-filtering-condition></app-article-filtering-condition>
-<app-article-filtering-condition></app-article-filtering-condition>
-<app-article-filtering-condition></app-article-filtering-condition>
+<div id="container">
+  <h2 mat-dialog-title>Filtering scheme editor</h2>
+  <mat-dialog-content>
+
+    <!-- Conditions panel -->
+    <div id="conditions-panel">
+      <div *ngFor="let andGroup of scheme.conditions, let andGroupIndex = index">
+        <div
+          class="group-separator"
+          *ngIf="andGroupIndex > 0">
+          <hr>
+          <div class="separator-label">OR...</div>
+        </div>
+
+        <div *ngFor="let condition of andGroup, let conditionIndex = index">
+          <app-article-filtering-condition
+            [condition]="condition"
+            [enableRemove]="!(scheme.conditions.length === 1 && andGroup.length === 1)"
+            (remove)="onRemoveClick(andGroupIndex, conditionIndex)"
+            (change)="onConditionChange()"></app-article-filtering-condition>
+        </div>
+
+        <div class="group-bottom-panel">
+          <button
+            class="btn btn-default"
+            type="button"
+            (click)="onAddAndClick(andGroupIndex)">
+            + AND
+          </button>
+          <button
+            class="btn btn-default"
+            type="button"
+            *ngIf="andGroupIndex === scheme.conditions.length-1"
+            (click)="onAddOrClick()">
+            + OR
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button
+      mat-button
+      mat-dialog-close>
+      Cancel
+    </button>
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      cdkFocusInitial
+      [disabled]="!isValid">
+      Ok
+    </button>
+  </mat-dialog-actions>
+</div>

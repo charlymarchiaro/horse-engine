@@ -16,6 +16,7 @@
 
   <!-- Article part -->
   <pg-select
+    id="article-part"
     class="row-element"
     [(ngModel)]="condition.part"
     (ngModelChange)="onChange()"
@@ -31,6 +32,7 @@
 
   <!-- Match condition -->
   <pg-select
+    id="match-condition"
     class="row-element"
     [(ngModel)]="condition.matchCondition"
     (ngModelChange)="onChange()"
@@ -70,8 +72,9 @@
     id="remove-button"
     class="btn btn-default"
     type="button"
-    ngbTooltip="Tooltip on top"
-    (click)="onRemoveClick()">
+    matTooltip="Remove condition"
+    (click)="onRemoveClick()"
+    *ngIf="enableRemove">
     <span class="material-icons">clear</span>
   </button>
 </div>

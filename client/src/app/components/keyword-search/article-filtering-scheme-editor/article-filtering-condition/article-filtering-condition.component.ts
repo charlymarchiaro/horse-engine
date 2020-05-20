@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { ArticleFilteringCondition, ArticlePart, MatchCondition } from '../../model';
 
 
@@ -13,7 +13,7 @@ export interface ChangeEventArgs {
   templateUrl: './article-filtering-condition.component.html',
   styleUrls: ['./article-filtering-condition.component.scss'],
 })
-export class ArticleFilteringConditionComponent implements OnInit {
+export class ArticleFilteringConditionComponent implements OnInit, OnChanges {
 
 
   public articlePartOptions: {
@@ -41,6 +41,7 @@ export class ArticleFilteringConditionComponent implements OnInit {
 
 
   @Input() public condition: ArticleFilteringCondition;
+  @Input() public enableRemove: boolean = true;
   @Output() public remove = new EventEmitter();
   @Output() public change = new EventEmitter<ChangeEventArgs>();
 
@@ -56,7 +57,12 @@ export class ArticleFilteringConditionComponent implements OnInit {
 
 
   ngOnInit() {
+    this.validate();
+  }
 
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.validate();
   }
 
 
@@ -76,6 +82,7 @@ export class ArticleFilteringConditionComponent implements OnInit {
 
   onRemoveClick() {
     this.remove.emit();
+    console.log('remove')
   }
 
 
@@ -84,6 +91,7 @@ export class ArticleFilteringConditionComponent implements OnInit {
       !!this.condition.part
       && !!this.condition.matchCondition
       && !!this.condition.textToMatch
+      && this.condition.textToMatch !== ''
     );
   }
 }

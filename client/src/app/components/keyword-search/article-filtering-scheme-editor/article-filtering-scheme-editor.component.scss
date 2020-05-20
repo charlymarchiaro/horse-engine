@@ -1,0 +1,30 @@
+#container {
+    height: 500px;
+    padding: 20px;
+
+    #conditions-panel {
+        height: 385px;
+        width: 870px;
+
+        .group-bottom-panel {
+            margin: 2px 0 10px;
+        }
+
+        .group-separator {
+            hr {
+                margin: 8px 0;
+            }
+
+            .separator-label {
+                font-weight: bold;
+                height: 25px;
+                font-size: 16px;
+                width: 58px;
+                padding: 0 5px;
+                background-color: #eee;
+                margin-bottom: 4px;
+                border-radius: 22px;
+            }
+        }
+    }
+}
