@@ -30,6 +30,10 @@ import {
   MatPaginatorModule,
 } from '@angular/material';
 
+import {
+  MatMomentDateModule
+} from '@angular/material-moment-adapter';
+
 
 @NgModule({
   imports: [
@@ -64,6 +68,7 @@ import {
     MatButtonToggleModule,
     MatRadioModule,
     MatPaginatorModule,
+    MatMomentDateModule,
   ]
 })
 export class MaterialComponentsModule { }

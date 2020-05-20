@@ -26,7 +26,7 @@ export function getArticleFilteringSchemeString(scheme: ArticleFilteringScheme) 
             ? 'case sensitive'
             : 'case insensitive';
 
-          result += `${conditionId + 1}. ${part} > ${matchCondition} > ${textToMatch} > ${caseSensitiveness} \n`;
+          result += `${conditionId + 1}. ${part} > ${matchCondition} > '${textToMatch}' > ${caseSensitiveness} \n`;
         }
       );
     }

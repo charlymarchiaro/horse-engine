@@ -4,7 +4,9 @@ const { Pool } = require('pg');
 
 var fetchUrl = require("fetch").fetchUrl;
 
+
 const SCRAPYD_URL = 'http://' + keys.scrapydHost + ':' + keys.scrapydPort;
+
 
 // Express App Setup
 const express = require('express');
@@ -29,9 +31,6 @@ const pool = new Pool({
 });
 
 pool.on('error', (err) => console.log('  >> PG: error - Details: ' + err.message));
-// pool.on('connect', (client) => console.log('  >> PG: connect'));
-// pool.on('acquire', (client) => console.log('  >> PG: acquire'));
-// pool.on('remove', (client) => console.log('  >> PG: remove'));
 
 // Express Route Handlers
 app.get('/', (req, res) => {
@@ -60,6 +59,8 @@ app.get('/backend/test', async (req, res) => {
     });
 });
 
+
+// Scraper
 
 app.post('/last-scraped-articles-info', async (req, res) => {
 
@@ -152,7 +153,97 @@ app.post('/cancel-job', async (req, res) => {
 });
 
 
+// Keyword search
+
+app.post('/article/search', async (req, res) => {
+  try {
+    const scheme = req.body.scheme;
+    const dateSpan = req.body.dateSpan;
+
+    const query = getArticleSearchQuery(scheme, dateSpan);
+
+    console.log(JSON.stringify(query));
+    const data = await pool.query(query.sqlQuery, query.args);
+
+    res.send({ status: 'success', data: data.rows });
+
+  } catch (e) {
+    res.send({ status: 'error', error: e });
+  }
+});
+
+
 
 app.listen(5000, err => {
   console.log('Listening');
 });
+
+
+
+function getArticleSearchQuery(scheme, dateSpan) {
+
+
+  const args = [];
+
+  let argIndex = 1;
+
+  const schemeConditions = [];
+
+  scheme.conditions.forEach(andGroup => {
+
+    const andGroupConditions = [];
+
+    andGroup.forEach(condition => {
+
+      const part = condition.part;
+      const matchCondition = getMatchConditionStr(condition);
+      const textToMatch = condition.textToMatch;
+
+      const conditionStr = `${part} ${matchCondition} $${argIndex}`;
+      andGroupConditions.push(conditionStr);
+      args.push(`%${textToMatch}%`);
+      argIndex++;
+    });
+
+    schemeConditions.push('(' + andGroupConditions.join(' AND ') + ')');
+  });
+
+  let whereClause = ' WHERE ';
+  whereClause += '(' + schemeConditions.join(' OR ') + ')';
+
+  const fromDateStr = dateSpan.fromDateIncl;
+  const toDateStr = dateSpan.toDateIncl;
+
+  whereClause += ` AND last_updated BETWEEN '${fromDateStr}'::date AND ('${toDateStr}'::date + INTERVAL '1 day')`;
+
+  const sqlQuery = `
+                  SELECT 
+                      id, 
+                      source_name, 
+                      url, 
+                      title, 
+                      text, 
+                      last_updated, 
+                      scraped_at, 
+                      spider_name, 
+                      parse_function, 
+                      result, 
+                      error, 
+                      error_details
+                  FROM 
+                      public.scraped_articles
+                  ` + whereClause;
+
+  const sqlCount = 'SELECT COUNT(id) FROM public.scraped_articles' + whereClause;
+
+  return { sqlCount, sqlQuery, args };
+}
+
+
+function getMatchConditionStr(condition) {
+  if (condition.matchCondition === 'contains') {
+    return condition.caseSensitive ? 'LIKE' : 'ILIKE';
+  } else {
+    return condition.caseSensitive ? 'NOT LIKE' : 'NOT ILIKE';
+  }
+}

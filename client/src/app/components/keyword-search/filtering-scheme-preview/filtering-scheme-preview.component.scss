@@ -3,13 +3,20 @@
 
     #scheme-preview {
         flex-grow: 1;
-        height: 150px;
+        height: 160px;
         padding: 10px;
+        margin-right: 18px;
         border: 1px inset;
         background-color: white;
         font-size: 14px;
         font-family: monospace;
         overflow: scroll;
+        font-size: 14px;
+    }
+
+    #date-span-panel {
+        display: flex;
+        flex-direction: column;
     }
 
     #right-panel {
@@ -22,5 +29,9 @@
 
     .separator {
         flex-grow: 1;
+    }
+
+    button {
+        width: 100px;
     }
 }

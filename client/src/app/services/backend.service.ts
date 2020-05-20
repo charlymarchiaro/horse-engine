@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { JobsListInfo, JobScheduleInfo, SpidersListInfo } from '../components/scraping-monitor/model/scrapyd/scrapyd.model';
 import { DatabaseQueryResultsRow } from '../components/scraping-monitor/model/shared/database.model';
+import { ArticleFilteringScheme, DateSpan } from '../components/keyword-search/model';
+import { Article } from '../model/article.model';
+import { ResponseStatus } from '../model/backend.model';
 
 
 
@@ -33,6 +36,9 @@ export class BackendService {
     );
   }
 
+
+
+  // Scraper
 
   public listAllSpiders() {
     return this.http.get<SpidersListInfo>(
@@ -101,6 +107,23 @@ export class BackendService {
 
     return this.http.post<{ data: DatabaseQueryResultsRow[] }>(
       '/api/last-scraped-articles-info',
+      params,
+      { headers }
+    );
+  }
+
+
+  // Keyword search
+  public searchArticles(scheme: ArticleFilteringScheme, dateSpan: DateSpan) {
+    const params = JSON.stringify({
+      scheme,
+      dateSpan,
+    });
+
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    return this.http.post<{ status: ResponseStatus; data: Article[]; }>(
+      '/api/article/search',
       params,
       { headers }
     );

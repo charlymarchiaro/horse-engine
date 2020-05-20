@@ -1,7 +1,10 @@
 <div id="container">
-  <app-filtering-scheme-preview
-    [scheme]="scheme"
-    (submit)="onSubmitClick()"
-    (edit)="onEditFilteringSchemeClick()"
-    (clear)="onClearFilteringSchemeClick()"></app-filtering-scheme-preview>
+  <div id="content">
+    <app-filtering-scheme-preview
+      [scheme]="scheme"
+      (submit)="onSubmitClick()"
+      (edit)="onEditFilteringSchemeClick()"
+      (clear)="onClearFilteringSchemeClick()"
+      (dateSpanChange)="onDateSpanChange($event)"></app-filtering-scheme-preview>
+  </div>
 </div>

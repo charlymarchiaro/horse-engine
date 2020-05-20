@@ -13,6 +13,62 @@
     </div>
   </div>
 
+  <!-- Date span panel -->
+  <div id="date-span-panel">
+
+    <mat-form-field>
+      <input
+        matInput
+        placeholder="From date (incl.)"
+        [matDatepicker]="startDatepickerRef"
+        name="startDatepicker"
+        [(ngModel)]="dateSpan.fromDateIncl"
+        required
+        readonly
+        (dateChange)="onDateSpanChange()">
+
+      <mat-datepicker-toggle
+        [for]="startDatepickerRef"
+        matSuffix></mat-datepicker-toggle>
+
+      <mat-datepicker #startDatepickerRef></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+        matInput
+        placeholder="To date (incl.)"
+        [matDatepicker]="endDatepickerRef"
+        name="endDatepicker"
+        [(ngModel)]="dateSpan.toDateIncl"
+        required
+        readonly
+        (dateChange)="onDateSpanChange()">
+
+      <mat-datepicker-toggle
+        [for]="endDatepickerRef"
+        matSuffix></mat-datepicker-toggle>
+
+      <mat-datepicker #endDatepickerRef></mat-datepicker>
+    </mat-form-field>
+
+    <div>
+      <button
+        class="btn btn-default"
+        type="button"
+        (click)="onEditClick()">
+        Edit
+      </button>
+      <button
+        class="btn btn-default"
+        type="button"
+        (click)="onClearClick()">
+        Clear
+      </button>
+    </div>
+  </div>
+
+  <!-- Right panel -->
   <div id="right-panel">
     <button
       class="btn btn-primary"
@@ -23,18 +79,5 @@
     </button>
 
     <div class="separator"></div>
-
-    <button
-      class="btn btn-default"
-      type="button"
-      (click)="onEditClick()">
-      Edit
-    </button>
-    <button
-      class="btn btn-default"
-      type="button"
-      (click)="onClearClick()">
-      Clear
-    </button>
   </div>
 </div>

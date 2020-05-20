@@ -1,16 +1,25 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import { ArticleFilteringScheme } from '../model';
+import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
+import { AppDateAdapter, APP_DATE_FORMATS } from '../../../services/utils/format-datepicker/format-datepicker';
+
+import { ArticleFilteringScheme, DateSpan } from '../model';
 import { getArticleFilteringSchemeString } from '../utils';
+import { addDays, getDatePart } from '../../../services/utils/utils';
 
 @Component({
   selector: 'app-filtering-scheme-preview',
   templateUrl: './filtering-scheme-preview.component.html',
-  styleUrls: ['./filtering-scheme-preview.component.scss']
+  styleUrls: ['./filtering-scheme-preview.component.scss'],
+  providers: [
+    { provide: DateAdapter, useClass: AppDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS }
+  ]
 })
 export class FilteringSchemePreviewComponent implements OnInit, OnChanges {
 
 
   public schemeString: string;
+  public dateSpan: DateSpan;
 
 
   @Input() public scheme: ArticleFilteringScheme;
@@ -18,18 +27,36 @@ export class FilteringSchemePreviewComponent implements OnInit, OnChanges {
   @Output() public submit = new EventEmitter();
   @Output() public edit = new EventEmitter();
   @Output() public clear = new EventEmitter();
+  @Output() public dateSpanChange = new EventEmitter<DateSpan>();
 
 
-  constructor() { }
+  constructor() {
+  }
 
 
   ngOnInit() {
     this.updateSchemeString();
+
+    this.dateSpan = {
+      fromDateIncl: getDatePart(addDays(new Date(), -30)),
+      toDateIncl: getDatePart(new Date())
+    };
+
+    this.onDateSpanChange();
   }
 
 
   ngOnChanges(changes: SimpleChanges) {
     this.updateSchemeString();
+  }
+
+
+  public onDateSpanChange() {
+    this.dateSpan = {
+      fromDateIncl: getDatePart(this.dateSpan.fromDateIncl),
+      toDateIncl: getDatePart(this.dateSpan.toDateIncl),
+    };
+    this.dateSpanChange.emit(this.dateSpan);
   }
 
 
