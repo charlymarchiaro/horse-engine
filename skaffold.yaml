@@ -35,15 +35,9 @@ build:
         "**/*.conf": .
         "**/*.cfg": .
 
-    - image: charlymarchiaro/pgadmin
-      context: pgadmin
-      docker:
-        dockerfile: Dockerfile
-
 deploy:
   kubectl:
     manifests:
       - k8s/client-deployment.yaml
       - k8s/api-deployment.yaml
       - k8s/scrapyd-deployment.yaml
-      - k8s/pgadmin-deployment.yaml
