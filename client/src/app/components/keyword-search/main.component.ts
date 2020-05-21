@@ -23,6 +23,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
 
   public articles: Article[] = [];
+  public selectedArticle: Article;
 
 
   public requestState: ApiRequestState = {
@@ -39,14 +40,7 @@ export class MainComponent implements OnInit, OnDestroy {
     private backendService: BackendService,
     public schemeEditorDialog: MatDialog
   ) {
-    this.scheme = {
-      conditions: [[{
-        part: ArticlePart.text,
-        matchCondition: MatchCondition.contains,
-        textToMatch: 'aaaa',
-        caseSensitive: true,
-      }]]
-    };
+    this.scheme = null;
   }
 
 
@@ -70,6 +64,7 @@ export class MainComponent implements OnInit, OnDestroy {
     };
 
     this.articles = [];
+    this.selectedArticle = null;
 
     this.backendSubscription = this.backendService.searchArticles(
       this.scheme,
@@ -94,7 +89,6 @@ export class MainComponent implements OnInit, OnDestroy {
       error: null,
     };
 
-    console.log(articles)
     this.articles = articles;
   }
 
@@ -124,7 +118,9 @@ export class MainComponent implements OnInit, OnDestroy {
 
 
   public onArticleSelect(args: ArticleSelectEventArgs) {
-    console.log('select:', args)
+    this.selectedArticle = this.articles.find(
+      a => a.id === args.articleId
+    );
   }
 
 

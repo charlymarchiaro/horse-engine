@@ -162,7 +162,6 @@ app.post('/article/search', async (req, res) => {
 
     const query = getArticleSearchQuery(scheme, dateSpan);
 
-    console.log(JSON.stringify(query));
     const data = await pool.query(query.sqlQuery, query.args);
 
     res.send({ status: 'success', data: data.rows });

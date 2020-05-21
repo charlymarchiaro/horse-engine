@@ -15,3 +15,8 @@ export function getDatePart(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
+
+
+export function clone(object: any): any {
+  return JSON.parse(JSON.stringify(object));
+}

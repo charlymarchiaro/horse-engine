@@ -1,0 +1,11 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500,700");
+@import url("https://fonts.googleapis.com/css?family=Roboto+Mono:300,400,400i,500,700");
+
+@import "~@angular/material/theming";
+
+// Define a custom typography config
+// (https://material.angular.io/guide/typography)
+
+$custom-typography-01: mat-typography-config(
+  $font-family: "Roboto, monospace"
+);

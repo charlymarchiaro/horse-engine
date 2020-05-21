@@ -1,6 +1,6 @@
 <div id="container">
 
-  <h4>Results:</h4>
+  <h4>Results</h4>
 
   <div id="list">
 
@@ -32,7 +32,7 @@
             <td class="no-wrap">{{article.lastUpdated | date}}</td>
             <td>{{article.title}}</td>
             <td
-              class="no-wrap"
+              class="no-wrap link"
               (click)="window.open('http://'+article.url, '_blank')">
               <span>
                 Source
@@ -45,6 +45,19 @@
     </div>
 
     <div id="footer">
+      <!-- Export to Excel -->
+      <div id="export-to-excel-button">
+        <button
+          mat-icon-button
+          (click)="onExportToExcelButtonClick()"
+          [disabled]="!this.articles || this.articles.length === 0">
+          <mat-icon matTooltip="Export to Excel">library_books</mat-icon>
+        </button>
+      </div>
+
+      <div class="separator"></div>
+
+      <!-- Paginator -->
       <mat-paginator
         [length]="articles.length"
         [pageSize]="pageSize"

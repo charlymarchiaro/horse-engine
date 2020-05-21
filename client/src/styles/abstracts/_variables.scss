@@ -1,0 +1,87 @@
+// === Colors ===
+$main-colors: (
+  "background": #fff,
+  "foreground": #000,
+  "grayed": #ccc,
+  "default-text-color": rgba(0, 0, 0, 0.87),
+  "invalid-text-color": #da0606
+);
+$main-sidebar-colors: (
+  "background-normal": #2a2f3a,
+  "background-checked": #262a34,
+  "background-disabled": gray,
+  "background-hover": #262a34,
+  "foreground-normal": #a6a8ad,
+  "foreground-checked": #fefefe,
+  "foreground-disabled": black,
+  "foreground-hover": #fefefe
+);
+$main-map-sidenav-colors: (
+  "header-background": #0a84db,
+  "header-text": #ffffff,
+  "tab-text": rgba(0, 0, 0, 0.87),
+  "data-field-text": rgba(0, 0, 0, 0.77)
+);
+$site-data-section-colors: (
+  "tab-text": rgba(0, 0, 0, 0.87)
+);
+
+// === Animations ===
+@keyframes pageLoad {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+// === Lengths ===
+// Main sidebar
+$main-sidebar-width: 53px;
+$main-sidebar-item-height: 48px;
+// App content
+$app-content-width: calc(100vw - #{$main-sidebar-width});
+// Auth
+$auth-section-left-padding-width: 68px;
+// Map search toolbar
+$map-search-toolbar-left-margin: 15px;
+$map-search-toolbar-top-margin: 8px;
+// Map filter toolbar
+$map-filter-toolbar-width: 180px;
+$map-filter-toolbar-height: 218px;
+$map-filter-toolbar-restore-button-width: 26px;
+$map-filter-toolbar-restore-button-height: 26px;
+$map-filter-toolbar-right-margin: 6px;
+$map-filter-toolbar-bottom-margin: 128px;
+// Map type control
+$map-type-control-width: 70px;
+$map-type-control-height: 25px;
+$map-type-control-right-margin: 40px;
+$map-type-control-bottom-margin: 20px;
+// User profile
+$map-user-profile-width: 35px;
+$map-user-profile-height: 45px;
+$map-user-profile-right-margin: 8px;
+$map-user-profile-top-margin: 10px;
+// Map main sidenav
+$map-main-sidenav-width: 314px;
+$map-main-sidenav-top-padding: 60px;
+// Site info
+$site-info-summary-height: 60px;
+// Site data section
+$site-data-section-header-height: 60px;
+$site-data-section-left-padding-width: 68px;
+// Reports section
+$reports-section-header-height: 60px;
+$reports-section-left-padding-width: 68px;
+// Aggr kpi section
+$aggr-kpi-section-header-height: 60px;
+$aggr-kpi-section-left-padding-width: 68px;
+// Tools section
+$tools-section-header-height: 60px;
+$tools-section-left-padding-width: 68px;
+// Shared table group manager tool
+$shared-table-group-manager-tool-header-height: 60px;
+$shared-table-group-manager-tool-left-padding-width: 68px;

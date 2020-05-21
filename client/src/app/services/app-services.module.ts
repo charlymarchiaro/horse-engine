@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { BackendService } from './backend.service';
+import { ExcelExportService } from './utils/excel-export.service';
+import { CommonDialogsService } from './utils/common-dialogs/common-dialogs.service';
 
 
 
@@ -11,6 +13,9 @@ import { BackendService } from './backend.service';
   ],
   providers: [
     BackendService,
+    ExcelExportService,
+    CommonDialogsService,
+    DatePipe,
   ]
 })
 export class AppServicesModule { }

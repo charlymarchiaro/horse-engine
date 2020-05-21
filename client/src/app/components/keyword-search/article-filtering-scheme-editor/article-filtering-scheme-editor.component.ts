@@ -2,6 +2,7 @@ import { Component, OnInit, Inject, Input } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ArticleFilteringScheme, ArticlePart, MatchCondition, ArticleFilteringCondition } from '../model';
 import { isNullOrUndefined } from 'util';
+import { clone } from '../../../services/utils/utils';
 
 
 
@@ -27,7 +28,7 @@ export class ArticleFilteringSchemeEditorComponent implements OnInit {
 
     if (!!data.scheme) {
 
-      this.scheme = data.scheme;
+      this.scheme = clone(data.scheme);
 
     } else {
 

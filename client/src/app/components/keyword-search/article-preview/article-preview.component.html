@@ -1,1 +1,33 @@
-<p>article-preview works!</p>
+<div id="container">
+
+  <h4>Selected Article</h4>
+
+  <div
+    id="preview"
+    class="card card-default"
+    *ngIf="article">
+
+    <!-- Header -->
+    <div
+      id="header"
+      class="card-header separator">
+      <div class="card-title">
+        Last updated: {{article.lastUpdated | date:'short'}}
+      </div>
+    </div>
+
+    <div class="card-block">
+
+      <!-- Title -->
+      <div id="title">{{title}}</div>
+      <div id="subtitle">{{subtitle}}</div>
+
+      <!-- Body -->
+      <div id="body">
+        <p *ngFor="let paragraph of paragraphs">
+          {{paragraph}}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -26,6 +26,7 @@
             "polyfills": "src/polyfills.ts",
             "stylePreprocessorOptions": {
               "includePaths": [
+                "src/styles",
                 "src/app/@pages/styles",
                 "src/pages_ui/scss"
               ]
@@ -37,6 +38,7 @@
               "src/assets"
             ],
             "styles": [
+              "src/styles/main.scss",
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/assets/plugins/bootstrap/css/bootstrap.min.css",
               "src/assets/plugins/codrops-stepsform/css/component.css"
@@ -116,6 +118,7 @@
               "src/assets"
             ],
             "styles": [
+              "src/styles/main.scss",
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/assets/plugins/bootstrap/css/bootstrap.min.css",
               "src/assets/plugins/font-awesome/css/font-awesome.min.css",

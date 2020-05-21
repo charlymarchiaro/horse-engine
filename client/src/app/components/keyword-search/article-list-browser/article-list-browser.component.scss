@@ -50,6 +50,11 @@
             font-weight: 700;
         }
 
+        .link {
+            color: #2100db;
+            font-weight: bolder;
+        }
+
         .mat-icon {
             font-size: 15px;
             position: relative;
@@ -58,7 +63,22 @@
     }
 
     #footer {
+        display: flex;
+        align-items: center;
         border-top: 1px solid #ccc;
+        background-color: #eee;
+
+        #export-to-excel-button {
+            margin-left: 8px;
+
+            .mat-icon {
+                font-size: 22px;
+            }
+        }
+
+        .separator {
+            flex-grow: 1;
+        }
 
         .mat-paginator {
             background-color: #eee;

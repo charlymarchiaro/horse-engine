@@ -25,7 +25,9 @@
         [articles]="articles"
         (select)="onArticleSelect($event)"></app-article-list-browser>
 
-      <app-article-preview id="preview"></app-article-preview>
+      <app-article-preview
+        id="preview"
+        [article]="selectedArticle"></app-article-preview>
 
     </div>
   </div>

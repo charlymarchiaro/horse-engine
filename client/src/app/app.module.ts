@@ -63,6 +63,7 @@ import { BlankCasualComponent } from './@pages/layouts/blank-casual/blank-casual
 
 // App modules
 import { AppServicesModule } from './services/app-services.module';
+import { SharedModule as AppSharedModule } from './components/shared/shared.module';
 import { ScrapingMonitorModule } from './components/scraping-monitor/scraping-monitor.module';
 import { KeywordSearchModule } from './components/keyword-search/keyword-search.module';
 import { DashboardModule } from './components/dashboard/dashboard.module';
@@ -127,6 +128,7 @@ export class AppHammerConfig extends HammerGestureConfig {
 
     // App modules
     AppServicesModule,
+    AppSharedModule,
     ScrapingMonitorModule,
     KeywordSearchModule,
     DashboardModule,

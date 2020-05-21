@@ -1,0 +1,77 @@
+@import "abstracts/variables";
+@import "abstracts/mixins";
+
+@include misc-config();
+@include dialog-button();
+
+#container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 400px;
+  user-select: none;
+
+  #header {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    min-height: 45px;
+
+    #title {
+      width: 350px;
+      font-size: 18px;
+      font-weight: bold;
+      word-break: break-word;
+    }
+
+    #sub-title {
+      width: 350px;
+      font-size: 14px;
+      margin: 2px 0px;
+      word-break: break-word;
+      font-style: italic;
+    }
+
+    #icon {
+      position: absolute;
+      top: 0;
+      right: 12px;
+      font-size: 37px;
+    }
+  }
+
+  #body {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    #message {
+      display: flex;
+      align-items: flex-start;
+      min-height: 65px;
+      padding: 20px 5px;
+      box-sizing: border-box;
+      font-size: 12px;
+      word-break: break-word;
+      line-height: 16px;
+    }
+
+    #input-form {
+      padding: 0px 5px;
+      margin-bottom: 30px;
+    }
+
+    #bottom-panel {
+      display: flex;
+      justify-content: center;
+
+      #cancel-button {
+      }
+
+      #accept-button {
+      }
+    }
+  }
+}

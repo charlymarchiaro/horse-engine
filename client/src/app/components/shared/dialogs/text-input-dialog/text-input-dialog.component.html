@@ -1,0 +1,75 @@
+<div
+  id="container"
+>
+  <div
+    id="header"
+  >
+    <div
+      id="title"
+    >
+      {{title}}
+    </div>
+
+    <div
+      id="sub-title"
+    >
+      {{subTitle}}
+    </div>
+
+    <mat-icon
+      id="icon"
+      [ngStyle]="icon.style"
+    >
+      {{icon.name}}
+    </mat-icon>    
+  </div>
+
+
+  <div
+    id="body"
+  >
+    <hr>
+
+    <div
+      id="message"
+    >
+      {{message}}
+    </div>
+
+
+    <mat-form-field
+      id="input-form"      
+    >
+      <input
+        matInput
+        [placeholder]="placeholder" 
+        type="text" 
+        [(ngModel)]="inputText"
+      >
+    </mat-form-field>
+
+    <div
+      id="bottom-panel"
+    >
+      <button
+        id="cancel-button"
+        class="dialog-button"
+        mat-raised-button
+        (click)="onCancelButtonClick()"
+      >
+        Cancelar
+      </button>
+
+      <button
+        id="accept-button"
+        class="dialog-button"
+        mat-raised-button
+        color="primary"
+        (click)="onAcceptButtonClick()"
+        [disabled]="!inputText || inputText === ''"
+      >
+        Aceptar
+      </button>
+    </div>
+  </div>
+</div>
