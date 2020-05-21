@@ -17,6 +17,7 @@
         <thead>
           <th>Id</th>
           <th>Source</th>
+          <th>Date</th>
           <th>Title</th>
           <th>Link</th>
         </thead>
@@ -28,6 +29,7 @@
             (click)="onArticleSelect(article)">
             <td class="no-wrap">{{article.id}}</td>
             <td class="no-wrap">{{article.sourceName}}</td>
+            <td class="no-wrap">{{article.lastUpdated | date}}</td>
             <td>{{article.title}}</td>
             <td
               class="no-wrap"
