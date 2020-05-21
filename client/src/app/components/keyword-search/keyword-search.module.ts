@@ -8,11 +8,13 @@ import { pgSelectModule } from '../../@pages/components/select/select.module';
 import { TextMaskModule } from 'angular2-text-mask';
 import { MaterialComponentsModule } from '../../material-components.module';
 import { FilteringSchemePreviewComponent } from './filtering-scheme-preview/filtering-scheme-preview.component';
+import { ArticlePreviewComponent } from './article-preview/article-preview.component';
+import { ArticleListBrowserComponent } from './article-list-browser/article-list-browser.component';
 
 
 
 @NgModule({
-  declarations: [MainComponent, ArticleFilteringSchemeEditorComponent, ArticleFilteringConditionComponent, FilteringSchemePreviewComponent],
+  declarations: [MainComponent, ArticleFilteringSchemeEditorComponent, ArticleFilteringConditionComponent, FilteringSchemePreviewComponent, ArticlePreviewComponent, ArticleListBrowserComponent],
   imports: [
     CommonModule,
     FormsModule,

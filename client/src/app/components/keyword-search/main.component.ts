@@ -7,6 +7,7 @@ import { BackendService } from '../../services/backend.service';
 import { ApiRequestState } from '../../model/backend.model';
 import { Subscription } from 'rxjs';
 import { Article } from '../../model/article.model';
+import { ArticleSelectEventArgs } from './article-list-browser/article-list-browser.component';
 
 
 @Component({
@@ -50,6 +51,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+    setTimeout(() => this.onSubmitClick(), 100);
   }
 
 
@@ -118,6 +120,11 @@ export class MainComponent implements OnInit, OnDestroy {
 
   public onClearFilteringSchemeClick() {
     this.scheme = null;
+  }
+
+
+  public onArticleSelect(args: ArticleSelectEventArgs) {
+    console.log('select:', args)
   }
 
 

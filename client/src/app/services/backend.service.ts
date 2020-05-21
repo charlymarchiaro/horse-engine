@@ -122,11 +122,27 @@ export class BackendService {
 
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    return this.http.post<{ status: ResponseStatus; data: Article[]; }>(
+    return this.http.post<{ status: ResponseStatus; data: any[]; }>(
       '/api/article/search',
       params,
       { headers }
-    );
+    ).map(r => ({
+      status: r.status,
+      data: r.data.map(a => ({
+        id: a.id,
+        sourceName: a.source_name,
+        url: a.url,
+        title: a.title,
+        text: a.text,
+        lastUpdated: a.last_updated,
+        scrapedAt: a.scraped_at,
+        spiderName: a.spider_name,
+        parseFunction: a.parse_function,
+        result: a.result,
+        error: a.error,
+        errorDetails: a.error_details,
+      }))
+    }));
   }
 }
 

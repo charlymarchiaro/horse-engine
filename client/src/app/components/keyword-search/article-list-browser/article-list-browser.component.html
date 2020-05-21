@@ -1,0 +1,54 @@
+<div id="container">
+
+  <h4>Results:</h4>
+
+  <div id="list">
+
+    <div id="table">
+      <!-- Placeholder -->
+      <div
+        id="placeholder"
+        *ngIf="!articles || articles.length === 0">
+        Nothing found.
+      </div>
+
+      <!-- Table -->
+      <table *ngIf="articles && articles.length > 0">
+        <thead>
+          <th>Id</th>
+          <th>Source</th>
+          <th>Title</th>
+          <th>Link</th>
+        </thead>
+
+        <tbody>
+          <tr
+            *ngFor="let article of displayedRegisters"
+            [ngClass]="{'selected': article.id === selectedArticleId}"
+            (click)="onArticleSelect(article)">
+            <td class="no-wrap">{{article.id}}</td>
+            <td class="no-wrap">{{article.sourceName}}</td>
+            <td>{{article.title}}</td>
+            <td
+              class="no-wrap"
+              (click)="window.open('http://'+article.url, '_blank')">
+              <span>
+                Source
+                <mat-icon>open_in_new</mat-icon>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="footer">
+      <mat-paginator
+        [length]="articles.length"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        (page)="onPageEvent($event)">
+      </mat-paginator>
+    </div>
+  </div>
+</div>

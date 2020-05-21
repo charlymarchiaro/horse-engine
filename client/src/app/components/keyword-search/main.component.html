@@ -1,10 +1,32 @@
 <div id="container">
   <div id="content">
+    <!-- Filtering scheme preview -->
     <app-filtering-scheme-preview
       [scheme]="scheme"
       (submit)="onSubmitClick()"
       (edit)="onEditFilteringSchemeClick()"
       (clear)="onClearFilteringSchemeClick()"
       (dateSpanChange)="onDateSpanChange($event)"></app-filtering-scheme-preview>
+
+    <!-- Loader -->
+    <div
+      id="loader"
+      *ngIf="requestState.loading">
+      <mat-spinner [diameter]="80"></mat-spinner>
+    </div>
+
+    <!-- Article browser -->
+    <div
+      id="article-browser"
+      *ngIf="!requestState.loading && requestState.loaded">
+
+      <app-article-list-browser
+        id="browser-list"
+        [articles]="articles"
+        (select)="onArticleSelect($event)"></app-article-list-browser>
+
+      <app-article-preview id="preview"></app-article-preview>
+
+    </div>
   </div>
 </div>

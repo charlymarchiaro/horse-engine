@@ -1,9 +1,27 @@
 #container {
-    display: flex;
-    justify-content: center;
     padding: 15px 35px;
 
     #content {
-        min-width: 90%;
+        display: flex;
+        flex-direction: column;
+
+        #loader {
+            display: flex;
+            align-items: center;
+            padding: 30px 0;
+        }
+
+        #article-browser {
+            display: flex;
+            height: calc(100vh - 325px);
+
+            #browser-list {
+                width: 60%;
+            }
+
+            #preview {
+                width: 40%;
+            }
+        }
     }
 }
