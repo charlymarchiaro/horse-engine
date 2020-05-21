@@ -1,0 +1,28 @@
+#container {
+    margin-left: 15px;
+
+    #preview {
+        height: calc(100vh - 405px);
+
+        .card-block {
+            padding: 15px 25px;
+            overflow-y: scroll;
+        }
+
+        #title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        #subtitle {
+            padding: 5px;
+            font-size: 16px;
+            font-style: italic;
+        }
+
+        #body {
+            padding: 8px 0;
+        }
+    }
+}
