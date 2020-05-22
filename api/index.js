@@ -231,7 +231,12 @@ function getArticleSearchQuery(scheme, dateSpan) {
                       error_details
                   FROM 
                       public.scraped_articles
-                  ` + whereClause;
+                  
+                  ${whereClause}
+                  
+                  ORDER BY
+                      last_updated, id
+                  `;
 
   const sqlCount = 'SELECT COUNT(id) FROM public.scraped_articles' + whereClause;
 
