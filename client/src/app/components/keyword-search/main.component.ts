@@ -44,9 +44,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
 
-  ngOnInit() {
-    setTimeout(() => this.onSubmitClick(), 100);
-  }
+  ngOnInit() { }
 
 
   ngOnDestroy() {

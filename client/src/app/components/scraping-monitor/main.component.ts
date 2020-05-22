@@ -39,6 +39,7 @@ export class MainComponent implements OnInit, OnDestroy {
   public lastScrapedArticlesInfo: DatabaseQueryResultsRow[] = [];
 
 
+
   constructor(
     private backendService: BackendService,
   ) { }
@@ -62,6 +63,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     clearInterval(this.jobsPollingTimer);
+    clearInterval(this.lastScrapedArticlesInfoTimer);
   }
 
 

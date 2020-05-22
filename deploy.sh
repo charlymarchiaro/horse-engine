@@ -37,21 +37,21 @@ KUBERNETES_TOKEN=$(<cicd-token.txt)
 
 # # Set images
 
-# # client
-# kubectl \
-#   --kubeconfig=/dev/null \
-#   --server=$KUBERNETES_SERVER \
-#   --certificate-authority=cert.crt \
-#   --token=$KUBERNETES_TOKEN \
-#   set image deployments/client-deployment client=charlymarchiaro/horse-engine-client:$SHA
+# client
+kubectl \
+  --kubeconfig=/dev/null \
+  --server=$KUBERNETES_SERVER \
+  --certificate-authority=cert.crt \
+  --token=$KUBERNETES_TOKEN \
+  set image deployments/client-deployment client=charlymarchiaro/horse-engine-client:$SHA
 
-# # api
-# kubectl \
-#   --kubeconfig=/dev/null \
-#   --server=$KUBERNETES_SERVER \
-#   --certificate-authority=cert.crt \
-#   --token=$KUBERNETES_TOKEN \
-#   set image deployments/api-deployment api=charlymarchiaro/horse-engine-api:$SHA
+# api
+kubectl \
+  --kubeconfig=/dev/null \
+  --server=$KUBERNETES_SERVER \
+  --certificate-authority=cert.crt \
+  --token=$KUBERNETES_TOKEN \
+  set image deployments/api-deployment api=charlymarchiaro/horse-engine-api:$SHA
 
 # # # postgres
 # # kubectl \
