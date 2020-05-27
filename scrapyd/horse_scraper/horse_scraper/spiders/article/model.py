@@ -1,6 +1,7 @@
 from enum import Enum
 from datetime import datetime
 
+
 class ArticleData:
     title: str
     text: str
@@ -15,3 +16,7 @@ class ArticleData:
 class SpiderType(Enum):
     CRAWL = "crawl"
     SITEMAP = "sitemap"
+
+
+class SpiderScheduleArgs:
+    period_days_back: int

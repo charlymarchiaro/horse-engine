@@ -2,6 +2,7 @@ import sys
 import traceback
 import logging
 import re
+import json
 import dateparser  # type: ignore
 
 from datetime import datetime, date, timedelta
@@ -13,21 +14,39 @@ from abc import abstractmethod
 import scrapy  # type: ignore
 from scrapy.http import Request, HtmlResponse  # type: ignore
 from scrapy.linkextractors import LinkExtractor  # type: ignore
-from scrapy.spiders import CrawlSpider, Rule  # type: ignore
+from scrapy.spiders import Rule  # type: ignore
 from scrapy.utils.log import configure_logging  # type: ignore
 
 from horse_scraper.items import Article
-from horse_scraper.spiders.article.model import ArticleData, SpiderType
+from horse_scraper.spiders.article.model import (
+    ArticleData,
+    SpiderType,
+    SpiderScheduleArgs,
+)
 from horse_scraper.settings import (
     LOG_LEVEL,
     FEED_EXPORT_ENCODING,
-    CRAWL_PERIOD_DAYS_BACK,
 )
 from horse_scraper.database.article_db_handler import ArticleDbHandler  # type: ignore
 
 
-class BaseArticleSpiderParams(CrawlSpider):
+class BaseArticleSpiderParams:
+
+    scheduleArgs: SpiderScheduleArgs
+
     def __init__(self, *args, **kwargs):
+        pass
+
+    def initialize(self, scheduleArgs: SpiderScheduleArgs):
+        self.scheduleArgs = scheduleArgs
+        logging.info("Schedule args:")
+        logging.info("--> period_days_back=" + str(self.scheduleArgs.period_days_back))
+        logging.info("")
+
+        self._after_initialize()
+
+    @abstractmethod
+    def _after_initialize(self) -> None:
         pass
 
     # Common params

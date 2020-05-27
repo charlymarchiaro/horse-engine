@@ -17,7 +17,11 @@ from datetime import datetime, date, timedelta
 from string import whitespace
 
 from horse_scraper.items import Article
-from horse_scraper.spiders.article.model import ArticleData, SpiderType
+from horse_scraper.spiders.article.model import (
+    ArticleData,
+    SpiderType,
+    SpiderScheduleArgs,
+)
 from horse_scraper.settings import (
     LOG_LEVEL,
     FEED_EXPORT_ENCODING,
@@ -34,10 +38,19 @@ class BaseArticleCrawlSpider(CrawlSpider):
     source_name: str = ""
     params: BaseArticleSpiderParams
 
+    scheduleArgs = SpiderScheduleArgs()
+
     follow_current_article_links = True
 
     def __init__(self, *args, **kwargs):
         self.setup_logger()
+
+        if "period_days_back" in kwargs:
+            self.scheduleArgs.period_days_back = int(kwargs["period_days_back"])
+        else:
+            self.scheduleArgs.period_days_back = CRAWL_PERIOD_DAYS_BACK
+
+        self.params.initialize(self.scheduleArgs)
 
         self.source_name = self.params.get_source_name()
         self.allowed_domains = self.params.get_allowed_domains()
@@ -170,7 +183,7 @@ class BaseArticleCrawlSpider(CrawlSpider):
     def is_article_date_inside_search_period(self, article: Article) -> bool:
         article_date = article["last_updated"].date()
         today = date.today()
-        start_search_date = today - timedelta(days=CRAWL_PERIOD_DAYS_BACK)
+        start_search_date = today - timedelta(days=self.scheduleArgs.period_days_back)
 
         if article_date <= start_search_date:
             return False

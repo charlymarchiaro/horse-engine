@@ -15,7 +15,6 @@ from horse_scraper.spiders.article.model import ArticleData, SpiderType
 from horse_scraper.spiders.article.base_article_spider_params import (
     BaseArticleSpiderParams,
 )
-from horse_scraper.settings import CRAWL_PERIOD_DAYS_BACK
 from horse_scraper.services.utils.parse_utils import extract_all_text, AttributeType
 
 
@@ -23,12 +22,12 @@ class InfobaeParams(BaseArticleSpiderParams):
 
     date_allow_str: str
 
-    def __init__(self, *args, **kwargs):
+    def _after_initialize(self) -> None:
         today = date.today()
 
         date_strings = []
 
-        for days in range(CRAWL_PERIOD_DAYS_BACK):
+        for days in range(self.scheduleArgs.period_days_back):
             search_date = today - timedelta(days=days)
             year = format(search_date.year, "04")
             day = format(search_date.day, "02")
@@ -36,8 +35,6 @@ class InfobaeParams(BaseArticleSpiderParams):
 
             date_strings.append("/" + year + "/" + month + "/" + day + "/")
             self.date_allow_str = "|".join(date_strings)
-
-        super().__init__(*args, **kwargs)
 
     # Common params
     def _get_spider_base_name(self) -> str:

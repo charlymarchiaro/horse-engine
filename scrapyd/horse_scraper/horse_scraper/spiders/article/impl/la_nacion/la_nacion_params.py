@@ -19,6 +19,8 @@ from horse_scraper.services.utils.parse_utils import extract_all_text, Attribute
 
 
 class LaNacionParams(BaseArticleSpiderParams):
+    def _after_initialize(self) -> None:
+        pass
 
     # Common params
     def _get_spider_base_name(self) -> str:
@@ -109,9 +111,7 @@ class LaNacionParams(BaseArticleSpiderParams):
     def parser_2(self, response):
 
         # title ----------
-        title = response.xpath(
-            '//meta [@property="og:title"]/@content'
-        ).extract_first()
+        title = response.xpath('//meta [@property="og:title"]/@content').extract_first()
         title = title.strip()
 
         # last_updated ----------

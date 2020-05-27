@@ -4,6 +4,5 @@ from .metro951_params import Metro951Params
 
 
 class Metro951CrawlSpider(BaseArticleCrawlSpider):
-
     params = Metro951Params()
     name = params.get_spider_name(SpiderType.CRAWL)

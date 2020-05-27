@@ -20,6 +20,8 @@ from horse_scraper.services.utils.parse_utils import extract_all_text, Attribute
 
 
 class ClarinParams(BaseArticleSpiderParams):
+    def _after_initialize(self) -> None:
+        pass
 
     # Common params
     def _get_spider_base_name(self) -> str:

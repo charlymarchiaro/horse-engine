@@ -4,6 +4,5 @@ from .clarin_params import ClarinParams
 
 
 class ClarinSitemapSpider(BaseArticleSitemapSpider):
-
     params = ClarinParams()
     name = params.get_spider_name(SpiderType.SITEMAP)
