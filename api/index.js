@@ -113,9 +113,18 @@ app.post('/schedule-spider', async (req, res) => {
 
   try {
     const spiderName = req.body.spiderName;
+    const args = req.body.args || {};
+
+    const periodDaysBack = args.periodDaysBack;
+
+    let url = SCRAPYD_URL + '/schedule.json?project=horse_scraper&spider=' + spiderName;
+
+    if (!!periodDaysBack) {
+      url += '&period_days_back=' + periodDaysBack;
+    }
 
     fetchUrl(
-      SCRAPYD_URL + '/schedule.json?project=horse_scraper&spider=' + spiderName,
+      url,
       { method: 'POST' },
       (error, meta, body) => res.send(body.toString()),
     );
