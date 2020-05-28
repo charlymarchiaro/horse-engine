@@ -83,6 +83,9 @@ class InfobaeParams(BaseArticleSpiderParams):
     def should_parse_sitemap_entry(self, entry: Dict[str, str]) -> bool:
         return True
 
+    def should_follow_sitemap_url(self, url: str) -> bool:
+        return True
+
     # Parser functions
 
     def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:

@@ -83,6 +83,9 @@ class BaseArticleSitemapSpider(SitemapSpider):
 
                 # 'lastmod' info is missing --> valid entry
                 if not "lastmod" in entry:
+                    if not self.should_follow_sitemap_url(url):
+                        # should not follow --> skip
+                        continue
                     logging.info("Exploring sitemap (lastmod=?): " + url)
                     yield entry
                     continue
@@ -92,6 +95,10 @@ class BaseArticleSitemapSpider(SitemapSpider):
 
                 if not self.is_sitemap_entry_inside_search_period(lastmod):
                     # 'lastmod' is outside search period --> skip
+                    continue
+
+                if not self.should_follow_sitemap_url(url):
+                    # should not follow --> skip
                     continue
 
                 # 'lastmod' inside search period --> valid entry
@@ -132,7 +139,7 @@ class BaseArticleSitemapSpider(SitemapSpider):
                 yield entry
 
     def _parse_sitemap(self, response):
-        logging.info('_parse_sitemap: ' + response.url)
+        logging.info("_parse_sitemap: " + response.url)
         is_text_sitemap = response.url.endswith(".txt")
 
         if not is_text_sitemap:
@@ -154,11 +161,14 @@ class BaseArticleSitemapSpider(SitemapSpider):
                         yield Request(loc, callback=c)
                         break
 
-    def should_follow_article_url(self, url: str):
+    def should_follow_article_url(self, url: str) -> bool:
         for r, c in self._cbs:
             if r.search(url):
                 return c is not None
         return False
+
+    def should_follow_sitemap_url(self, url: str) -> bool:
+        return self.params.should_follow_sitemap_url(url)
 
     def parse_items(self, response: HtmlResponse):
         logging.info("Parsing: " + response.url)

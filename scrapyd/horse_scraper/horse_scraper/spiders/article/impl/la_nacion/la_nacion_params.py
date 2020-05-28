@@ -5,6 +5,7 @@ import html
 import dateparser  # type: ignore
 from datetime import datetime, date, timedelta
 from string import whitespace
+import re
 
 from scrapy.http import Request, HtmlResponse  # type: ignore
 from scrapy.linkextractors import LinkExtractor  # type: ignore
@@ -63,6 +64,14 @@ class LaNacionParams(BaseArticleSpiderParams):
         return [".*"]
 
     def should_parse_sitemap_entry(self, entry: Dict[str, str]) -> bool:
+        return True
+
+    def should_follow_sitemap_url(self, url: str) -> bool:
+        # notas-YYYY
+        s = re.search("\/notas-(\d{4})-", url)
+        if s and int(s.group(1)) < 2019:
+            return False
+
         return True
 
     # Parser functions

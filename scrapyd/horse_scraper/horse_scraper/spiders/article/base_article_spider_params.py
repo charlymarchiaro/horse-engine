@@ -97,6 +97,10 @@ class BaseArticleSpiderParams:
     def should_parse_sitemap_entry(self, entry: Dict[str, str]) -> bool:
         pass
 
+    @abstractmethod
+    def should_follow_sitemap_url(self, url:str) -> bool:
+        pass
+
     # Parser functions
     @abstractmethod
     def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:
