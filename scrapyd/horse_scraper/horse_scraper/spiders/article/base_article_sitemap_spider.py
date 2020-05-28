@@ -100,36 +100,39 @@ class BaseArticleSitemapSpider(SitemapSpider):
                 continue
 
             # it's not sitemap entry
-            # analyzing article url:
-            if not self.should_follow_article_url(url):
-                # should not follow --> skip
-                continue
+            else:
 
-            if not "lastmod" in entry:
-                # 'lastmod' info missing --> skip
-                continue
+                # analyzing article url:
+                if not self.should_follow_article_url(url):
+                    # should not follow --> skip
+                    continue
 
-            lastmod = dateparser.parse(entry["lastmod"])
+                if not "lastmod" in entry:
+                    # 'lastmod' info missing --> skip
+                    continue
 
-            if not self.is_sitemap_entry_inside_search_period(lastmod):
-                # 'lastmod' is outside search period --> skip
-                continue
+                lastmod = dateparser.parse(entry["lastmod"])
 
-            if not self.params.should_parse_sitemap_entry(entry):
-                # no valid rules apply --> skip
-                continue
+                if not self.is_sitemap_entry_inside_search_period(lastmod):
+                    # 'lastmod' is outside search period --> skip
+                    continue
 
-            if self.is_article_already_persisted(url):
-                # already persisted --> skip
-                continue
+                if not self.params.should_parse_sitemap_entry(entry):
+                    # no valid rules apply --> skip
+                    continue
 
-            logging.info(
-                f"--> Valid url (lastmod={entry['lastmod']}) >>> (parsing article): "
-                + url
-            )
-            yield entry
+                if self.is_article_already_persisted(url):
+                    # already persisted --> skip
+                    continue
+
+                logging.info(
+                    f"--> Valid url (lastmod={entry['lastmod']}) >>> (parsing article): "
+                    + url
+                )
+                yield entry
 
     def _parse_sitemap(self, response):
+        logging.info('_parse_sitemap: ' + response.url)
         is_text_sitemap = response.url.endswith(".txt")
 
         if not is_text_sitemap:

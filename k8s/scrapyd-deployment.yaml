@@ -20,6 +20,8 @@ spec:
           resources:
             requests:
               cpu: 10m
+            limits:
+              cpu: 1200m
           env:
             - name: DB_USER
               value: sa
