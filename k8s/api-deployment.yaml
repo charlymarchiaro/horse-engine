@@ -16,7 +16,7 @@ spec:
         - name: api
           image: charlymarchiaro/horse-engine-api
           ports:
-            - containerPort: 5000
+            - containerPort: 3000
           resources:
             requests:
               cpu: 10m
