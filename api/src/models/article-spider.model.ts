@@ -1,18 +1,16 @@
-import { Entity, model, property, belongsTo } from '@loopback/repository';
+import { Entity, model, property, belongsTo, hasMany } from '@loopback/repository';
 import { ArticleSource, ArticleSourceWithRelations } from './article-source.model';
+import { ArticleScrapingDetails } from './article-scraping-details.model';
 
 @model({
   settings: {
-    postgresql: {
-      schema: 'scraper',
-      table: 'article_spider'
-    },
+    postgresql: { schema: 'scraper', table: 'article_spider' },
     foreignKeys: {
-      fkArticleSpiderArticleSource: {
+      fk__article_spider__article_source: {
         name: 'fk__article_spider__article_source',
         entity: 'ArticleSource',
         entityKey: 'id',
-        foreignKey: 'source_id',
+        foreignKey: 'article_source_id',
       },
     },
   },
@@ -21,26 +19,24 @@ export class ArticleSpider extends Entity {
   @property({
     type: 'string',
     id: true,
-    required: false,
     generated: true,
     useDefaultIdType: false,
     postgresql: {
       columnName: 'id',
-      dataType: 'bigint',
-      nullable: 'NO',
+      dataType: 'uuid',
     },
   })
-  id?: number;
+  id?: string;
 
   @property({
     type: 'string',
     required: true,
     postgresql: {
       columnName: 'name',
-      dataType: 'varchar',
+      dataType: 'VARCHAR',
       dataLength: 64,
       nullable: 'NO',
-    },
+    }
   })
   name: string;
 
@@ -49,10 +45,10 @@ export class ArticleSpider extends Entity {
     required: true,
     postgresql: {
       columnName: 'kind',
-      dataType: 'varchar',
+      dataType: 'VARCHAR',
       dataLength: 64,
       nullable: 'NO',
-    },
+    }
   })
   kind: string;
 
@@ -61,24 +57,24 @@ export class ArticleSpider extends Entity {
     required: true,
     postgresql: {
       columnName: 'parse_category',
-      dataType: 'varchar',
+      dataType: 'VARCHAR',
       dataLength: 64,
       nullable: 'NO',
-    },
+    }
   })
   parseCategory: string;
 
   @belongsTo(() => ArticleSource, {}, {
-    type: 'number',
-    generated: true,
     postgresql: {
-      columnName: 'source_id',
-      dataType: 'bigint',
-      dataLength: null,
+      columnName: 'article_source_id',
+      dataType: 'uuid',
       nullable: 'NO',
-    },
+    }
   })
-  sourceId: number;
+  articleSourceId: string;
+
+  @hasMany(() => ArticleScrapingDetails)
+  articleScrapingDetails: ArticleScrapingDetails[];
 
   constructor(data?: Partial<ArticleSpider>) {
     super(data);
@@ -86,7 +82,7 @@ export class ArticleSpider extends Entity {
 }
 
 export interface ArticleSpiderRelations {
-  source?: ArticleSourceWithRelations;
+  articleSource?: ArticleSourceWithRelations;
 }
 
 export type ArticleSpiderWithRelations = ArticleSpider & ArticleSpiderRelations;

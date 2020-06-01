@@ -16,64 +16,64 @@ import {
   requestBody,
 } from '@loopback/rest';
 import {
-  Article,
+  ArticleSpider,
   ArticleScrapingDetails,
 } from '../models';
-import {ArticleRepository} from '../repositories';
+import {ArticleSpiderRepository} from '../repositories';
 
-export class ArticleArticleScrapingDetailsController {
+export class ArticleSpiderArticleScrapingDetailsController {
   constructor(
-    @repository(ArticleRepository) protected articleRepository: ArticleRepository,
+    @repository(ArticleSpiderRepository) protected articleSpiderRepository: ArticleSpiderRepository,
   ) { }
 
-  @get('/articles/{id}/article-scraping-details', {
+  @get('/article-spiders/{id}/article-scraping-details', {
     responses: {
       '200': {
-        description: 'Article has one ArticleScrapingDetails',
+        description: 'Array of ArticleSpider has many ArticleScrapingDetails',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(ArticleScrapingDetails),
+            schema: {type: 'array', items: getModelSchemaRef(ArticleScrapingDetails)},
           },
         },
       },
     },
   })
-  async get(
+  async find(
     @param.path.string('id') id: string,
     @param.query.object('filter') filter?: Filter<ArticleScrapingDetails>,
-  ): Promise<ArticleScrapingDetails> {
-    return this.articleRepository.articleScrapingDetails(id).get(filter);
+  ): Promise<ArticleScrapingDetails[]> {
+    return this.articleSpiderRepository.articleScrapingDetails(id).find(filter);
   }
 
-  @post('/articles/{id}/article-scraping-details', {
+  @post('/article-spiders/{id}/article-scraping-details', {
     responses: {
       '200': {
-        description: 'Article model instance',
+        description: 'ArticleSpider model instance',
         content: {'application/json': {schema: getModelSchemaRef(ArticleScrapingDetails)}},
       },
     },
   })
   async create(
-    @param.path.string('id') id: typeof Article.prototype.id,
+    @param.path.string('id') id: typeof ArticleSpider.prototype.id,
     @requestBody({
       content: {
         'application/json': {
           schema: getModelSchemaRef(ArticleScrapingDetails, {
-            title: 'NewArticleScrapingDetailsInArticle',
+            title: 'NewArticleScrapingDetailsInArticleSpider',
             exclude: ['id'],
-            optional: ['articleId']
+            optional: ['articleSpiderId']
           }),
         },
       },
     }) articleScrapingDetails: Omit<ArticleScrapingDetails, 'id'>,
   ): Promise<ArticleScrapingDetails> {
-    return this.articleRepository.articleScrapingDetails(id).create(articleScrapingDetails);
+    return this.articleSpiderRepository.articleScrapingDetails(id).create(articleScrapingDetails);
   }
 
-  @patch('/articles/{id}/article-scraping-details', {
+  @patch('/article-spiders/{id}/article-scraping-details', {
     responses: {
       '200': {
-        description: 'Article.ArticleScrapingDetails PATCH success count',
+        description: 'ArticleSpider.ArticleScrapingDetails PATCH success count',
         content: {'application/json': {schema: CountSchema}},
       },
     },
@@ -90,13 +90,13 @@ export class ArticleArticleScrapingDetailsController {
     articleScrapingDetails: Partial<ArticleScrapingDetails>,
     @param.query.object('where', getWhereSchemaFor(ArticleScrapingDetails)) where?: Where<ArticleScrapingDetails>,
   ): Promise<Count> {
-    return this.articleRepository.articleScrapingDetails(id).patch(articleScrapingDetails, where);
+    return this.articleSpiderRepository.articleScrapingDetails(id).patch(articleScrapingDetails, where);
   }
 
-  @del('/articles/{id}/article-scraping-details', {
+  @del('/article-spiders/{id}/article-scraping-details', {
     responses: {
       '200': {
-        description: 'Article.ArticleScrapingDetails DELETE success count',
+        description: 'ArticleSpider.ArticleScrapingDetails DELETE success count',
         content: {'application/json': {schema: CountSchema}},
       },
     },
@@ -105,6 +105,6 @@ export class ArticleArticleScrapingDetailsController {
     @param.path.string('id') id: string,
     @param.query.object('where', getWhereSchemaFor(ArticleScrapingDetails)) where?: Where<ArticleScrapingDetails>,
   ): Promise<Count> {
-    return this.articleRepository.articleScrapingDetails(id).delete(where);
+    return this.articleSpiderRepository.articleScrapingDetails(id).delete(where);
   }
 }

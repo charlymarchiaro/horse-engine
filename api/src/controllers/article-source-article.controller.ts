@@ -39,7 +39,7 @@ export class ArticleSourceArticleController {
     },
   })
   async find(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @param.query.object('filter') filter?: Filter<Article>,
   ): Promise<Article[]> {
     return this.articleSourceRepository.articles(id).find(filter);
@@ -54,14 +54,14 @@ export class ArticleSourceArticleController {
     },
   })
   async create(
-    @param.path.number('id') id: typeof ArticleSource.prototype.id,
+    @param.path.string('id') id: typeof ArticleSource.prototype.id,
     @requestBody({
       content: {
         'application/json': {
           schema: getModelSchemaRef(Article, {
             title: 'NewArticleInArticleSource',
             exclude: ['id'],
-            optional: ['sourceId']
+            optional: ['articleSourceId']
           }),
         },
       },
@@ -79,7 +79,7 @@ export class ArticleSourceArticleController {
     },
   })
   async patch(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @requestBody({
       content: {
         'application/json': {
@@ -102,7 +102,7 @@ export class ArticleSourceArticleController {
     },
   })
   async delete(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @param.query.object('where', getWhereSchemaFor(Article)) where?: Where<Article>,
   ): Promise<Count> {
     return this.articleSourceRepository.articles(id).delete(where);

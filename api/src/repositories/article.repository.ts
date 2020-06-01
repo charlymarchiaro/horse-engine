@@ -11,17 +11,17 @@ export class ArticleRepository extends DefaultCrudRepository<
   ArticleRelations
 > {
 
-  public readonly source: BelongsToAccessor<ArticleSource, typeof Article.prototype.id>;
+  public readonly articleSource: BelongsToAccessor<ArticleSource, typeof Article.prototype.id>;
 
-  public readonly scrapingDetails: HasOneRepositoryFactory<ArticleScrapingDetails, typeof Article.prototype.id>;
+  public readonly articleScrapingDetails: HasOneRepositoryFactory<ArticleScrapingDetails, typeof Article.prototype.id>;
 
   constructor(
     @inject('datasources.db') dataSource: DbDataSource, @repository.getter('ArticleSourceRepository') protected articleSourceRepositoryGetter: Getter<ArticleSourceRepository>, @repository.getter('ArticleScrapingDetailsRepository') protected articleScrapingDetailsRepositoryGetter: Getter<ArticleScrapingDetailsRepository>,
   ) {
     super(Article, dataSource);
-    this.scrapingDetails = this.createHasOneRepositoryFactoryFor('scrapingDetails', articleScrapingDetailsRepositoryGetter);
-    this.registerInclusionResolver('scrapingDetails', this.scrapingDetails.inclusionResolver);
-    this.source = this.createBelongsToAccessorFor('source', articleSourceRepositoryGetter,);
-    this.registerInclusionResolver('source', this.source.inclusionResolver);
+    this.articleScrapingDetails = this.createHasOneRepositoryFactoryFor('articleScrapingDetails', articleScrapingDetailsRepositoryGetter);
+    this.registerInclusionResolver('articleScrapingDetails', this.articleScrapingDetails.inclusionResolver);
+    this.articleSource = this.createBelongsToAccessorFor('articleSource', articleSourceRepositoryGetter,);
+    this.registerInclusionResolver('articleSource', this.articleSource.inclusionResolver);
   }
 }

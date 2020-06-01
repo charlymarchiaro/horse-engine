@@ -4,36 +4,31 @@ import { ArticleSpider } from './article-spider.model';
 
 @model({
   settings: {
-    postgresql: {
-      schema: 'scraper',
-      table: 'article_source'
-    },
-  }
+    postgresql: { schema: 'scraper', table: 'article_source' },
+  },
 })
 export class ArticleSource extends Entity {
   @property({
     type: 'string',
     id: true,
-    required: false,
     generated: true,
     useDefaultIdType: false,
     postgresql: {
       columnName: 'id',
-      dataType: 'bigint',
-      nullable: 'NO',
+      dataType: 'uuid',
     },
   })
-  id?: number;
+  id?: string;
 
   @property({
     type: 'string',
     required: true,
     postgresql: {
       columnName: 'name',
-      dataType: 'varchar',
+      dataType: 'VARCHAR',
       dataLength: 64,
       nullable: 'NO',
-    },
+    }
   })
   name: string;
 
@@ -42,10 +37,10 @@ export class ArticleSource extends Entity {
     required: true,
     postgresql: {
       columnName: 'country',
-      dataType: 'varchar',
+      dataType: 'VARCHAR',
       dataLength: 64,
       nullable: 'NO',
-    },
+    }
   })
   country: string;
 
@@ -54,10 +49,10 @@ export class ArticleSource extends Entity {
     required: true,
     postgresql: {
       columnName: 'url',
-      dataType: 'text',
-      dataLength: null,
+      dataType: 'VARCHAR',
+      dataLength: 64,
       nullable: 'NO',
-    },
+    }
   })
   url: string;
 
@@ -66,10 +61,10 @@ export class ArticleSource extends Entity {
     required: true,
     postgresql: {
       columnName: 'category',
-      dataType: 'varchar',
+      dataType: 'VARCHAR',
       dataLength: 64,
       nullable: 'NO',
-    },
+    }
   })
   category: string;
 
@@ -78,10 +73,9 @@ export class ArticleSource extends Entity {
     required: true,
     postgresql: {
       columnName: 'tier',
-      dataType: 'integer',
-      dataLength: null,
+      dataType: 'INTEGER',
       nullable: 'NO',
-    },
+    }
   })
   tier: number;
 
@@ -90,10 +84,9 @@ export class ArticleSource extends Entity {
     required: true,
     postgresql: {
       columnName: 'reach',
-      dataType: 'bigint',
-      dataLength: null,
+      dataType: 'BIGINT',
       nullable: 'NO',
-    },
+    }
   })
   reach: number;
 
@@ -102,10 +95,9 @@ export class ArticleSource extends Entity {
     required: true,
     postgresql: {
       columnName: 'ad_value_base',
-      dataType: 'bigint',
-      dataLength: null,
+      dataType: 'BIGINT',
       nullable: 'NO',
-    },
+    }
   })
   adValueBase: number;
 
@@ -114,10 +106,9 @@ export class ArticleSource extends Entity {
     required: true,
     postgresql: {
       columnName: 'ad_value_500',
-      dataType: 'bigint',
-      dataLength: null,
+      dataType: 'BIGINT',
       nullable: 'NO',
-    },
+    }
   })
   adValue500: number;
 
@@ -126,10 +117,9 @@ export class ArticleSource extends Entity {
     required: true,
     postgresql: {
       columnName: 'ad_value_300',
-      dataType: 'bigint',
-      dataLength: null,
+      dataType: 'BIGINT',
       nullable: 'NO',
-    },
+    }
   })
   adValue300: number;
 
@@ -138,10 +128,9 @@ export class ArticleSource extends Entity {
     required: true,
     postgresql: {
       columnName: 'ad_value_180',
-      dataType: 'bigint',
-      dataLength: null,
+      dataType: 'BIGINT',
       nullable: 'NO',
-    },
+    }
   })
   adValue180: number;
 
@@ -150,18 +139,17 @@ export class ArticleSource extends Entity {
     required: true,
     postgresql: {
       columnName: 'ad_value_100',
-      dataType: 'bigint',
-      dataLength: null,
+      dataType: 'BIGINT',
       nullable: 'NO',
-    },
+    }
   })
   adValue100: number;
 
-  @hasMany(() => Article, { keyTo: 'sourceId' })
+  @hasMany(() => Article)
   articles: Article[];
 
-  @hasMany(() => ArticleSpider, { keyTo: 'sourceId' })
-  spiders: ArticleSpider[];
+  @hasMany(() => ArticleSpider)
+  articleSpiders: ArticleSpider[];
 
   constructor(data?: Partial<ArticleSource>) {
     super(data);

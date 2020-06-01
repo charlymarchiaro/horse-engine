@@ -119,7 +119,7 @@ export class ArticleSpiderController {
     },
   })
   async findById(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @param.filter(ArticleSpider, {exclude: 'where'}) filter?: FilterExcludingWhere<ArticleSpider>
   ): Promise<ArticleSpider> {
     return this.articleSpiderRepository.findById(id, filter);
@@ -133,7 +133,7 @@ export class ArticleSpiderController {
     },
   })
   async updateById(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @requestBody({
       content: {
         'application/json': {
@@ -154,7 +154,7 @@ export class ArticleSpiderController {
     },
   })
   async replaceById(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @requestBody() articleSpider: ArticleSpider,
   ): Promise<void> {
     await this.articleSpiderRepository.replaceById(id, articleSpider);
@@ -167,7 +167,7 @@ export class ArticleSpiderController {
       },
     },
   })
-  async deleteById(@param.path.number('id') id: number): Promise<void> {
+  async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.articleSpiderRepository.deleteById(id);
   }
 }

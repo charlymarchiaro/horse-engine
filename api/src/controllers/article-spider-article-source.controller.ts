@@ -31,8 +31,8 @@ export class ArticleSpiderArticleSourceController {
     },
   })
   async getArticleSource(
-    @param.path.number('id') id: typeof ArticleSpider.prototype.id,
+    @param.path.string('id') id: typeof ArticleSpider.prototype.id,
   ): Promise<ArticleSource> {
-    return this.articleSpiderRepository.source(id);
+    return this.articleSpiderRepository.articleSource(id);
   }
 }

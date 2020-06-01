@@ -31,7 +31,7 @@ export class ArticleScrapingDetailsArticleController {
     },
   })
   async getArticle(
-    @param.path.number('id') id: typeof ArticleScrapingDetails.prototype.id,
+    @param.path.string('id') id: typeof ArticleScrapingDetails.prototype.id,
   ): Promise<Article> {
     return this.articleScrapingDetailsRepository.article(id);
   }

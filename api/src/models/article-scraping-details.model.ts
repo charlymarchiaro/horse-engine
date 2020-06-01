@@ -4,18 +4,15 @@ import { Article, ArticleWithRelations } from './article.model';
 
 @model({
   settings: {
-    postgresql: {
-      schema: 'scraper',
-      table: 'article_scraping_details'
-    },
+    postgresql: { schema: 'scraper', table: 'article_scraping_details' },
     foreignKeys: {
-      fkArticleScrapingDetailsArticleSpider: {
+      fk__article_scraping_details__article_spider: {
         name: 'fk__article_scraping_details__article_spider',
         entity: 'ArticleSpider',
         entityKey: 'id',
-        foreignKey: 'spider_id',
+        foreignKey: 'article_spider_id',
       },
-      fkArticleScrapingDetailsArticle: {
+      fk__article_scraping_details__article: {
         name: 'fk__article_scraping_details__article',
         entity: 'Article',
         entityKey: 'id',
@@ -28,26 +25,23 @@ export class ArticleScrapingDetails extends Entity {
   @property({
     type: 'string',
     id: true,
-    required: false,
     generated: true,
     useDefaultIdType: false,
     postgresql: {
       columnName: 'id',
-      dataType: 'bigint',
-      nullable: 'NO',
+      dataType: 'uuid',
     },
   })
-  id?: number;
+  id?: string;
 
   @property({
     type: 'date',
     required: true,
     postgresql: {
       columnName: 'scraped_at',
-      dataType: 'timestamp with time zone',
-      dataLength: null,
+      dataType: 'TIMESTAMP WITH TIME ZONE',
       nullable: 'NO',
-    },
+    }
   })
   scrapedAt: string;
 
@@ -55,10 +49,10 @@ export class ArticleScrapingDetails extends Entity {
     type: 'string',
     postgresql: {
       columnName: 'parse_function',
-      dataType: 'varchar',
+      dataType: 'VARCHAR',
       dataLength: 64,
       nullable: 'YES',
-    },
+    }
   })
   parseFunction?: string;
 
@@ -67,10 +61,10 @@ export class ArticleScrapingDetails extends Entity {
     required: true,
     postgresql: {
       columnName: 'result',
-      dataType: 'varchar',
+      dataType: 'VARCHAR',
       dataLength: 64,
       nullable: 'NO',
-    },
+    }
   })
   result: string;
 
@@ -78,10 +72,10 @@ export class ArticleScrapingDetails extends Entity {
     type: 'string',
     postgresql: {
       columnName: 'error',
-      dataType: 'text',
-      dataLength: null,
+      dataType: 'VARCHAR',
+      dataLength: 64,
       nullable: 'YES',
-    },
+    }
   })
   error?: string;
 
@@ -89,36 +83,29 @@ export class ArticleScrapingDetails extends Entity {
     type: 'string',
     postgresql: {
       columnName: 'error_details',
-      dataType: 'text',
-      dataLength: null,
+      dataType: 'TEXT',
       nullable: 'YES',
-    },
+    }
   })
   errorDetails?: string;
 
   @belongsTo(() => ArticleSpider, {}, {
-    type: 'number',
-    generated: true,
     postgresql: {
-      columnName: 'spider_id',
-      dataType: 'bigint',
-      dataLength: null,
+      columnName: 'article_spider_id',
+      dataType: 'uuid',
       nullable: 'NO',
-    },
+    }
   })
-  spiderId: number;
+  articleSpiderId: string;
 
   @belongsTo(() => Article, {}, {
-    type: 'number',
-    generated: true,
     postgresql: {
       columnName: 'article_id',
-      dataType: 'bigint',
-      dataLength: null,
+      dataType: 'uuid',
       nullable: 'NO',
-    },
+    }
   })
-  articleId: number;
+  articleId: string;
 
   constructor(data?: Partial<ArticleScrapingDetails>) {
     super(data);
@@ -126,7 +113,7 @@ export class ArticleScrapingDetails extends Entity {
 }
 
 export interface ArticleScrapingDetailsRelations {
-  spider?: ArticleSpiderWithRelations;
+  articleSpider?: ArticleSpiderWithRelations;
   article?: ArticleWithRelations;
 }
 

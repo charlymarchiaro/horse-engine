@@ -11,7 +11,7 @@ export class ArticleScrapingDetailsRepository extends DefaultCrudRepository<
   ArticleScrapingDetailsRelations
 > {
 
-  public readonly spider: BelongsToAccessor<ArticleSpider, typeof ArticleScrapingDetails.prototype.id>;
+  public readonly articleSpider: BelongsToAccessor<ArticleSpider, typeof ArticleScrapingDetails.prototype.id>;
 
   public readonly article: BelongsToAccessor<Article, typeof ArticleScrapingDetails.prototype.id>;
 
@@ -21,7 +21,7 @@ export class ArticleScrapingDetailsRepository extends DefaultCrudRepository<
     super(ArticleScrapingDetails, dataSource);
     this.article = this.createBelongsToAccessorFor('article', articleRepositoryGetter,);
     this.registerInclusionResolver('article', this.article.inclusionResolver);
-    this.spider = this.createBelongsToAccessorFor('spider', articleSpiderRepositoryGetter,);
-    this.registerInclusionResolver('spider', this.spider.inclusionResolver);
+    this.articleSpider = this.createBelongsToAccessorFor('articleSpider', articleSpiderRepositoryGetter,);
+    this.registerInclusionResolver('articleSpider', this.articleSpider.inclusionResolver);
   }
 }

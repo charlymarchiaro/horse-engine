@@ -4,16 +4,13 @@ import { ArticleScrapingDetails } from './article-scraping-details.model';
 
 @model({
   settings: {
-    postgresql: {
-      schema: 'scraper',
-      table: 'article',
-    },
+    postgresql: { schema: 'scraper', table: 'article' },
     foreignKeys: {
-      fkArticleArticleSource: {
+      fk__article__article_source: {
         name: 'fk__article__article_source',
         entity: 'ArticleSource',
         entityKey: 'id',
-        foreignKey: 'source_id',
+        foreignKey: 'article_source_id',
       },
     },
   },
@@ -22,26 +19,23 @@ export class Article extends Entity {
   @property({
     type: 'string',
     id: true,
-    required: false,
     generated: true,
     useDefaultIdType: false,
     postgresql: {
       columnName: 'id',
-      dataType: 'bigint',
-      nullable: 'NO',
+      dataType: 'uuid',
     },
   })
-  id?: number;
+  id?: string;
 
   @property({
     type: 'string',
     required: true,
     postgresql: {
       columnName: 'url',
-      dataType: 'text',
-      dataLength: null,
+      dataType: 'TEXT',
       nullable: 'NO',
-    },
+    }
   })
   url: string;
 
@@ -49,10 +43,9 @@ export class Article extends Entity {
     type: 'string',
     postgresql: {
       columnName: 'title',
-      dataType: 'text',
-      dataLength: null,
+      dataType: 'TEXT',
       nullable: 'YES',
-    },
+    }
   })
   title?: string;
 
@@ -60,10 +53,9 @@ export class Article extends Entity {
     type: 'string',
     postgresql: {
       columnName: 'text',
-      dataType: 'text',
-      dataLength: null,
+      dataType: 'TEXT',
       nullable: 'YES',
-    },
+    }
   })
   text?: string;
 
@@ -71,27 +63,23 @@ export class Article extends Entity {
     type: 'date',
     postgresql: {
       columnName: 'last_updated',
-      dataType: 'timestamp with time zone',
-      dataLength: null,
+      dataType: 'TIMESTAMP WITH TIME ZONE',
       nullable: 'YES',
-    },
+    }
   })
   lastUpdated?: string;
 
   @belongsTo(() => ArticleSource, {}, {
-    type: 'number',
-    generated: true,
     postgresql: {
-      columnName: 'source_id',
-      dataType: 'bigint',
-      dataLength: null,
+      columnName: 'article_source_id',
+      dataType: 'uuid',
       nullable: 'NO',
-    },
+    }
   })
-  sourceId: number;
+  articleSourceId: string;
 
   @hasOne(() => ArticleScrapingDetails)
-  scrapingDetails: ArticleScrapingDetails;
+  articleScrapingDetails: ArticleScrapingDetails;
 
   constructor(data?: Partial<Article>) {
     super(data);
@@ -99,7 +87,7 @@ export class Article extends Entity {
 }
 
 export interface ArticleRelations {
-  source?: ArticleSourceWithRelations;
+  articleSource?: ArticleSourceWithRelations;
 }
 
 export type ArticleWithRelations = Article & ArticleRelations;

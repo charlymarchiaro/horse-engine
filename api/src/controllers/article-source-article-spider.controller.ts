@@ -39,10 +39,10 @@ export class ArticleSourceArticleSpiderController {
     },
   })
   async find(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @param.query.object('filter') filter?: Filter<ArticleSpider>,
   ): Promise<ArticleSpider[]> {
-    return this.articleSourceRepository.spiders(id).find(filter);
+    return this.articleSourceRepository.articleSpiders(id).find(filter);
   }
 
   @post('/article-sources/{id}/article-spiders', {
@@ -54,20 +54,20 @@ export class ArticleSourceArticleSpiderController {
     },
   })
   async create(
-    @param.path.number('id') id: typeof ArticleSource.prototype.id,
+    @param.path.string('id') id: typeof ArticleSource.prototype.id,
     @requestBody({
       content: {
         'application/json': {
           schema: getModelSchemaRef(ArticleSpider, {
             title: 'NewArticleSpiderInArticleSource',
             exclude: ['id'],
-            optional: ['sourceId']
+            optional: ['articleSourceId']
           }),
         },
       },
     }) articleSpider: Omit<ArticleSpider, 'id'>,
   ): Promise<ArticleSpider> {
-    return this.articleSourceRepository.spiders(id).create(articleSpider);
+    return this.articleSourceRepository.articleSpiders(id).create(articleSpider);
   }
 
   @patch('/article-sources/{id}/article-spiders', {
@@ -79,7 +79,7 @@ export class ArticleSourceArticleSpiderController {
     },
   })
   async patch(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @requestBody({
       content: {
         'application/json': {
@@ -90,7 +90,7 @@ export class ArticleSourceArticleSpiderController {
     articleSpider: Partial<ArticleSpider>,
     @param.query.object('where', getWhereSchemaFor(ArticleSpider)) where?: Where<ArticleSpider>,
   ): Promise<Count> {
-    return this.articleSourceRepository.spiders(id).patch(articleSpider, where);
+    return this.articleSourceRepository.articleSpiders(id).patch(articleSpider, where);
   }
 
   @del('/article-sources/{id}/article-spiders', {
@@ -102,9 +102,9 @@ export class ArticleSourceArticleSpiderController {
     },
   })
   async delete(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @param.query.object('where', getWhereSchemaFor(ArticleSpider)) where?: Where<ArticleSpider>,
   ): Promise<Count> {
-    return this.articleSourceRepository.spiders(id).delete(where);
+    return this.articleSourceRepository.articleSpiders(id).delete(where);
   }
 }

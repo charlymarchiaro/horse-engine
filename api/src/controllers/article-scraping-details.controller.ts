@@ -119,7 +119,7 @@ export class ArticleScrapingDetailsController {
     },
   })
   async findById(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @param.filter(ArticleScrapingDetails, {exclude: 'where'}) filter?: FilterExcludingWhere<ArticleScrapingDetails>
   ): Promise<ArticleScrapingDetails> {
     return this.articleScrapingDetailsRepository.findById(id, filter);
@@ -133,7 +133,7 @@ export class ArticleScrapingDetailsController {
     },
   })
   async updateById(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @requestBody({
       content: {
         'application/json': {
@@ -154,7 +154,7 @@ export class ArticleScrapingDetailsController {
     },
   })
   async replaceById(
-    @param.path.number('id') id: number,
+    @param.path.string('id') id: string,
     @requestBody() articleScrapingDetails: ArticleScrapingDetails,
   ): Promise<void> {
     await this.articleScrapingDetailsRepository.replaceById(id, articleScrapingDetails);
@@ -167,7 +167,7 @@ export class ArticleScrapingDetailsController {
       },
     },
   })
-  async deleteById(@param.path.number('id') id: number): Promise<void> {
+  async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.articleScrapingDetailsRepository.deleteById(id);
   }
 }

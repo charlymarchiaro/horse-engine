@@ -1,8 +1,9 @@
-import {DefaultCrudRepository, repository, BelongsToAccessor} from '@loopback/repository';
-import {ArticleSpider, ArticleSpiderRelations, ArticleSource} from '../models';
+import {DefaultCrudRepository, repository, BelongsToAccessor, HasManyRepositoryFactory} from '@loopback/repository';
+import {ArticleSpider, ArticleSpiderRelations, ArticleSource, ArticleScrapingDetails} from '../models';
 import {DbDataSource} from '../datasources';
 import {inject, Getter} from '@loopback/core';
 import {ArticleSourceRepository} from './article-source.repository';
+import {ArticleScrapingDetailsRepository} from './article-scraping-details.repository';
 
 export class ArticleSpiderRepository extends DefaultCrudRepository<
   ArticleSpider,
@@ -10,13 +11,16 @@ export class ArticleSpiderRepository extends DefaultCrudRepository<
   ArticleSpiderRelations
 > {
 
-  public readonly source: BelongsToAccessor<ArticleSource, typeof ArticleSpider.prototype.id>;
+  public readonly articleSource: BelongsToAccessor<ArticleSource, typeof ArticleSpider.prototype.id>;
+
+  public readonly articleScrapingDetails: HasManyRepositoryFactory<ArticleScrapingDetails, typeof ArticleSpider.prototype.id>;
 
   constructor(
-    @inject('datasources.db') dataSource: DbDataSource, @repository.getter('ArticleSourceRepository') protected articleSourceRepositoryGetter: Getter<ArticleSourceRepository>,
+    @inject('datasources.db') dataSource: DbDataSource, @repository.getter('ArticleSourceRepository') protected articleSourceRepositoryGetter: Getter<ArticleSourceRepository>, @repository.getter('ArticleScrapingDetailsRepository') protected articleScrapingDetailsRepositoryGetter: Getter<ArticleScrapingDetailsRepository>,
   ) {
     super(ArticleSpider, dataSource);
-    this.source = this.createBelongsToAccessorFor('source', articleSourceRepositoryGetter,);
-    this.registerInclusionResolver('source', this.source.inclusionResolver);
+    this.articleScrapingDetails = this.createHasManyRepositoryFactoryFor('articleScrapingDetails', articleScrapingDetailsRepositoryGetter,);
+    this.articleSource = this.createBelongsToAccessorFor('articleSource', articleSourceRepositoryGetter,);
+    this.registerInclusionResolver('articleSource', this.articleSource.inclusionResolver);
   }
 }
