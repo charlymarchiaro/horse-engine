@@ -40,8 +40,6 @@ class CronistaParams(BaseArticleSpiderParams):
     def _get_spider_base_name(self) -> str:
         return "cronista"
 
-    def get_source_name(self) -> str:
-        return "Cronista"
 
     def get_allowed_domains(self) -> List[str]:
         return ["cronista.com"]

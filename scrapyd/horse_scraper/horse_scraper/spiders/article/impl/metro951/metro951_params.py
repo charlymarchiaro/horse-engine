@@ -39,8 +39,6 @@ class Metro951Params(BaseArticleSpiderParams):
     def _get_spider_base_name(self) -> str:
         return "metro951"
 
-    def get_source_name(self) -> str:
-        return "Metro951"
 
     def get_allowed_domains(self) -> List[str]:
         return ["metro951.com"]

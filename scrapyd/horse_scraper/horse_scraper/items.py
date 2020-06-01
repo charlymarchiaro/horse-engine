@@ -9,7 +9,7 @@ import scrapy  # type: ignore
 
 
 class Article(scrapy.Item):
-    source_name = scrapy.Field()
+    source_id = scrapy.Field()
     url = scrapy.Field()
     title = scrapy.Field()
     text = scrapy.Field()
