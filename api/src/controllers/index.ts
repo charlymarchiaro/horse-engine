@@ -11,3 +11,4 @@ export * from './article-source.controller';
 export * from './article.controller';
 export * from './article-spider.controller';
 export * from './article-scraping-details.controller';
+export * from './scrapyd.controller';
