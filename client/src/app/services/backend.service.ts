@@ -42,7 +42,7 @@ export class BackendService {
 
   public listAllSpiders() {
     return this.http.get<SpidersListInfo>(
-      '/api/list-spiders'
+      '/api/scrapyd/list-spiders'
     );
   }
 
@@ -55,7 +55,7 @@ export class BackendService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
     return this.http.post<JobScheduleInfo>(
-      '/api/schedule-spider',
+      '/api/scrapyd/schedule-spider',
       params,
       { headers }
     );
@@ -64,7 +64,7 @@ export class BackendService {
 
   public listJobs() {
     return this.http.get<JobsListInfo>(
-      '/api/list-jobs'
+      '/api/scrapyd/list-jobs'
     );
   }
 
@@ -85,7 +85,7 @@ export class BackendService {
 
         for (let i = 0; i < times; i++) {
           this.http.post<JobScheduleInfo>(
-            '/api/cancel-job',
+            '/api/scrapyd/cancel-job',
             params,
             { headers }
           ).subscribe(

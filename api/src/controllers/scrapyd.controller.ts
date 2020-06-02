@@ -1,5 +1,5 @@
 import { inject } from '@loopback/core';
-import { get, post, requestBody } from '@loopback/rest';
+import { get, post, requestBody, api } from '@loopback/rest';
 import * as fromScrapyd from '../services/scrapyd.service';
 import { model, property } from '@loopback/repository';
 
@@ -16,6 +16,7 @@ export class CancelJobRequestBody {
 }
 
 
+@api({ basePath: 'scrapyd' })
 export class ScrapydController {
 
   constructor(
