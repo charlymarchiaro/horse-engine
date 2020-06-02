@@ -1,15 +1,16 @@
-import {DefaultCrudRepository, repository, BelongsToAccessor, HasOneRepositoryFactory} from '@loopback/repository';
-import {Article, ArticleRelations, ArticleSource, ArticleScrapingDetails} from '../models';
-import {DbDataSource} from '../datasources';
-import {inject, Getter} from '@loopback/core';
-import {ArticleSourceRepository} from './article-source.repository';
-import {ArticleScrapingDetailsRepository} from './article-scraping-details.repository';
+import { DefaultCrudRepository, repository, BelongsToAccessor, HasOneRepositoryFactory } from '@loopback/repository';
+import { Article, ArticleRelations, ArticleSource, ArticleScrapingDetails } from '../models';
+import { DbDataSource } from '../datasources';
+import { inject, Getter } from '@loopback/core';
+import { ArticleSourceRepository } from './article-source.repository';
+import { ArticleScrapingDetailsRepository } from './article-scraping-details.repository';
+import { ArticleWithRelations } from '../models/article.model';
 
 export class ArticleRepository extends DefaultCrudRepository<
   Article,
   typeof Article.prototype.id,
   ArticleRelations
-> {
+  > {
 
   public readonly articleSource: BelongsToAccessor<ArticleSource, typeof Article.prototype.id>;
 
@@ -21,7 +22,7 @@ export class ArticleRepository extends DefaultCrudRepository<
     super(Article, dataSource);
     this.articleScrapingDetails = this.createHasOneRepositoryFactoryFor('articleScrapingDetails', articleScrapingDetailsRepositoryGetter);
     this.registerInclusionResolver('articleScrapingDetails', this.articleScrapingDetails.inclusionResolver);
-    this.articleSource = this.createBelongsToAccessorFor('articleSource', articleSourceRepositoryGetter,);
+    this.articleSource = this.createBelongsToAccessorFor('articleSource', articleSourceRepositoryGetter);
     this.registerInclusionResolver('articleSource', this.articleSource.inclusionResolver);
   }
 }
