@@ -15,7 +15,6 @@
       <!-- Table -->
       <table *ngIf="articles && articles.length > 0">
         <thead>
-          <th>Id</th>
           <th>Source</th>
           <th>Date</th>
           <th>Title</th>
@@ -27,7 +26,6 @@
             *ngFor="let article of displayedRegisters"
             [ngClass]="{'selected': article.id === selectedArticleId}"
             (click)="onArticleSelect(article)">
-            <td class="no-wrap">{{article.id}}</td>
             <td class="no-wrap">{{article.articleSource.name}}</td>
             <td class="no-wrap">{{article.lastUpdated | date}}</td>
             <td>{{article.title}}</td>
