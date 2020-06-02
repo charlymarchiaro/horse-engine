@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { DatePipe } from '@angular/common';
 
 import { JobsListInfo } from './model/scrapyd/scrapyd.model';
-import { DatabaseQueryResultsRow } from './model/shared/database.model';
 import { BackendService } from '../../services/backend.service';
+import { ArticleScrapingDetails } from '../../model/article-scraping-details.model';
 
 
 
@@ -36,7 +35,7 @@ export class MainComponent implements OnInit, OnDestroy {
   private lastScrapedArticlesInfoTimer;
 
   public jobsListInfo: JobsListInfo;
-  public lastScrapedArticlesInfo: DatabaseQueryResultsRow[] = [];
+  public lastScrapedArticlesInfo: ArticleScrapingDetails[] = [];
 
 
 
@@ -87,11 +86,6 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
 
-  public onTestBackendClick() {
-    this.testBackend();
-  }
-
-
   private listAllSpiders() {
     this.backendService.listAllSpiders().subscribe(
       response => console.log(response)
@@ -120,14 +114,6 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
 
-
-  private testBackend() {
-    this.backendService.testBackend().subscribe(
-      response => console.log(response)
-    );
-  }
-
-
   private updateJobsInfo() {
     this.backendService.listJobs().subscribe(
       info => this.jobsListInfo = info
@@ -138,7 +124,7 @@ export class MainComponent implements OnInit, OnDestroy {
   private updateLastScrapedArticlesInfo() {
     this.backendService.getLastScrapedArticlesInfo(NUMBER_OF_DISPLAYED_ARTICLES)
       .subscribe(
-        response => this.lastScrapedArticlesInfo = response.data
+        response => this.lastScrapedArticlesInfo = response
       );
   }
 }

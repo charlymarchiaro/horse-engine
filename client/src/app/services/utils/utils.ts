@@ -1,5 +1,4 @@
 
-
 /**
  * Add days to the specified date
  * https://stackoverflow.com/a/19691491
@@ -20,3 +19,4 @@ export function getDatePart(date: Date): Date {
 export function clone(object: any): any {
   return JSON.parse(JSON.stringify(object));
 }
+

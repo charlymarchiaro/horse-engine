@@ -6,7 +6,7 @@ import { ExcelExportService } from '../../../services/utils/excel-export.service
 
 
 export interface ArticleSelectEventArgs {
-  articleId: number;
+  articleId: string;
 }
 
 
@@ -26,7 +26,7 @@ export class ArticleListBrowserComponent implements OnInit, OnChanges {
   public displayedRegisters: Article[] = [];
 
 
-  public selectedArticleId: number;
+  public selectedArticleId: string;
 
 
   @Input() public articles: Article[] = [];
@@ -51,7 +51,7 @@ export class ArticleListBrowserComponent implements OnInit, OnChanges {
       this.select.emit({ articleId: this.selectedArticleId });
 
     } else {
-      this.selectedArticleId = 0;
+      this.selectedArticleId = null;
     }
   }
 

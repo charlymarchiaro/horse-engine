@@ -69,11 +69,7 @@ export class MainComponent implements OnInit, OnDestroy {
       this.dateSpan
     ).subscribe(
       response => {
-        if (response.status === 'success') {
-          this.onRequestSuccess(response.data);
-        } else {
-          this.onRequestError(null);
-        }
+        this.onRequestSuccess(response);
       },
       error => this.onRequestError(error)
     );

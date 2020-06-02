@@ -33,3 +33,44 @@ export interface DateSpan {
 export interface ArticleFilteringScheme {
   conditions: ArticleFilteringCondition[][];
 }
+
+
+export function getArticleFilteringSchemeWhereCondition(
+  scheme: ArticleFilteringScheme
+): any {
+
+  const orGroupWhereConditions = [];
+
+  scheme.conditions.forEach(andGroup => {
+    const andGroupWhereConditions = [];
+
+    andGroup.forEach(condition => {
+      const op = getArticleFilteringConditionWhereOperator(condition);
+
+      andGroupWhereConditions.push({
+        [condition.part]: { [op]: `%${condition.textToMatch}%` }
+      });
+    });
+
+    orGroupWhereConditions.push({ and: andGroupWhereConditions });
+  });
+
+  return { or: orGroupWhereConditions };
+}
+
+
+export function getArticleFilteringConditionWhereOperator(
+  condition: ArticleFilteringCondition
+): string {
+
+  switch (condition.matchCondition) {
+    case MatchCondition.contains:
+      return condition.caseSensitive ? 'like' : 'ilike';
+
+    case MatchCondition.notContains:
+      return condition.caseSensitive ? 'nlike' : 'nilike';
+
+    default:
+      throw Error('Not implemented match condition: ' + condition.matchCondition);
+  }
+}
