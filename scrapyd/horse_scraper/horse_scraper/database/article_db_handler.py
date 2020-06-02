@@ -62,7 +62,7 @@ class ArticleDbHandler(object):
 
         scraped_at = (
             "'"
-            + self.sanitize_value(datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
+            + self.sanitize_value(datetime.utcnow().strftime("%Y/%m/%d %H:%M:%S"))
             + "'"
         )
 
