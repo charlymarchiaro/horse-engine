@@ -40,8 +40,6 @@ class InfobaeParams(BaseArticleSpiderParams):
     def _get_spider_base_name(self) -> str:
         return "infobae"
 
-    def get_source_name(self) -> str:
-        return "Infobae"
 
     def get_allowed_domains(self) -> List[str]:
         return ["infobae.com"]

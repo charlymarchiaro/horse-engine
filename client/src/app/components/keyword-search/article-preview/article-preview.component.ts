@@ -25,7 +25,7 @@ export class ArticlePreviewComponent implements OnInit, OnChanges {
 
 
   ngOnChanges(changes: SimpleChanges) {
-    if (!this.article || this.article.result.trim() !== 'success') {
+    if (!this.article || this.article.articleScrapingDetails.result !== 'success') {
       this.title = null;
       this.subtitle = null;
       this.paragraphs = [];

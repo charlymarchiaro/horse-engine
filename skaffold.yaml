@@ -24,6 +24,10 @@ build:
         dockerfile: Dockerfile.dev
       sync:
         "**/*.js": .
+        "**/*.ts": .
+        "**/*.css": .
+        "**/*.scss": .
+        "**/*.html": .
 
     - image: charlymarchiaro/horse-engine-scrapyd
       context: scrapyd

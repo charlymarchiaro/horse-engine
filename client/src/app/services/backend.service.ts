@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { JobsListInfo, JobScheduleInfo, SpidersListInfo } from '../components/scraping-monitor/model/scrapyd/scrapyd.model';
 import { DatabaseQueryResultsRow } from '../components/scraping-monitor/model/shared/database.model';
-import { ArticleFilteringScheme, DateSpan } from '../components/keyword-search/model';
-import { Article } from '../model/article.model';
+import { ArticleFilteringScheme, DateSpan, getArticleFilteringSchemeWhereCondition } from '../components/keyword-search/model';
 import { ResponseStatus } from '../model/backend.model';
 
-
+import { ArticleScrapingDetails, ArticleScrapingDetailsResponse } from '../model/article-scraping-details.model';
+import { ArticleResponse, Article } from '../model/article.model';
 
 
 @Injectable({
@@ -17,24 +17,7 @@ export class BackendService {
 
   constructor(
     private http: HttpClient,
-  ) {
-
-    this.http.get(
-      '/api',
-      { responseType: 'text' }
-    )
-      .subscribe(
-        response => console.log(response),
-        error => console.error(error)
-      );
-  }
-
-
-  public testBackend() {
-    return this.http.get<any>(
-      '/api/backend/test'
-    );
-  }
+  ) { }
 
 
 
@@ -42,7 +25,7 @@ export class BackendService {
 
   public listAllSpiders() {
     return this.http.get<SpidersListInfo>(
-      '/api/list-spiders'
+      '/api/scrapyd/list-spiders'
     );
   }
 
@@ -55,7 +38,7 @@ export class BackendService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
     return this.http.post<JobScheduleInfo>(
-      '/api/schedule-spider',
+      '/api/scrapyd/schedule-spider',
       params,
       { headers }
     );
@@ -64,7 +47,7 @@ export class BackendService {
 
   public listJobs() {
     return this.http.get<JobsListInfo>(
-      '/api/list-jobs'
+      '/api/scrapyd/list-jobs'
     );
   }
 
@@ -85,7 +68,7 @@ export class BackendService {
 
         for (let i = 0; i < times; i++) {
           this.http.post<JobScheduleInfo>(
-            '/api/cancel-job',
+            '/api/scrapyd/cancel-job',
             params,
             { headers }
           ).subscribe(
@@ -98,51 +81,74 @@ export class BackendService {
   }
 
 
+  // Last scraped articles
   public getLastScrapedArticlesInfo(numberOfArticles: number) {
-    const params = JSON.stringify({
-      numberOfArticles
-    });
+    const params = {
+      filter: JSON.stringify({
+        limit: numberOfArticles,
+        order: [
+          'scrapedAt DESC',
+          'id'
+        ],
+        include: [
+          {
+            relation: 'article',
+            scope: {
+              include: [{ relation: 'articleSource' }]
+            }
+          },
+          { relation: 'articleSpider' }
+        ]
+      })
+    };
 
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-
-    return this.http.post<{ data: DatabaseQueryResultsRow[] }>(
-      '/api/last-scraped-articles-info',
-      params,
-      { headers }
-    );
+    return this.http.get<ArticleScrapingDetailsResponse[]>(
+      '/api/article-scraping-details', { params }
+    ).map(r => r.map(i => new ArticleScrapingDetails(i)));
   }
 
 
   // Keyword search
   public searchArticles(scheme: ArticleFilteringScheme, dateSpan: DateSpan) {
-    const params = JSON.stringify({
-      scheme,
-      dateSpan,
-    });
 
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    // Copy the object
+    const startDate = new Date(dateSpan.fromDateIncl);
+    startDate.setHours(0, 0, 0, 0);
 
-    return this.http.post<{ status: ResponseStatus; data: any[]; }>(
-      '/api/article/search',
-      params,
-      { headers }
-    ).map(r => ({
-      status: r.status,
-      data: r.data.map(a => ({
-        id: a.id,
-        sourceName: a.source_name,
-        url: a.url,
-        title: a.title,
-        text: a.text,
-        lastUpdated: a.last_updated,
-        scrapedAt: a.scraped_at,
-        spiderName: a.spider_name,
-        parseFunction: a.parse_function,
-        result: a.result,
-        error: a.error,
-        errorDetails: a.error_details,
-      }))
-    }));
+    // Copy the object
+    const endDate = new Date(dateSpan.toDateIncl);
+    endDate.setHours(0, 0, 0, 0);
+    endDate.setDate(endDate.getDate() + 1);
+
+    const schemeWhereConditions = getArticleFilteringSchemeWhereCondition(scheme);
+
+    const params = {
+      filter: JSON.stringify({
+        order: [
+          'lastUpdated'
+        ],
+        where: {
+          and: [
+            { lastUpdated: { gt: startDate } },
+            { lastUpdated: { lt: endDate } },
+            schemeWhereConditions
+          ]
+        },
+        include: [
+          {
+            relation: 'articleScrapingDetails',
+            scope: {
+              include: [{ relation: 'articleSpider' }]
+            }
+          },
+          { relation: 'articleSource' }
+        ]
+      })
+    };
+
+    return this.http.get<ArticleResponse[]>(
+      '/api/articles', { params },
+    ).map(r => r.map(i => new Article(i)));
   }
 }
 

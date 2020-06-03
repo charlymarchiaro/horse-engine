@@ -20,8 +20,12 @@ spec:
           - path: /api/?(.*)
             backend:
               serviceName: api-cluster-ip-service
-              servicePort: 5000
+              servicePort: 3000
           - path: /pgadmin/?(.*)
             backend:
               serviceName: pgadmin-cluster-ip-service
               servicePort: 7777
+          - path: /scrapyd/?(.*)
+            backend:
+              serviceName: scrapyd-cluster-ip-service
+              servicePort: 6800

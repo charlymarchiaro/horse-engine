@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { DatabaseQueryResultsRow } from '../../model/shared/database.model';
+import { ArticleScrapingDetails } from '../../../../model/article-scraping-details.model';
 
 @Component({
   selector: 'app-database-query-results',
@@ -12,7 +12,7 @@ export class DatabaseQueryResultsComponent implements OnInit {
   public objectValues = Object.values;
 
 
-  @Input() public data: DatabaseQueryResultsRow[] = [];
+  @Input() public data: ArticleScrapingDetails[] = [];
 
 
   constructor() { }

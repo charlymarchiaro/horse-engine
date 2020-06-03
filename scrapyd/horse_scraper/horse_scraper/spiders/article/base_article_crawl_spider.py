@@ -35,7 +35,7 @@ from horse_scraper.spiders.article.base_article_spider_params import (
 
 class BaseArticleCrawlSpider(CrawlSpider):
 
-    source_name: str = ""
+    source_id: str = ""
     params: BaseArticleSpiderParams
 
     scheduleArgs = SpiderScheduleArgs()
@@ -52,7 +52,9 @@ class BaseArticleCrawlSpider(CrawlSpider):
 
         self.params.initialize(self.scheduleArgs)
 
-        self.source_name = self.params.get_source_name()
+        handler = ArticleDbHandler()
+        self.source_id = handler.get_spider_article_source_id(self.name)
+
         self.allowed_domains = self.params.get_allowed_domains()
         self.start_urls = self.params.get_crawl_start_urls()
         self.rules = self.params.get_crawl_rules()
@@ -86,7 +88,7 @@ class BaseArticleCrawlSpider(CrawlSpider):
         )
 
         if data is None:
-            article["source_name"] = self.source_name
+            article["source_id"] = self.source_id
             article["url"] = response.url
             article["title"] = None
             article["text"] = None
@@ -98,7 +100,7 @@ class BaseArticleCrawlSpider(CrawlSpider):
             article["error_details"] = ""
             return article
 
-        article["source_name"] = self.source_name
+        article["source_id"] = self.source_id
         article["url"] = response.url
         article["title"] = data.title
         article["text"] = data.text
@@ -192,4 +194,4 @@ class BaseArticleCrawlSpider(CrawlSpider):
 
     def is_article_already_persisted(self, url: str) -> bool:
         handler = ArticleDbHandler()
-        return handler.is_article_already_persisted(url)
+        return handler.is_article_already_persisted(url, self.source_id)

@@ -1,4 +1,4 @@
-
+import * as XLSX from 'xlsx';
 
 /**
  * Add days to the specified date
@@ -19,4 +19,14 @@ export function getDatePart(date: Date): Date {
 
 export function clone(object: any): any {
   return JSON.parse(JSON.stringify(object));
+}
+
+// XLSX
+export function getXLSXCellObject(
+  ws: XLSX.WorkSheet,
+  rowId: number,
+  colId: number
+): XLSX.CellObject {
+  const cell = XLSX.utils.encode_cell({ c: colId, r: rowId });
+  return ws[cell];
 }

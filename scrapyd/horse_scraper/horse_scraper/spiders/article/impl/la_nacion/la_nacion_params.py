@@ -27,8 +27,6 @@ class LaNacionParams(BaseArticleSpiderParams):
     def _get_spider_base_name(self) -> str:
         return "la_nacion"
 
-    def get_source_name(self) -> str:
-        return "La Nacion"
 
     def get_allowed_domains(self) -> List[str]:
         return ["lanacion.com.ar"]

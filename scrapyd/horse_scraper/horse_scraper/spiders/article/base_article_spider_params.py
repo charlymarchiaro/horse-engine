@@ -64,10 +64,6 @@ class BaseArticleSpiderParams:
         return self._get_spider_base_name() + "_" + switcher.get(spider_type, "")
 
     @abstractmethod
-    def get_source_name(self) -> str:
-        pass
-
-    @abstractmethod
     def get_allowed_domains(self) -> List[str]:
         pass
 

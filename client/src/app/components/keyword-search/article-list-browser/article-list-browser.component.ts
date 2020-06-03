@@ -2,11 +2,20 @@ import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChange
 import { Article } from '../../../model/article.model';
 import { PageEvent } from '@angular/material';
 import { DatePipe } from '@angular/common';
-import { ExcelExportService } from '../../../services/utils/excel-export.service';
+import { ExcelExportService, ColConfig } from '../excel-export.service';
+import { ArticleFilteringScheme, DateSpan } from '../model';
+import { ColInfo } from 'xlsx/types';
+
+
+
+export interface Params {
+  scheme: ArticleFilteringScheme;
+  dateSpan: DateSpan;
+}
 
 
 export interface ArticleSelectEventArgs {
-  articleId: number;
+  articleId: string;
 }
 
 
@@ -26,10 +35,11 @@ export class ArticleListBrowserComponent implements OnInit, OnChanges {
   public displayedRegisters: Article[] = [];
 
 
-  public selectedArticleId: number;
+  public selectedArticleId: string;
 
 
   @Input() public articles: Article[] = [];
+  @Input() public params: Params;
   @Output() public select = new EventEmitter<ArticleSelectEventArgs>();
 
 
@@ -51,7 +61,7 @@ export class ArticleListBrowserComponent implements OnInit, OnChanges {
       this.select.emit({ articleId: this.selectedArticleId });
 
     } else {
-      this.selectedArticleId = 0;
+      this.selectedArticleId = null;
     }
   }
 
@@ -95,9 +105,65 @@ export class ArticleListBrowserComponent implements OnInit, OnChanges {
 
     const fileName = 'Article search - ' + this.datePipe.transform(Date.now(), 'dd-MM-yyyy') + '.xlsx';
 
+    const startDate = this.datePipe.transform(
+      this.params.dateSpan.fromDateIncl,
+      'dd/MM/yyyy'
+    );
+
+    const endDate = this.datePipe.transform(
+      this.params.dateSpan.toDateIncl,
+      'dd/MM/yyyy'
+    );
+
+    const period = `Desde: ${startDate} - Hasta: ${endDate}`;
+
     const data = [
-      Object.keys(this.articles[0]),
-      ...this.articles.map(r => Object.values(r))
+      [
+        'País',
+        'Medio',
+        'Categoría',
+        'Tier',
+        'Título',
+        'Nota Completa',
+        'Link',
+        'Reach',
+        'Ad Value - Base',
+        'Ad Value - 5',
+        'Ad Value - 3',
+        'Ad Value - 1,8',
+        'Ad Value - 1',
+      ],
+      ...this.articles.map(a => [
+        a.articleSource.country,
+        a.articleSource.name,
+        a.articleSource.category,
+        a.articleSource.tier,
+        a.title,
+        a.text,
+        'https://' + a.url,
+        a.articleSource.reach,
+        a.articleSource.adValueBase,
+        a.articleSource.adValue500,
+        a.articleSource.adValue300,
+        a.articleSource.adValue180,
+        a.articleSource.adValue100,
+      ])
+    ];
+
+    const colsConfig: ColConfig[] = [
+      { colInfo: { width: 20 } }, // País
+      { colInfo: { width: 12 } }, // Medio
+      { colInfo: { width: 12 } }, // Categoría
+      { colInfo: { width: 8 } }, // Tier
+      { colInfo: { width: 64 }, textWrap: true }, // Título
+      { colInfo: { width: 64 }, textWrap: true }, // Nota Completa
+      { colInfo: { width: 64 }, textWrap: true, hyperlink: true }, // Link
+      { colInfo: { width: 15 } }, // Reach
+      { colInfo: { width: 15 } }, // Ad Value - Base
+      { colInfo: { width: 15 } }, // Ad Value - 5
+      { colInfo: { width: 15 } }, // Ad Value - 3
+      { colInfo: { width: 15 } }, // Ad Value - 1,8
+      { colInfo: { width: 15 } }, // Ad Value - 1
     ];
 
     this.excelExport.export({
@@ -105,8 +171,14 @@ export class ArticleListBrowserComponent implements OnInit, OnChanges {
       fileName,
       data: [{
         name: 'Results',
-        data
-      }]
+        headerData: {
+          'Monitoreo de Medios': '',
+          'Período': period,
+          'Universo': ''
+        },
+        bodyData: data
+      }],
+      colsConfig
     });
   }
 }
