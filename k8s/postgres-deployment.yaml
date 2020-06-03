@@ -28,6 +28,9 @@ spec:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/data
               subPath: postgres
+          args:
+            - -c
+            - 'config_file=/etc/postgresql/postgresql.conf'
           env:
             - name: POSTGRES_USER
               value: sa
