@@ -9,17 +9,17 @@
     <table>
       <tr>
         <th
-          *ngFor="let fieldName of objectKeys(data[0])"
+          *ngFor="let fieldName of tableHeaders"
         >
           {{fieldName}}
         </th>
       </tr>
 
       <tr
-        *ngFor="let row of data"
+        *ngFor="let row of tableData"
       >
         <td
-          *ngFor="let value of objectValues(row)"
+          *ngFor="let value of row"
         >
           {{value}}
         </td>
