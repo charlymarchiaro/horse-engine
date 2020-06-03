@@ -7,7 +7,7 @@ import { BackendService } from '../../services/backend.service';
 import { ApiRequestState } from '../../model/backend.model';
 import { Subscription } from 'rxjs';
 import { Article } from '../../model/article.model';
-import { ArticleSelectEventArgs } from './article-list-browser/article-list-browser.component';
+import { ArticleSelectEventArgs, Params } from './article-list-browser/article-list-browser.component';
 
 
 @Component({
@@ -21,6 +21,7 @@ export class MainComponent implements OnInit, OnDestroy {
   public scheme: ArticleFilteringScheme;
   private dateSpan: DateSpan;
 
+  public listBrowserParams: Params;
 
   public articles: Article[] = [];
   public selectedArticle: Article;
@@ -63,6 +64,11 @@ export class MainComponent implements OnInit, OnDestroy {
 
     this.articles = [];
     this.selectedArticle = null;
+
+    this.listBrowserParams = {
+      scheme: this.scheme,
+      dateSpan: this.dateSpan
+    };
 
     this.backendSubscription = this.backendService.searchArticles(
       this.scheme,

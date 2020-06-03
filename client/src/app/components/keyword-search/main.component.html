@@ -23,6 +23,7 @@
       <app-article-list-browser
         id="browser-list"
         [articles]="articles"
+        [params]="listBrowserParams"
         (select)="onArticleSelect($event)"></app-article-list-browser>
 
       <app-article-preview
