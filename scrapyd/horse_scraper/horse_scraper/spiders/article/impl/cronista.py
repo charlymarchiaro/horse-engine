@@ -16,9 +16,11 @@ from horse_scraper.spiders.article.base_article_spider_params import (
     BaseArticleSpiderParams,
 )
 from horse_scraper.services.utils.parse_utils import extract_all_text, AttributeType
+from ..base_article_crawl_spider import BaseArticleCrawlSpider
+from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 
-class InfobaeParams(BaseArticleSpiderParams):
+class CronistaParams(BaseArticleSpiderParams):
 
     date_allow_str: str
 
@@ -33,23 +35,21 @@ class InfobaeParams(BaseArticleSpiderParams):
             day = format(search_date.day, "02")
             month = format(search_date.month, "02")
 
-            date_strings.append("/" + year + "/" + month + "/" + day + "/")
+            date_strings.append(year + month + day)
             self.date_allow_str = "|".join(date_strings)
 
     # Common params
     def _get_spider_base_name(self) -> str:
-        return "infobae"
-
+        return "cronista"
 
     def get_allowed_domains(self) -> List[str]:
-        return ["infobae.com"]
+        return ["cronista.com"]
 
     # Crawl params
 
     def get_crawl_start_urls(self) -> List[str]:
         return [
-            "https://www.infobae.com/",
-            "https://www.infobae.com/ultimas-noticias/",
+            "https://www.cronista.com/",
         ]
 
     def get_crawl_rules(self) -> Tuple[Rule, ...]:
@@ -57,7 +57,7 @@ class InfobaeParams(BaseArticleSpiderParams):
             Rule(
                 callback="parse_items",
                 link_extractor=LinkExtractor(
-                    allow=".*(" + self.date_allow_str + ").*", deny=".*(/fotos/)",
+                    allow="(" + self.date_allow_str + ").*htm.*", deny=".*\/-ve\d+.html"
                 ),
                 process_links="process_links",
                 follow=True,
@@ -67,12 +67,20 @@ class InfobaeParams(BaseArticleSpiderParams):
     # Sitemap params
 
     def get_sitemap_urls(self) -> List[str]:
-        return ["https://www.infobae.com/sitemap-index.xml"]
+        return [
+            "https://www.cronista.com/sitemaps/v3/sitemaps-index.xml",
+            "https://www.cronista.com/sitemaps/v3/news-daily-apertura.xml",
+            "https://www.cronista.com/sitemaps/v3/news-daily-clase.xml",
+            "https://www.cronista.com/sitemaps/v3/news-daily-cronista.xml",
+            "https://www.cronista.com/sitemaps/v3/news-daily-pyme.xml",
+            "https://www.cronista.com/sitemaps/v3/news-daily-rpm.xml",
+            "https://www.cronista.com/sitemaps/v3/gnews-cronista.xml",
+        ]
 
     def get_sitemap_rules(self) -> List[Tuple[str, Union[str, None]]]:
         return [
-            (".*(/fotos/)", None),
-            (".*(" + self.date_allow_str + ").*", "parse_items"),
+            (".*\/-ve\d+.html", None),
+            ("(" + self.date_allow_str + ").*htm.*", "parse_items"),
         ]
 
     def get_sitemap_follow(self) -> List[str]:
@@ -90,59 +98,24 @@ class InfobaeParams(BaseArticleSpiderParams):
         return [
             self.parser_1,
             self.parser_2,
+            self.parser_3,
         ]
 
     def parser_1(self, response):
 
-        # title ----------
-        title = (
-            response.xpath("//h1//text()").extract_first()
-            + " | "
-            + (
-                response.xpath('//span [@class="subheadline"]//text()').extract_first()
-                or ""
-            )
-        )
-        title = title.strip()
-
-        # last_updated ----------
-        last_updated = response.xpath(
-            '//meta [@itemprop="pubdate"]/@content'
-        ).extract_first()
-        last_updated = dateparser.parse(last_updated)
-
-        # text ----------
-        text = extract_all_text(
-            response,
-            root_xpath='//div[@id="article-content"]',
-            exclude_list=[
-                (AttributeType.NAME, "script"),
-                (AttributeType.NAME, "style"),
-            ],
-        )
-
-        return ArticleData(title, text, last_updated)
-
-    def parser_2(self, response):
-
         # Datos artículo (json) ----------
         script_datos_articulo_json = response.xpath(
-            '//script [@type="application/ld+json"]//text()'
+            '//script [@id="datosArticulo"]//text()'
         ).extract_first()
 
         script_datos_articulo = json.loads(script_datos_articulo_json)
 
         # title ----------
-        if "description" in script_datos_articulo:
-            description = script_datos_articulo["description"]
-        else:
-            description = ""
+        title = html.unescape(script_datos_articulo["headline"])
 
-        title = (
-            html.unescape(script_datos_articulo["headline"])
-            + " | "
-            + html.unescape(description)
-        )
+        if "description" in script_datos_articulo:
+            title += " | " + html.unescape(script_datos_articulo["description"])
+
         title = title.strip()
 
         # last_updated ----------
@@ -152,14 +125,84 @@ class InfobaeParams(BaseArticleSpiderParams):
         # text ----------
         text = extract_all_text(
             response,
-            root_xpath='//article[contains(@class, "article")]',
+            root_xpath='//article[@id="nota"]',
             exclude_list=[
                 (AttributeType.NAME, "script"),
                 (AttributeType.NAME, "style"),
-                (AttributeType.CLASS, "share_button"),
-                (AttributeType.CLASS, "feed-list"),
-                (AttributeType.TEXT_EQUALS, "ÚLTIMAS NOTICIAS"),
+                (AttributeType.CLASS, "nota-relacionada"),
+                (AttributeType.CLASS, "socialmedia"),
             ],
         )
 
         return ArticleData(title, text, last_updated)
+
+    def parser_2(self, response):
+
+        # Datos artículo (json) ----------
+        script_datos_articulo_json = response.xpath(
+            '//script [@id="datosArticulo"]//text()'
+        ).extract_first()
+
+        script_datos_articulo = json.loads(script_datos_articulo_json)
+
+        # title ----------
+        title = html.unescape(script_datos_articulo["headline"])
+
+        if "description" in script_datos_articulo:
+            title += " | " + html.unescape(script_datos_articulo["description"])
+
+        title = title.strip()
+
+        # last_updated ----------
+        last_updated = script_datos_articulo["dateModified"]
+        last_updated = dateparser.parse(last_updated)
+
+        # text ----------
+        text = extract_all_text(
+            response,
+            root_xpath='//article[@class="container clearfix"][1]//div[@class="content-txt"]',
+            exclude_list=[
+                (AttributeType.NAME, "script"),
+                (AttributeType.NAME, "style"),
+                (AttributeType.CLASS, "nota-relacionada"),
+                (AttributeType.CLASS, "comentarios"),
+            ],
+        )
+
+        return ArticleData(title, text, last_updated)
+
+    # Nota video
+    def parser_3(self, response):
+
+        # title ----------
+        title_tag = response.xpath("//title//text()").extract_first()
+
+        if title_tag != "Nota Video":
+            raise Exception("It's not a video article")
+
+        title = (
+            response.xpath('//h3 [@itemprop="headline name"]//text()')
+            .extract_first()
+            .strip()
+        )
+
+        # last_updated ----------
+        last_updated = datetime.now()
+
+        # text ----------
+        text = "Nota Video"
+
+        return ArticleData(title, text, last_updated)
+
+
+# Spider implementations
+
+
+class CronistaCrawlSpider(BaseArticleCrawlSpider):
+    params = CronistaParams()
+    name = params.get_spider_name(SpiderType.CRAWL)
+
+
+class CronistaSitemapSpider(BaseArticleSitemapSpider):
+    params = CronistaParams()
+    name = params.get_spider_name(SpiderType.SITEMAP)

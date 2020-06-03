@@ -5,6 +5,7 @@ import html
 import dateparser  # type: ignore
 from datetime import datetime, date, timedelta
 from string import whitespace
+import re
 
 from scrapy.http import Request, HtmlResponse  # type: ignore
 from scrapy.linkextractors import LinkExtractor  # type: ignore
@@ -16,39 +17,26 @@ from horse_scraper.spiders.article.base_article_spider_params import (
     BaseArticleSpiderParams,
 )
 from horse_scraper.services.utils.parse_utils import extract_all_text, AttributeType
+from ..base_article_crawl_spider import BaseArticleCrawlSpider
+from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 
-class CronistaParams(BaseArticleSpiderParams):
-
-    date_allow_str: str
-
+class ClarinParams(BaseArticleSpiderParams):
     def _after_initialize(self) -> None:
-        today = date.today()
-
-        date_strings = []
-
-        for days in range(self.scheduleArgs.period_days_back):
-            search_date = today - timedelta(days=days)
-            year = format(search_date.year, "04")
-            day = format(search_date.day, "02")
-            month = format(search_date.month, "02")
-
-            date_strings.append(year + month + day)
-            self.date_allow_str = "|".join(date_strings)
+        pass
 
     # Common params
     def _get_spider_base_name(self) -> str:
-        return "cronista"
-
+        return "clarin"
 
     def get_allowed_domains(self) -> List[str]:
-        return ["cronista.com"]
+        return ["clarin.com"]
 
     # Crawl params
 
     def get_crawl_start_urls(self) -> List[str]:
         return [
-            "https://www.cronista.com/",
+            "https://www.clarin.com/",
         ]
 
     def get_crawl_rules(self) -> Tuple[Rule, ...]:
@@ -56,7 +44,7 @@ class CronistaParams(BaseArticleSpiderParams):
             Rule(
                 callback="parse_items",
                 link_extractor=LinkExtractor(
-                    allow="(" + self.date_allow_str + ").*htm.*", deny=".*\/-ve\d+.html"
+                    allow="_\d+_.+.htm.*", deny=".*fotogalerias.*",
                 ),
                 process_links="process_links",
                 follow=True,
@@ -66,24 +54,18 @@ class CronistaParams(BaseArticleSpiderParams):
     # Sitemap params
 
     def get_sitemap_urls(self) -> List[str]:
-        return [
-            "https://www.cronista.com/sitemaps/v3/sitemaps-index.xml",
-            "https://www.cronista.com/sitemaps/v3/news-daily-apertura.xml",
-            "https://www.cronista.com/sitemaps/v3/news-daily-clase.xml",
-            "https://www.cronista.com/sitemaps/v3/news-daily-cronista.xml",
-            "https://www.cronista.com/sitemaps/v3/news-daily-pyme.xml",
-            "https://www.cronista.com/sitemaps/v3/news-daily-rpm.xml",
-            "https://www.cronista.com/sitemaps/v3/gnews-cronista.xml",
-        ]
+        return ["https://www.clarin.com/sitemap.xml"]
 
     def get_sitemap_rules(self) -> List[Tuple[str, Union[str, None]]]:
         return [
-            (".*\/-ve\d+.html", None),
-            ("(" + self.date_allow_str + ").*htm.*", "parse_items"),
+            (".*fotogalerias.*", None),
+            ("_\d+_.+.htm.*", "parse_items"),
         ]
 
     def get_sitemap_follow(self) -> List[str]:
-        return [".*"]
+        return [
+            "sitemap_news",
+        ]
 
     def should_parse_sitemap_entry(self, entry: Dict[str, str]) -> bool:
         return True
@@ -102,34 +84,35 @@ class CronistaParams(BaseArticleSpiderParams):
 
     def parser_1(self, response):
 
-        # Datos artículo (json) ----------
-        script_datos_articulo_json = response.xpath(
-            '//script [@id="datosArticulo"]//text()'
-        ).extract_first()
-
-        script_datos_articulo = json.loads(script_datos_articulo_json)
-
         # title ----------
-        title = html.unescape(script_datos_articulo["headline"])
-
-        if "description" in script_datos_articulo:
-            title += " | " + html.unescape(script_datos_articulo["description"])
-
+        title = (
+            response.xpath('//meta [@itemprop="headline"]/@content').extract_first()
+            + " | "
+            + (
+                response.xpath(
+                    '//div [@itemprop="description"]//h2//text()'
+                ).extract_first()
+                or ""
+            )
+        )
         title = title.strip()
 
         # last_updated ----------
-        last_updated = script_datos_articulo["dateModified"]
+        last_updated = response.xpath(
+            '//meta [@name="ageaParse:recs:publishtime"]/@content'
+        ).extract_first()
         last_updated = dateparser.parse(last_updated)
 
         # text ----------
         text = extract_all_text(
             response,
-            root_xpath='//article[@id="nota"]',
+            root_xpath='//div [@class="body-nota"]',
             exclude_list=[
                 (AttributeType.NAME, "script"),
                 (AttributeType.NAME, "style"),
-                (AttributeType.CLASS, "nota-relacionada"),
-                (AttributeType.CLASS, "socialmedia"),
+                (AttributeType.CLASS, "content-new"),
+                (AttributeType.CLASS, "comments"),
+                (AttributeType.CLASS, "banner"),
             ],
         )
 
@@ -139,7 +122,7 @@ class CronistaParams(BaseArticleSpiderParams):
 
         # Datos artículo (json) ----------
         script_datos_articulo_json = response.xpath(
-            '//script [@id="datosArticulo"]//text()'
+            '//script [@type="application/ld+json"]//text()'
         ).extract_first()
 
         script_datos_articulo = json.loads(script_datos_articulo_json)
@@ -153,42 +136,75 @@ class CronistaParams(BaseArticleSpiderParams):
         title = title.strip()
 
         # last_updated ----------
-        last_updated = script_datos_articulo["dateModified"]
+        last_updated = response.xpath(
+            '//meta [@name="ageaParse:recs:publishtime"]/@content'
+        ).extract_first()
         last_updated = dateparser.parse(last_updated)
 
         # text ----------
         text = extract_all_text(
             response,
-            root_xpath='//article[@class="container clearfix"][1]//div[@class="content-txt"]',
+            root_xpath='//div [@class="body-nota"]',
             exclude_list=[
                 (AttributeType.NAME, "script"),
                 (AttributeType.NAME, "style"),
-                (AttributeType.CLASS, "nota-relacionada"),
-                (AttributeType.CLASS, "comentarios"),
+                (AttributeType.CLASS, "content-new"),
+                (AttributeType.CLASS, "comments"),
+                (AttributeType.CLASS, "banner"),
             ],
         )
 
         return ArticleData(title, text, last_updated)
 
-    # Nota video
     def parser_3(self, response):
 
         # title ----------
-        title_tag = response.xpath("//title//text()").extract_first()
-
-        if title_tag != "Nota Video":
-            raise Exception("It's not a video article")
-
-        title = (
-            response.xpath('//h3 [@itemprop="headline name"]//text()')
-            .extract_first()
-            .strip()
+        title = extract_all_text(
+            response, root_xpath='//h1[@id="title"]', exclude_list=[],
         )
 
+        title = title.strip()
+
         # last_updated ----------
-        last_updated = datetime.now()
+        script = extract_all_text(
+            response,
+            root_xpath='//script[contains(@type, "text/javascript") and contains(text(), "datePublished")]',
+            exclude_list=[],
+        )
+
+        match = re.search('"datePublished": "(.*?)"', script)
+
+        last_updated = match.group(1)  # type: ignore
+
+        # The articles parsed by this function happen to have an invalid datePublished value
+        # such as i.e.: "2020/04/30 18:30:32 PM". Removing the AM / PM as a workaround.
+        last_updated = last_updated.replace("AM", "").replace("PM", "")
+        last_updated = dateparser.parse(last_updated)
 
         # text ----------
-        text = "Nota Video"
+        text = extract_all_text(
+            response,
+            root_xpath='//div [@class="body-nota"]',
+            exclude_list=[
+                (AttributeType.NAME, "script"),
+                (AttributeType.NAME, "style"),
+                (AttributeType.CLASS, "content-new"),
+                (AttributeType.CLASS, "comments"),
+                (AttributeType.CLASS, "banner"),
+            ],
+        )
 
         return ArticleData(title, text, last_updated)
+
+
+# Spider implementations
+
+
+class ClarinCrawlSpider(BaseArticleCrawlSpider):
+    params = ClarinParams()
+    name = params.get_spider_name(SpiderType.CRAWL)
+
+
+class ClarinSitemapSpider(BaseArticleSitemapSpider):
+    params = ClarinParams()
+    name = params.get_spider_name(SpiderType.SITEMAP)

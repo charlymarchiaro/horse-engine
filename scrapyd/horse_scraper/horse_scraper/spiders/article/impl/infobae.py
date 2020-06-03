@@ -5,7 +5,6 @@ import html
 import dateparser  # type: ignore
 from datetime import datetime, date, timedelta
 from string import whitespace
-import re
 
 from scrapy.http import Request, HtmlResponse  # type: ignore
 from scrapy.linkextractors import LinkExtractor  # type: ignore
@@ -17,24 +16,41 @@ from horse_scraper.spiders.article.base_article_spider_params import (
     BaseArticleSpiderParams,
 )
 from horse_scraper.services.utils.parse_utils import extract_all_text, AttributeType
+from ..base_article_crawl_spider import BaseArticleCrawlSpider
+from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 
-class ClarinParams(BaseArticleSpiderParams):
+class InfobaeParams(BaseArticleSpiderParams):
+
+    date_allow_str: str
+
     def _after_initialize(self) -> None:
-        pass
+        today = date.today()
+
+        date_strings = []
+
+        for days in range(self.scheduleArgs.period_days_back):
+            search_date = today - timedelta(days=days)
+            year = format(search_date.year, "04")
+            day = format(search_date.day, "02")
+            month = format(search_date.month, "02")
+
+            date_strings.append("/" + year + "/" + month + "/" + day + "/")
+            self.date_allow_str = "|".join(date_strings)
 
     # Common params
     def _get_spider_base_name(self) -> str:
-        return "clarin"
+        return "infobae"
 
     def get_allowed_domains(self) -> List[str]:
-        return ["clarin.com"]
+        return ["infobae.com"]
 
     # Crawl params
 
     def get_crawl_start_urls(self) -> List[str]:
         return [
-            "https://www.clarin.com/",
+            "https://www.infobae.com/",
+            "https://www.infobae.com/ultimas-noticias/",
         ]
 
     def get_crawl_rules(self) -> Tuple[Rule, ...]:
@@ -42,7 +58,7 @@ class ClarinParams(BaseArticleSpiderParams):
             Rule(
                 callback="parse_items",
                 link_extractor=LinkExtractor(
-                    allow="_\d+_.+.htm.*", deny=".*fotogalerias.*",
+                    allow=".*(" + self.date_allow_str + ").*", deny=".*(/fotos/)",
                 ),
                 process_links="process_links",
                 follow=True,
@@ -52,18 +68,16 @@ class ClarinParams(BaseArticleSpiderParams):
     # Sitemap params
 
     def get_sitemap_urls(self) -> List[str]:
-        return ["https://www.clarin.com/sitemap.xml"]
+        return ["https://www.infobae.com/sitemap-index.xml"]
 
     def get_sitemap_rules(self) -> List[Tuple[str, Union[str, None]]]:
         return [
-            (".*fotogalerias.*", None),
-            ("_\d+_.+.htm.*", "parse_items"),
+            (".*(/fotos/)", None),
+            (".*(" + self.date_allow_str + ").*", "parse_items"),
         ]
 
     def get_sitemap_follow(self) -> List[str]:
-        return [
-            "sitemap_news",
-        ]
+        return [".*"]
 
     def should_parse_sitemap_entry(self, entry: Dict[str, str]) -> bool:
         return True
@@ -77,19 +91,16 @@ class ClarinParams(BaseArticleSpiderParams):
         return [
             self.parser_1,
             self.parser_2,
-            self.parser_3,
         ]
 
     def parser_1(self, response):
 
         # title ----------
         title = (
-            response.xpath('//meta [@itemprop="headline"]/@content').extract_first()
+            response.xpath("//h1//text()").extract_first()
             + " | "
             + (
-                response.xpath(
-                    '//div [@itemprop="description"]//h2//text()'
-                ).extract_first()
+                response.xpath('//span [@class="subheadline"]//text()').extract_first()
                 or ""
             )
         )
@@ -97,20 +108,17 @@ class ClarinParams(BaseArticleSpiderParams):
 
         # last_updated ----------
         last_updated = response.xpath(
-            '//meta [@name="ageaParse:recs:publishtime"]/@content'
+            '//meta [@itemprop="pubdate"]/@content'
         ).extract_first()
         last_updated = dateparser.parse(last_updated)
 
         # text ----------
         text = extract_all_text(
             response,
-            root_xpath='//div [@class="body-nota"]',
+            root_xpath='//div[@id="article-content"]',
             exclude_list=[
                 (AttributeType.NAME, "script"),
                 (AttributeType.NAME, "style"),
-                (AttributeType.CLASS, "content-new"),
-                (AttributeType.CLASS, "comments"),
-                (AttributeType.CLASS, "banner"),
             ],
         )
 
@@ -126,70 +134,46 @@ class ClarinParams(BaseArticleSpiderParams):
         script_datos_articulo = json.loads(script_datos_articulo_json)
 
         # title ----------
-        title = html.unescape(script_datos_articulo["headline"])
-
         if "description" in script_datos_articulo:
-            title += " | " + html.unescape(script_datos_articulo["description"])
+            description = script_datos_articulo["description"]
+        else:
+            description = ""
 
+        title = (
+            html.unescape(script_datos_articulo["headline"])
+            + " | "
+            + html.unescape(description)
+        )
         title = title.strip()
 
         # last_updated ----------
-        last_updated = response.xpath(
-            '//meta [@name="ageaParse:recs:publishtime"]/@content'
-        ).extract_first()
+        last_updated = script_datos_articulo["dateModified"]
         last_updated = dateparser.parse(last_updated)
 
         # text ----------
         text = extract_all_text(
             response,
-            root_xpath='//div [@class="body-nota"]',
+            root_xpath='//article[contains(@class, "article")]',
             exclude_list=[
                 (AttributeType.NAME, "script"),
                 (AttributeType.NAME, "style"),
-                (AttributeType.CLASS, "content-new"),
-                (AttributeType.CLASS, "comments"),
-                (AttributeType.CLASS, "banner"),
+                (AttributeType.CLASS, "share_button"),
+                (AttributeType.CLASS, "feed-list"),
+                (AttributeType.TEXT_EQUALS, "ÚLTIMAS NOTICIAS"),
             ],
         )
 
         return ArticleData(title, text, last_updated)
 
-    def parser_3(self, response):
 
-        # title ----------
-        title = extract_all_text(
-            response, root_xpath='//h1[@id="title"]', exclude_list=[],
-        )
+# Spider implementations
 
-        title = title.strip()
 
-        # last_updated ----------
-        script = extract_all_text(
-            response,
-            root_xpath='//script[contains(@type, "text/javascript") and contains(text(), "datePublished")]',
-            exclude_list=[],
-        )
+class InfobaeCrawlSpider(BaseArticleCrawlSpider):
+    params = InfobaeParams()
+    name = params.get_spider_name(SpiderType.CRAWL)
 
-        match = re.search('"datePublished": "(.*?)"', script)
 
-        last_updated = match.group(1)  # type: ignore
-
-        # The articles parsed by this function happen to have an invalid datePublished value
-        # such as i.e.: "2020/04/30 18:30:32 PM". Removing the AM / PM as a workaround.
-        last_updated = last_updated.replace("AM", "").replace("PM", "")
-        last_updated = dateparser.parse(last_updated)
-
-        # text ----------
-        text = extract_all_text(
-            response,
-            root_xpath='//div [@class="body-nota"]',
-            exclude_list=[
-                (AttributeType.NAME, "script"),
-                (AttributeType.NAME, "style"),
-                (AttributeType.CLASS, "content-new"),
-                (AttributeType.CLASS, "comments"),
-                (AttributeType.CLASS, "banner"),
-            ],
-        )
-
-        return ArticleData(title, text, last_updated)
+class InfobaeSitemapSpider(BaseArticleSitemapSpider):
+    params = InfobaeParams()
+    name = params.get_spider_name(SpiderType.SITEMAP)

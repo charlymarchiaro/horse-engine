@@ -16,6 +16,8 @@ from horse_scraper.spiders.article.base_article_spider_params import (
     BaseArticleSpiderParams,
 )
 from horse_scraper.services.utils.parse_utils import extract_all_text, AttributeType
+from ..base_article_crawl_spider import BaseArticleCrawlSpider
+from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 
 class Metro951Params(BaseArticleSpiderParams):
@@ -38,7 +40,6 @@ class Metro951Params(BaseArticleSpiderParams):
     # Common params
     def _get_spider_base_name(self) -> str:
         return "metro951"
-
 
     def get_allowed_domains(self) -> List[str]:
         return ["metro951.com"]
@@ -126,3 +127,16 @@ class Metro951Params(BaseArticleSpiderParams):
         )
 
         return ArticleData(title, text, last_updated)
+
+
+# Spider implementations
+
+
+class Metro951CrawlSpider(BaseArticleCrawlSpider):
+    params = Metro951Params()
+    name = params.get_spider_name(SpiderType.CRAWL)
+
+
+class Metro951SitemapSpider(BaseArticleSitemapSpider):
+    params = Metro951Params()
+    name = params.get_spider_name(SpiderType.SITEMAP)

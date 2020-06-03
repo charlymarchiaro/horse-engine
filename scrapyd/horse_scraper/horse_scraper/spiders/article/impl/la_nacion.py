@@ -17,6 +17,8 @@ from horse_scraper.spiders.article.base_article_spider_params import (
     BaseArticleSpiderParams,
 )
 from horse_scraper.services.utils.parse_utils import extract_all_text, AttributeType
+from ..base_article_crawl_spider import BaseArticleCrawlSpider
+from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 
 class LaNacionParams(BaseArticleSpiderParams):
@@ -26,7 +28,6 @@ class LaNacionParams(BaseArticleSpiderParams):
     # Common params
     def _get_spider_base_name(self) -> str:
         return "la_nacion"
-
 
     def get_allowed_domains(self) -> List[str]:
         return ["lanacion.com.ar"]
@@ -138,3 +139,16 @@ class LaNacionParams(BaseArticleSpiderParams):
         )
 
         return ArticleData(title, text, last_updated)
+
+
+# Spider implementations
+
+
+class LaNacionCrawlSpider(BaseArticleCrawlSpider):
+    params = LaNacionParams()
+    name = params.get_spider_name(SpiderType.CRAWL)
+
+
+class LaNacionSitemapSpider(BaseArticleSitemapSpider):
+    params = LaNacionParams()
+    name = params.get_spider_name(SpiderType.SITEMAP)
