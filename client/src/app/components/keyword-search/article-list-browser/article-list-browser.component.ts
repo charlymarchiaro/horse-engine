@@ -123,6 +123,7 @@ export class ArticleListBrowserComponent implements OnInit, OnChanges {
         'Medio',
         'Categoría',
         'Tier',
+        'Fecha',
         'Título',
         'Nota Completa',
         'Link',
@@ -138,6 +139,7 @@ export class ArticleListBrowserComponent implements OnInit, OnChanges {
         a.articleSource.name,
         a.articleSource.category,
         a.articleSource.tier,
+        this.datePipe.transform(a.lastUpdated, 'dd/MM/yyyy HH:mm'),
         a.title,
         a.text,
         'https://' + a.url,
@@ -155,6 +157,7 @@ export class ArticleListBrowserComponent implements OnInit, OnChanges {
       { colInfo: { width: 12 } }, // Medio
       { colInfo: { width: 12 } }, // Categoría
       { colInfo: { width: 8 } }, // Tier
+      { colInfo: { width: 20 } }, // Fecha
       { colInfo: { width: 64 }, textWrap: true }, // Título
       { colInfo: { width: 64 }, textWrap: true }, // Nota Completa
       { colInfo: { width: 64 }, textWrap: true, hyperlink: true }, // Link

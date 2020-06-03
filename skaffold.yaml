@@ -39,9 +39,15 @@ build:
         "**/*.conf": .
         "**/*.cfg": .
 
+    - image: charlymarchiaro/horse-engine-postgres
+      context: postgres
+      docker:
+        dockerfile: Dockerfile.dev
+
 deploy:
   kubectl:
     manifests:
       - k8s/client-deployment.yaml
       - k8s/api-deployment.yaml
       - k8s/scrapyd-deployment.yaml
+      - k8s/postgres-deployment.yaml
