@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { JobsListInfo, JobScheduleInfo, SpidersListInfo } from '../components/scraping-monitor/model/scrapyd/scrapyd.model';
-import { DatabaseQueryResultsRow } from '../components/scraping-monitor/model/shared/database.model';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { JobsListInfo, JobScheduleInfo, SpidersListInfo } from '../model/scrapyd.model';
 import { ArticleFilteringScheme, DateSpan, getArticleFilteringSchemeWhereCondition } from '../components/keyword-search/model';
-import { ResponseStatus } from '../model/backend.model';
 
-import { ArticleScrapingDetails, ArticleScrapingDetailsResponse } from '../model/article-scraping-details.model';
+import { ArticleScrapingDetails, ArticleScrapingDetailsResponse } from '../model/article.model';
 import { ArticleResponse, Article } from '../model/article.model';
 
 
@@ -72,7 +70,7 @@ export class BackendService {
             params,
             { headers }
           ).subscribe(
-            res => console.log(res),
+            r => console.log(r),
             err => console.error(err)
           );
         }

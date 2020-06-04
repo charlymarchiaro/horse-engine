@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { JobInfo } from '../../model/scrapyd/scrapyd.model';
+import { JobInfo } from '../../../../model/scrapyd.model';
+
 
 
 

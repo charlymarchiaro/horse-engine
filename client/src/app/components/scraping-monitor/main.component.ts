@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { JobsListInfo } from './model/scrapyd/scrapyd.model';
+import { JobsListInfo } from '../../model/scrapyd.model';
 import { BackendService } from '../../services/backend.service';
-import { ArticleScrapingDetails } from '../../model/article-scraping-details.model';
+import { ArticleScrapingDetails } from '../../model/article.model';
 
 
 

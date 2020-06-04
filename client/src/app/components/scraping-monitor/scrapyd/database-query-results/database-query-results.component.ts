@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { ArticleScrapingDetails } from '../../../../model/article-scraping-details.model';
+import { ArticleScrapingDetails } from '../../../../model/article.model';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -50,8 +50,8 @@ export class DatabaseQueryResultsComponent implements OnInit, OnChanges {
 
     this.tableData = this.data.map(i => [
       i.article.articleSource.name,
-      this.makeEllipsis(i.article.title, 30),
-      this.makeEllipsis(i.article.text, 30),
+      this.makeEllipsis(i.article.title, 30) || '—',
+      this.makeEllipsis(i.article.text, 30) || '—',
       i.article.lastUpdated
         ? this.datePipe.transform(i.article.lastUpdated, 'MMM d, y, H:mm:ss')
         : '—',
@@ -64,7 +64,7 @@ export class DatabaseQueryResultsComponent implements OnInit, OnChanges {
 
 
   private makeEllipsis(text: string, characters: number): string {
-    return (text.length > characters - 3)
+    return (text && text.length > characters - 3)
       ? text.substr(0, characters - 3) + '...'
       : text;
   }
