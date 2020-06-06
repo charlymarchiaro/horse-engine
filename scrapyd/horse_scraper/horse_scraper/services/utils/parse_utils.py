@@ -127,8 +127,6 @@ def get_publishing_date(
     ds_params = get_datespan_params(date_span)
 
     # Find in schema
-    print("Searching in schema:\n")
-
     SCHEMA_PUBDATE_REGEX: List[RegexInfo] = [
         RegexInfo('"datePublished".*?:.*?"(.+?)"', [1]),
         RegexInfo('"dateModified".*?:.*?"(.+?)"', [1]),
@@ -139,13 +137,11 @@ def get_publishing_date(
             date_match = re.search(regex.rex, schema)
             if date_match:
                 date_str = date_match.group(regex.groups[0])
-                print("matched string: " + date_str)
                 datetime_obj = parse_date_str(date_str, date_span, locale_date_order)
                 if datetime_obj:
                     return datetime_obj
 
     # Find in metadata
-    print("Searching in metadata:\n")
     PUBLISH_DATE_TAGS = [
         {"attribute": "property", "value": "rnews:datePublished", "content": "content"},
         {
@@ -175,13 +171,11 @@ def get_publishing_date(
             date_str = extractor.parser.getAttribute(
                 meta_tags[0], known_meta_tag["content"]
             )
-            print("matched string: " + date_str)
             datetime_obj = parse_date_str(date_str, date_span, locale_date_order)
             if datetime_obj:
                 return datetime_obj
 
     # Find in URL
-    print("Searching in URL:\n")
     re_years_str = "|".join(map(lambda v: str(v), ds_params.years))
 
     url_regex_dict: Dict[str, RegexInfo] = {
@@ -205,8 +199,6 @@ def get_publishing_date(
             month = date_match.group(regex.groups[1])
             day = date_match.group(regex.groups[2])
             date_str = f"{year}/{month}/{day}"
-
-            print("matched string: " + date_str)
 
             datetime_obj = parse_date_str(date_str, date_span, locale_date_order)
             if datetime_obj:
@@ -234,17 +226,13 @@ def parse_date_str(
     date_strings = [date_str, alt_date_str_1]
 
     for ds in date_strings:
-        print("-->trying ds=" + ds)
         for f in functions:
-            print("-->trying f=" + str(f))
             try:
                 date = f(ds)
             except (ValueError, OverflowError, AttributeError, TypeError):
-                print("-->Error")
                 date = None
 
             if date:
-                print("-->Success: " + str(date))
                 return date
 
     return None
