@@ -119,44 +119,12 @@ def get_publishing_date(
         are descending in accuracy and the next strategy is only
         attempted if a preferred one fails.
 
-        1. Pubdate from URL
-        2. Pubdate from schema
+        1. Pubdate from schema
         2. Pubdate from metadata
+        3. Pubdate from URL
     """
 
     ds_params = get_datespan_params(date_span)
-
-    # Find in URL
-    print("Searching in URL:\n")
-    re_years_str = "|".join(map(lambda v: str(v), ds_params.years))
-
-    url_regex_dict: Dict[str, RegexInfo] = {
-        "YMD": RegexInfo(
-            f"({re_years_str})(-|\/)?(\d{{2}})(-|\/)?(\d{{2}})", [1, 3, 5]
-        ),
-        "DMY": RegexInfo(
-            f"(-|\/)?(\d{{2}})(-|\/)?(\d{{2}})({re_years_str})", [5, 3, 1]
-        ),
-        "MDY": RegexInfo(
-            f"(-|\/)?(\d{{2}})(-|\/)?(\d{{2}})({re_years_str})", [3, 5, 1]
-        ),
-    }
-
-    url_regex_list = [url_regex_dict["YMD"], url_regex_dict[locale_date_order]]
-
-    for regex in url_regex_list:
-        date_match = re.search(regex.rex, url)
-        if date_match:
-            year = date_match.group(regex.groups[0])
-            month = date_match.group(regex.groups[1])
-            day = date_match.group(regex.groups[2])
-            date_str = f"{year}/{month}/{day}"
-
-            print("matched string: " + date_str)
-
-            datetime_obj = parse_date_str(date_str, date_span, locale_date_order)
-            if datetime_obj:
-                return datetime_obj
 
     # Find in schema
     print("Searching in schema:\n")
@@ -193,6 +161,7 @@ def get_publishing_date(
         {"attribute": "name", "value": "sailthru.date", "content": "content"},
         {"attribute": "name", "value": "PublishDate", "content": "content"},
         {"attribute": "pubdate", "value": "pubdate", "content": "datetime"},
+        {"attribute": "itemprop", "value": "pubdate", "content": "content"},
     ]
 
     doc = article.doc
@@ -207,6 +176,38 @@ def get_publishing_date(
                 meta_tags[0], known_meta_tag["content"]
             )
             print("matched string: " + date_str)
+            datetime_obj = parse_date_str(date_str, date_span, locale_date_order)
+            if datetime_obj:
+                return datetime_obj
+
+    # Find in URL
+    print("Searching in URL:\n")
+    re_years_str = "|".join(map(lambda v: str(v), ds_params.years))
+
+    url_regex_dict: Dict[str, RegexInfo] = {
+        "YMD": RegexInfo(
+            f"({re_years_str})(-|\/)?(\d{{2}})(-|\/)?(\d{{2}})", [1, 3, 5]
+        ),
+        "DMY": RegexInfo(
+            f"(-|\/)?(\d{{2}})(-|\/)?(\d{{2}})({re_years_str})", [5, 3, 1]
+        ),
+        "MDY": RegexInfo(
+            f"(-|\/)?(\d{{2}})(-|\/)?(\d{{2}})({re_years_str})", [3, 5, 1]
+        ),
+    }
+
+    url_regex_list = [url_regex_dict["YMD"], url_regex_dict[locale_date_order]]
+
+    for regex in url_regex_list:
+        date_match = re.search(regex.rex, url)
+        if date_match:
+            year = date_match.group(regex.groups[0])
+            month = date_match.group(regex.groups[1])
+            day = date_match.group(regex.groups[2])
+            date_str = f"{year}/{month}/{day}"
+
+            print("matched string: " + date_str)
+
             datetime_obj = parse_date_str(date_str, date_span, locale_date_order)
             if datetime_obj:
                 return datetime_obj
