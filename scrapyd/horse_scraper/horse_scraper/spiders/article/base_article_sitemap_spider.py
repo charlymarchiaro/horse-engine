@@ -19,6 +19,7 @@ from string import whitespace
 
 from horse_scraper.items import Article
 from horse_scraper.spiders.article.model import (
+    ArticleSourceInfo,
     ArticleData,
     SpiderType,
     SpiderScheduleArgs,
@@ -37,7 +38,7 @@ from horse_scraper.spiders.article.base_article_spider_params import (
 
 class BaseArticleSitemapSpider(SitemapSpider):
 
-    source_id: str = ""
+    source_info: ArticleSourceInfo
 
     params: BaseArticleSpiderParams
     date_span = DateSpan()
@@ -63,7 +64,7 @@ class BaseArticleSitemapSpider(SitemapSpider):
         self.params.initialize(self.scheduleArgs)
 
         handler = ArticleDbHandler()
-        self.source_id = handler.get_spider_article_source_id(self.name)
+        self.source_info = handler.get_spider_article_source_info(self.name)
 
         self.allowed_domains = self.params.get_allowed_domains()
         self.sitemap_urls = self.params.get_sitemap_urls()
@@ -194,7 +195,7 @@ class BaseArticleSitemapSpider(SitemapSpider):
         )
 
         if data is None:
-            article["source_id"] = self.source_id
+            article["source_id"] = self.source_info.id
             article["url"] = response.url
             article["title"] = None
             article["text"] = None
@@ -206,7 +207,7 @@ class BaseArticleSitemapSpider(SitemapSpider):
             article["error_details"] = ""
             return article
 
-        article["source_id"] = self.source_id
+        article["source_id"] = self.source_info.id
         article["url"] = response.url
         article["title"] = data.title
         article["text"] = data.text
@@ -308,4 +309,4 @@ class BaseArticleSitemapSpider(SitemapSpider):
 
     def is_article_already_persisted(self, url: str) -> bool:
         handler = ArticleDbHandler()
-        return handler.is_article_already_persisted(url, self.source_id)
+        return handler.is_article_already_persisted(url, self.source_info.id)

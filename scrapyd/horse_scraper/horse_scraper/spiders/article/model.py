@@ -2,6 +2,21 @@ from enum import Enum
 from datetime import datetime, date
 
 
+class ArticleSourceInfo:
+    id: str
+    name: str
+    country: str
+    url: str
+    category: str
+    tier: int
+    reach: int
+    ad_value_base: int
+    ad_value_500: int
+    ad_value_300: int
+    ad_value_180: int
+    ad_value_100: int
+
+
 class ArticleData:
     title: str
     text: str
@@ -14,8 +29,8 @@ class ArticleData:
 
 
 class SpiderType(Enum):
-    CRAWL = "crawl"
-    SITEMAP = "sitemap"
+    CRAWL: str = "crawl"
+    SITEMAP: str = "sitemap"
 
 
 class SpiderScheduleArgs:

@@ -12,7 +12,7 @@ import parsel  # type: ignore
 
 import newspaper  # type: ignore
 
-from spiders.article.model import DateSpan
+from horse_scraper.spiders.article.model import DateSpan
 
 
 class AttributeType(Enum):

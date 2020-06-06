@@ -5,10 +5,12 @@ from datetime import datetime
 from urllib.parse import urlparse, ParseResult
 
 import psycopg2  # type: ignore
+import psycopg2.extras  # type: ignore
 
 import logging
 
 from horse_scraper.items import Article
+from horse_scraper.spiders.article.model import ArticleSourceInfo
 
 
 class ArticleDbHandler(object):
@@ -197,23 +199,52 @@ class ArticleDbHandler(object):
 
         return len(rows) > 0
 
-    def get_spider_article_source_id(self, spider_name: str) -> str:
+    def get_spider_article_source_info(self, spider_name: str) -> ArticleSourceInfo:
 
         cnxn = self.get_db_connection()
-        cursor = cnxn.cursor()
+        cursor = cnxn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
         sql = f"""
                 SELECT
-                        article_source_id
+                        source.id, 
+                        source.name, 
+                        source.country, 
+                        source.url, 
+                        source.category, 
+                        source.tier, 
+                        source.reach, 
+                        source.ad_value_base, 
+                        source.ad_value_500, 
+                        source.ad_value_300, 
+                        source.ad_value_180, 
+                        source.ad_value_100
                 FROM
                         scraper.article_spider AS spider
+                        INNER JOIN scraper.article_source AS source
+                            ON source.id = spider.article_source_id
                 WHERE
                         spider.name = '{spider_name}'
                 """
 
         cursor.execute(sql)
+        data = cursor.fetchone()
 
-        return cursor.fetchone()[0]
+        info = ArticleSourceInfo()
+
+        info.id = data["id"]
+        info.name = data["name"]
+        info.country = data["country"]
+        info.url = data["url"]
+        info.category = data["category"]
+        info.tier = data["tier"]
+        info.reach = data["reach"]
+        info.ad_value_base = data["ad_value_base"]
+        info.ad_value_500 = data["ad_value_500"]
+        info.ad_value_300 = data["ad_value_300"]
+        info.ad_value_180 = data["ad_value_180"]
+        info.ad_value_100 = data["ad_value_100"]
+
+        return info
 
     def sanitize_value(self, value: Union[str, None]) -> str:
         if value is None:
