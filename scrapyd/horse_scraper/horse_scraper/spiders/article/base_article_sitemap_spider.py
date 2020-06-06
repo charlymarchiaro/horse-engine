@@ -22,6 +22,7 @@ from horse_scraper.spiders.article.model import (
     ArticleData,
     SpiderType,
     SpiderScheduleArgs,
+    DateSpan,
 )
 from horse_scraper.settings import (
     LOG_LEVEL,
@@ -39,17 +40,26 @@ class BaseArticleSitemapSpider(SitemapSpider):
     source_id: str = ""
 
     params: BaseArticleSpiderParams
+    date_span = DateSpan()
 
     scheduleArgs = SpiderScheduleArgs()
 
     def __init__(self, *args, **kwargs):
         self.setup_logger()
 
+        # Init date span
         if "period_days_back" in kwargs:
             self.scheduleArgs.period_days_back = int(kwargs["period_days_back"])
         else:
             self.scheduleArgs.period_days_back = SITEMAP_PERIOD_DAYS_BACK
 
+        today = date.today()
+        self.date_span.from_date_incl = today - timedelta(
+            days=self.scheduleArgs.period_days_back
+        )
+        self.date_span.to_date_incl = today
+
+        # Init params
         self.params.initialize(self.scheduleArgs)
 
         handler = ArticleDbHandler()
@@ -279,7 +289,7 @@ class BaseArticleSitemapSpider(SitemapSpider):
 
     def is_sitemap_entry_inside_search_period(self, lastmod: datetime) -> bool:
         today = date.today()
-        start_search_date = today - timedelta(days=self.scheduleArgs.period_days_back)
+        start_search_date = self.date_span.from_date_incl
 
         if lastmod.date() <= start_search_date:
             return False
@@ -289,7 +299,7 @@ class BaseArticleSitemapSpider(SitemapSpider):
     def is_article_date_inside_search_period(self, article: Article) -> bool:
         article_date = article["last_updated"].date()
         today = date.today()
-        start_search_date = today - timedelta(days=self.scheduleArgs.period_days_back)
+        start_search_date = today - self.date_span.from_date_incl
 
         if article_date <= start_search_date:
             return False
