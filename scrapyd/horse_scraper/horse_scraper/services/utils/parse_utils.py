@@ -3,7 +3,7 @@ from enum import Enum
 from collections import namedtuple
 import dateparser  # type: ignore
 from dateutil.parser import parse as dateutil_parse  # type: ignore
-from datetime import date
+from datetime import date, datetime
 import re
 
 import scrapy  # type: ignore
@@ -114,7 +114,7 @@ class RegexInfo:
 # https://github.com/codelucas/newspaper
 def get_publishing_date(
     url: str, article: newspaper.Article, date_span: DateSpan, locale_date_order: str
-) -> Union[None, date]:
+) -> Union[None, datetime]:
     """3 strategies for publishing date extraction. The strategies
         are descending in accuracy and the next strategy is only
         attempted if a preferred one fails.
@@ -217,7 +217,7 @@ def get_publishing_date(
 
 def parse_date_str(
     date_str, date_span: DateSpan, locale_date_order: str
-) -> Union[None, date]:
+) -> Union[None, datetime]:
 
     functions = [
         lambda ds: dateparser.parse(ds, settings={"DATE_ORDER": "YMD"}),

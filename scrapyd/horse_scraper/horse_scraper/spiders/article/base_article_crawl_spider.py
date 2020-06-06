@@ -33,6 +33,7 @@ from horse_scraper.database.article_db_handler import ArticleDbHandler  # type: 
 from horse_scraper.spiders.article.base_article_spider_params import (
     BaseArticleSpiderParams,
 )
+from horse_scraper.spiders.article.default_article_parser import DefaultArticleParser
 
 
 class BaseArticleCrawlSpider(CrawlSpider):
@@ -43,6 +44,9 @@ class BaseArticleCrawlSpider(CrawlSpider):
     date_span = DateSpan()
 
     scheduleArgs = SpiderScheduleArgs()
+
+    # Default parser
+    default_parser = DefaultArticleParser()
 
     follow_current_article_links = True
 
@@ -148,7 +152,6 @@ class BaseArticleCrawlSpider(CrawlSpider):
                 raise Exception("Element: '" + str(f) + "' is not callable")
 
             f_name: str = getattr(f, "__name__", str(f))
-
             logging.info("Trying to parse using: " + f_name + "...")
 
             try:
@@ -172,6 +175,31 @@ class BaseArticleCrawlSpider(CrawlSpider):
                 continue
 
             continue
+
+        # Try default parser
+
+        f_name = "default_parser"
+        logging.info("Trying to parse using: " + f_name + "...")
+
+        try:
+            article_data = self.default_parser.parse(
+                response, self.date_span, self.source_info
+            )
+
+            if self.is_article_data_valid(article_data):
+                logging.info("--> Success")
+                logging.info("")
+                return article_data, f_name
+            else:
+                logging.debug("--> Failed")
+
+        except Exception as e:
+            logging.debug("--> Failed")
+            logging.debug(str(e))
+
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            for tb in traceback.format_tb(exc_traceback):
+                logging.debug(tb)
 
         logging.error("Could not parse url: " + response.url)
         logging.error("All parse attempts failed")

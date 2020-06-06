@@ -1,3 +1,4 @@
+from typing import Optional
 from enum import Enum
 from datetime import datetime, date
 
@@ -20,9 +21,9 @@ class ArticleSourceInfo:
 class ArticleData:
     title: str
     text: str
-    last_updated: datetime
+    last_updated: Optional[datetime]
 
-    def __init__(self, title: str, text: str, last_updated: datetime) -> None:
+    def __init__(self, title: str, text: str, last_updated: Optional[datetime]) -> None:
         self.title = title
         self.text = text
         self.last_updated = last_updated
