@@ -21,7 +21,7 @@ from ..base_article_crawl_spider import BaseArticleCrawlSpider
 from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 
-class ClarinParams(BaseArticleSpiderParams):
+class Params(BaseArticleSpiderParams):
     def _after_initialize(self) -> None:
         pass
 
@@ -200,11 +200,11 @@ class ClarinParams(BaseArticleSpiderParams):
 # Spider implementations
 
 
-class ClarinCrawlSpider(BaseArticleCrawlSpider):
-    params = ClarinParams()
+class CrawlSpider(BaseArticleCrawlSpider):
+    params = Params()
     name = params.get_spider_name(SpiderType.CRAWL)
 
 
-class ClarinSitemapSpider(BaseArticleSitemapSpider):
-    params = ClarinParams()
+class SitemapSpider(BaseArticleSitemapSpider):
+    params = Params()
     name = params.get_spider_name(SpiderType.SITEMAP)

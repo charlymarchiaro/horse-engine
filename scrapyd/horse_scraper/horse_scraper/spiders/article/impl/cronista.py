@@ -20,7 +20,7 @@ from ..base_article_crawl_spider import BaseArticleCrawlSpider
 from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 
-class CronistaParams(BaseArticleSpiderParams):
+class Params(BaseArticleSpiderParams):
 
     date_allow_str: str
 
@@ -198,11 +198,11 @@ class CronistaParams(BaseArticleSpiderParams):
 # Spider implementations
 
 
-class CronistaCrawlSpider(BaseArticleCrawlSpider):
-    params = CronistaParams()
+class CrawlSpider(BaseArticleCrawlSpider):
+    params = Params()
     name = params.get_spider_name(SpiderType.CRAWL)
 
 
-class CronistaSitemapSpider(BaseArticleSitemapSpider):
-    params = CronistaParams()
+class SitemapSpider(BaseArticleSitemapSpider):
+    params = Params()
     name = params.get_spider_name(SpiderType.SITEMAP)

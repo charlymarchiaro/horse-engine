@@ -21,7 +21,7 @@ from ..base_article_crawl_spider import BaseArticleCrawlSpider
 from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 
-class LaNacionParams(BaseArticleSpiderParams):
+class Params(BaseArticleSpiderParams):
     def _after_initialize(self) -> None:
         pass
 
@@ -144,11 +144,11 @@ class LaNacionParams(BaseArticleSpiderParams):
 # Spider implementations
 
 
-class LaNacionCrawlSpider(BaseArticleCrawlSpider):
-    params = LaNacionParams()
+class CrawlSpider(BaseArticleCrawlSpider):
+    params = Params()
     name = params.get_spider_name(SpiderType.CRAWL)
 
 
-class LaNacionSitemapSpider(BaseArticleSitemapSpider):
-    params = LaNacionParams()
+class SitemapSpider(BaseArticleSitemapSpider):
+    params = Params()
     name = params.get_spider_name(SpiderType.SITEMAP)

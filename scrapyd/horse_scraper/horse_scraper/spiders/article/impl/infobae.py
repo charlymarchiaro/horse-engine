@@ -20,7 +20,7 @@ from ..base_article_crawl_spider import BaseArticleCrawlSpider
 from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 
-class InfobaeParams(BaseArticleSpiderParams):
+class Params(BaseArticleSpiderParams):
 
     date_allow_str: str
 
@@ -169,11 +169,11 @@ class InfobaeParams(BaseArticleSpiderParams):
 # Spider implementations
 
 
-class InfobaeCrawlSpider(BaseArticleCrawlSpider):
-    params = InfobaeParams()
+class CrawlSpider(BaseArticleCrawlSpider):
+    params = Params()
     name = params.get_spider_name(SpiderType.CRAWL)
 
 
-class InfobaeSitemapSpider(BaseArticleSitemapSpider):
-    params = InfobaeParams()
+class SitemapSpider(BaseArticleSitemapSpider):
+    params = Params()
     name = params.get_spider_name(SpiderType.SITEMAP)
