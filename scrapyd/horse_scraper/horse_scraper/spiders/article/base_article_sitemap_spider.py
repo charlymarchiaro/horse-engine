@@ -148,9 +148,12 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
                         break
 
     def should_follow_article_url(self, url: str) -> bool:
-        for r, c in self._cbs:
-            if r.search(url):
-                return c is not None
+        for r in self.params.url_filter.deny_re:
+            if re.search(r, url):
+                return False
+        for r in self.params.url_filter.allow_re:
+            if re.search(r, url):
+                return True
         return False
 
     def should_follow_sitemap_url(self, url: str) -> bool:
