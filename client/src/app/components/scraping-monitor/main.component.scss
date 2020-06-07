@@ -2,6 +2,16 @@
     padding: 12px;
 
     #control-panel {
+        button {
+            font-size: 11px;
+            border-width: 1px;
+            margin-left: 7px;
+        }
+
+        input {
+            font-size: 11px;
+            margin-left: 2px;
+        }
     }
 
     #database-query-results {
