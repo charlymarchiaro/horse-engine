@@ -19,28 +19,44 @@ from scrapy.utils.log import configure_logging  # type: ignore
 
 from horse_scraper.items import Article
 from horse_scraper.spiders.article.model import (
+    ArticleSourceInfo,
     ArticleData,
     SpiderType,
     SpiderScheduleArgs,
+    DateSpan,
 )
 from horse_scraper.settings import (
     LOG_LEVEL,
     FEED_EXPORT_ENCODING,
 )
 from horse_scraper.database.article_db_handler import ArticleDbHandler  # type: ignore
+from .default_article_parser import DefaultArticleParser
 
 
 class BaseArticleSpiderParams:
 
-    scheduleArgs: SpiderScheduleArgs
+    schedule_args: SpiderScheduleArgs
+    date_span: DateSpan
+    source_info: ArticleSourceInfo
+    default_parser: DefaultArticleParser
 
     def __init__(self, *args, **kwargs):
         pass
 
-    def initialize(self, scheduleArgs: SpiderScheduleArgs):
-        self.scheduleArgs = scheduleArgs
+    def initialize(
+        self,
+        schedule_args: SpiderScheduleArgs,
+        date_span: DateSpan,
+        source_info: ArticleSourceInfo,
+        default_parser: DefaultArticleParser,
+    ):
+        self.schedule_args = schedule_args
+        self.date_span = date_span
+        self.source_info = source_info
+        self.default_parser = default_parser
+
         logging.info("Schedule args:")
-        logging.info("--> period_days_back=" + str(self.scheduleArgs.period_days_back))
+        logging.info("--> period_days_back=" + str(self.schedule_args.period_days_back))
         logging.info("")
 
         self._after_initialize()
@@ -94,10 +110,13 @@ class BaseArticleSpiderParams:
         pass
 
     @abstractmethod
-    def should_follow_sitemap_url(self, url:str) -> bool:
+    def should_follow_sitemap_url(self, url: str) -> bool:
         pass
 
     # Parser functions
     @abstractmethod
     def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:
         pass
+
+    def get_default_parser_results(self, response: HtmlResponse) -> ArticleData:
+        return self.default_parser.parse(response, self.date_span, self.source_info)

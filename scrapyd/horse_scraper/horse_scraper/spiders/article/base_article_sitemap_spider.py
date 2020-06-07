@@ -42,9 +42,9 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
 
         # Init date span
         if "period_days_back" in kwargs:
-            self.scheduleArgs.period_days_back = int(kwargs["period_days_back"])
+            self.schedule_args.period_days_back = int(kwargs["period_days_back"])
         else:
-            self.scheduleArgs.period_days_back = SITEMAP_PERIOD_DAYS_BACK
+            self.schedule_args.period_days_back = SITEMAP_PERIOD_DAYS_BACK
 
         BaseArticleSpider.__init__(self, self.name, *args, **kwargs)
 

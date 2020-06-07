@@ -29,7 +29,7 @@ class Params(BaseArticleSpiderParams):
 
         date_strings = []
 
-        for days in range(self.scheduleArgs.period_days_back):
+        for days in range(self.schedule_args.period_days_back):
             search_date = today - timedelta(days=days)
             year = format(search_date.year, "04")
             day = format(search_date.day, "02")

@@ -42,7 +42,7 @@ class BaseArticleSpider:
     params: BaseArticleSpiderParams
     date_span = DateSpan()
 
-    scheduleArgs = SpiderScheduleArgs()
+    schedule_args = SpiderScheduleArgs()
 
     # Default parser
     default_parser = DefaultArticleParser()
@@ -50,8 +50,8 @@ class BaseArticleSpider:
     def __init__(self, name: str, *args, **kwargs):
         self.setup_logger()
         self.init_date_span()
-        self.init_params()
         self.init_source_info()
+        self.init_params()
 
     def setup_logger(self):
         logger = logging.getLogger()
@@ -66,12 +66,14 @@ class BaseArticleSpider:
     def init_date_span(self):
         today = date.today()
         self.date_span.from_date_incl = today - timedelta(
-            days=self.scheduleArgs.period_days_back
+            days=self.schedule_args.period_days_back
         )
         self.date_span.to_date_incl = today
 
     def init_params(self):
-        self.params.initialize(self.scheduleArgs)
+        self.params.initialize(
+            self.schedule_args, self.date_span, self.source_info, self.default_parser
+        )
 
     def init_source_info(self):
         handler = ArticleDbHandler()
