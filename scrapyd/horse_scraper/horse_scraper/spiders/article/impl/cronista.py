@@ -36,7 +36,8 @@ class Params(BaseArticleSpiderParams):
             month = format(search_date.month, "02")
 
             date_strings.append(year + month + day)
-            self.date_allow_str = "|".join(date_strings)
+            
+        self.date_allow_str = "|".join(date_strings)
 
     # Common params
     def _get_spider_base_name(self) -> str:
