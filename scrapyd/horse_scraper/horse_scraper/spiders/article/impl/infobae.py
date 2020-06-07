@@ -14,6 +14,7 @@ from horse_scraper.items import Article
 from horse_scraper.spiders.article.model import ArticleData, SpiderType
 from horse_scraper.spiders.article.base_article_spider_params import (
     BaseArticleSpiderParams,
+    UrlFilter,
 )
 from horse_scraper.services.utils.parse_utils import extract_all_text, AttributeType
 from ..base_article_crawl_spider import BaseArticleCrawlSpider
@@ -36,7 +37,7 @@ class Params(BaseArticleSpiderParams):
             month = format(search_date.month, "02")
 
             date_strings.append("/" + year + "/" + month + "/" + day + "/")
-            
+
         self.date_allow_str = "|".join(date_strings)
 
     # Common params
@@ -54,28 +55,15 @@ class Params(BaseArticleSpiderParams):
             "https://www.infobae.com/ultimas-noticias/",
         ]
 
-    def get_crawl_rules(self) -> Tuple[Rule, ...]:
-        return (
-            Rule(
-                callback="parse_items",
-                link_extractor=LinkExtractor(
-                    allow=".*(" + self.date_allow_str + ").*", deny=".*(/fotos/)",
-                ),
-                process_links="process_links",
-                follow=True,
-            ),
+    def get_url_filter(self) -> UrlFilter:
+        return UrlFilter(
+            allow_re=[f".*({self.date_allow_str}).*"], deny_re=[".*(/fotos/)"]
         )
 
     # Sitemap params
 
     def get_sitemap_urls(self) -> List[str]:
         return ["https://www.infobae.com/sitemap-index.xml"]
-
-    def get_sitemap_rules(self) -> List[Tuple[str, Union[str, None]]]:
-        return [
-            (".*(/fotos/)", None),
-            (".*(" + self.date_allow_str + ").*", "parse_items"),
-        ]
 
     def get_sitemap_follow(self) -> List[str]:
         return [".*"]

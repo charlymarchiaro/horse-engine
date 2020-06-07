@@ -15,6 +15,7 @@ from horse_scraper.items import Article
 from horse_scraper.spiders.article.model import ArticleData, SpiderType
 from horse_scraper.spiders.article.base_article_spider_params import (
     BaseArticleSpiderParams,
+    UrlFilter,
 )
 from horse_scraper.services.utils.parse_utils import extract_all_text, AttributeType
 from ..base_article_crawl_spider import BaseArticleCrawlSpider
@@ -39,28 +40,13 @@ class Params(BaseArticleSpiderParams):
             "https://www.clarin.com/",
         ]
 
-    def get_crawl_rules(self) -> Tuple[Rule, ...]:
-        return (
-            Rule(
-                callback="parse_items",
-                link_extractor=LinkExtractor(
-                    allow="_\d+_.+.htm.*", deny=".*fotogalerias.*",
-                ),
-                process_links="process_links",
-                follow=True,
-            ),
-        )
+    def get_url_filter(self) -> UrlFilter:
+        return UrlFilter(allow_re=["_\d+_.+.htm.*"], deny_re=[".*fotogalerias.*"])
 
     # Sitemap params
 
     def get_sitemap_urls(self) -> List[str]:
         return ["https://www.clarin.com/sitemap.xml"]
-
-    def get_sitemap_rules(self) -> List[Tuple[str, Union[str, None]]]:
-        return [
-            (".*fotogalerias.*", None),
-            ("_\d+_.+.htm.*", "parse_items"),
-        ]
 
     def get_sitemap_follow(self) -> List[str]:
         return [

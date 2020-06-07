@@ -33,12 +33,23 @@ from horse_scraper.database.article_db_handler import ArticleDbHandler  # type: 
 from .default_article_parser import DefaultArticleParser
 
 
+class UrlFilter:
+    allow_re: List[str]
+    deny_re: List[str]
+
+    def __init__(self, allow_re: List[str], deny_re: List[str]):
+        self.allow_re = allow_re
+        self.deny_re = deny_re
+
+
 class BaseArticleSpiderParams:
 
     schedule_args: SpiderScheduleArgs
     date_span: DateSpan
     source_info: ArticleSourceInfo
     default_parser: DefaultArticleParser
+
+    url_filter: UrlFilter
 
     def __init__(self, *args, **kwargs):
         pass
@@ -60,6 +71,7 @@ class BaseArticleSpiderParams:
         logging.info("")
 
         self._after_initialize()
+        self.url_filter = self.get_url_filter()
 
     @abstractmethod
     def _after_initialize(self) -> None:
@@ -83,23 +95,41 @@ class BaseArticleSpiderParams:
     def get_allowed_domains(self) -> List[str]:
         pass
 
+    @abstractmethod
+    def get_url_filter(self) -> UrlFilter:
+        pass
+
     # Crawl params
     @abstractmethod
     def get_crawl_start_urls(self) -> List[str]:
         pass
 
-    @abstractmethod
     def get_crawl_rules(self) -> Tuple[Rule, ...]:
-        pass
+
+        return (
+            Rule(
+                callback="parse_items",
+                link_extractor=LinkExtractor(
+                    allow=self.url_filter.allow_re, deny=self.url_filter.deny_re
+                ),
+                process_links="process_links",
+                follow=True,
+            ),
+        )
 
     # Sitemap params
     @abstractmethod
     def get_sitemap_urls(self) -> List[str]:
         pass
 
-    @abstractmethod
     def get_sitemap_rules(self) -> List[Tuple[str, Union[str, None]]]:
-        pass
+        result: List[Tuple[str, Union[str, None]]] = []
+        for rule in self.url_filter.deny_re:
+            result.append((rule, None))
+        for rule in self.url_filter.allow_re:
+            result.append((rule, "parse_items"))
+
+        return result
 
     @abstractmethod
     def get_sitemap_follow(self) -> List[str]:

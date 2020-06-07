@@ -15,6 +15,7 @@ from horse_scraper.items import Article
 from horse_scraper.spiders.article.model import ArticleData, SpiderType
 from horse_scraper.spiders.article.base_article_spider_params import (
     BaseArticleSpiderParams,
+    UrlFilter,
 )
 from horse_scraper.services.utils.parse_utils import (
     extract_all_text,
@@ -55,27 +56,13 @@ class Params(BaseArticleSpiderParams):
             "https://www.mdzol.com/",
         ]
 
-    def get_crawl_rules(self) -> Tuple[Rule, ...]:
-        return (
-            Rule(
-                callback="parse_items",
-                link_extractor=LinkExtractor(
-                    allow=f".*({self.date_allow_str})?\d+.htm",
-                ),
-                process_links="process_links",
-                follow=True,
-            ),
-        )
+    def get_url_filter(self) -> UrlFilter:
+        return UrlFilter(allow_re=[f".*({self.date_allow_str})?\d+.htm"], deny_re=[])
 
     # Sitemap params
 
     def get_sitemap_urls(self) -> List[str]:
         return ["https://www.mdzol.com/include/sitemaps/"]
-
-    def get_sitemap_rules(self) -> List[Tuple[str, Union[str, None]]]:
-        return [
-            (f".*({self.date_allow_str})?\d+.htm", "parse_items"),
-        ]
 
     def get_sitemap_follow(self) -> List[str]:
         return [".*"]
@@ -99,8 +86,6 @@ class Params(BaseArticleSpiderParams):
 
         title = article_data.title
         last_updated = article_data.last_updated
-
-        print(article_data.text)
 
         # text ----------
         text = extract_all_text(
