@@ -22,22 +22,13 @@ from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 
 class Params(BaseArticleSpiderParams):
-
-    date_allow_str: str
-
     def _after_initialize(self) -> None:
-        today = date.today()
-
-        date_strings = []
-
-        for days in range(self.schedule_args.period_days_back):
-            search_date = today - timedelta(days=days)
-            year = format(search_date.year, "04")
-            month = format(search_date.month, "02")
-
-            date_strings.append("/" + year + "/" + month + "/")
-
-        self.date_allow_str = "|".join(date_strings)
+        self.date_allow_str = self.get_date_allow_str(
+            year_format="04",
+            month_format="02",
+            day_format="02",
+            concat_fn=lambda year, month, day: f"/{year}/{month}/",
+        )
 
     # Common params
     def _get_spider_base_name(self) -> str:

@@ -148,5 +148,31 @@ class BaseArticleSpiderParams:
     def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:
         pass
 
+    def get_date_allow_str(
+        self,
+        year_format: str,
+        month_format: str,
+        day_format: str,
+        # year, month, day -> str
+        concat_fn: Callable[[str, str, str,], str,],
+    ) -> str:
+        today = date.today()
+
+        date_strings = []
+
+        for days in range(self.schedule_args.period_days_back):
+            search_date = today - timedelta(days=days)
+            year = format(search_date.year, year_format)
+            month = format(search_date.month, month_format)
+            day = format(search_date.day, day_format)
+
+            ds = concat_fn(year, month, day)
+            if ds in date_strings:
+                continue
+
+            date_strings.append(ds)
+
+        return "|".join(date_strings)
+
     def get_default_parser_results(self, response: HtmlResponse) -> ArticleData:
         return self.default_parser.parse(response, self.date_span, self.source_info)
