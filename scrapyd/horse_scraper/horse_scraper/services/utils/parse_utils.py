@@ -6,6 +6,8 @@ from dateutil.parser import parse as dateutil_parse  # type: ignore
 from datetime import date, datetime
 import re
 
+import logging
+
 import scrapy  # type: ignore
 from scrapy.http import Request, HtmlResponse  # type: ignore
 import parsel  # type: ignore
@@ -124,9 +126,11 @@ def get_publishing_date(
         3. Pubdate from URL
     """
 
+    logging.debug("<get_publishing_date>:")
     ds_params = get_datespan_params(date_span)
 
     # Find in schema
+    logging.debug("Searching in schema:\n")
     SCHEMA_PUBDATE_REGEX: List[RegexInfo] = [
         RegexInfo('"datePublished".*?:.*?"(.+?)"', [1]),
         RegexInfo('"dateModified".*?:.*?"(.+?)"', [1]),
@@ -137,11 +141,14 @@ def get_publishing_date(
             date_match = re.search(regex.rex, schema)
             if date_match:
                 date_str = date_match.group(regex.groups[0])
+
+                logging.debug("matched string: " + date_str)
                 datetime_obj = parse_date_str(date_str, date_span, locale_date_order)
                 if datetime_obj:
                     return datetime_obj
 
     # Find in metadata
+    logging.debug("Searching in metadata:\n")
     PUBLISH_DATE_TAGS = [
         {"attribute": "property", "value": "rnews:datePublished", "content": "content"},
         {
@@ -171,11 +178,14 @@ def get_publishing_date(
             date_str = extractor.parser.getAttribute(
                 meta_tags[0], known_meta_tag["content"]
             )
+
+            logging.debug("matched string: " + date_str)
             datetime_obj = parse_date_str(date_str, date_span, locale_date_order)
             if datetime_obj:
                 return datetime_obj
 
     # Find in URL
+    logging.debug("Searching in URL:\n")
     re_years_str = "|".join(map(lambda v: str(v), ds_params.years))
 
     url_regex_dict: Dict[str, RegexInfo] = {
@@ -200,6 +210,7 @@ def get_publishing_date(
             day = date_match.group(regex.groups[2])
             date_str = f"{year}/{month}/{day}"
 
+            logging.debug("matched string: " + date_str)
             datetime_obj = parse_date_str(date_str, date_span, locale_date_order)
             if datetime_obj:
                 return datetime_obj
@@ -217,22 +228,36 @@ def parse_date_str(
         lambda ds: dateutil_parse(ds),
     ]
 
+    # Try removing spaces
+    alt_date_str_1 = date_str.replace(" ", "")
+
     # Try removing 'AM/PM' as a workaround for invalid hours (i.e.: '15 PM')
     chars_to_remove = "apmAPM."
-    alt_date_str_1 = date_str
+    alt_date_str_2 = date_str
+    alt_date_str_3 = alt_date_str_1
     for c in chars_to_remove:
-        alt_date_str_1 = alt_date_str_1.replace(c, "")
+        alt_date_str_2 = alt_date_str_2.replace(c, "")
+        alt_date_str_3 = alt_date_str_3.replace(c, "")
 
-    date_strings = [date_str, alt_date_str_1]
+    date_strings = [
+        date_str,
+        alt_date_str_1,
+        alt_date_str_2,
+        alt_date_str_3,
+    ]
 
     for ds in date_strings:
+        logging.debug("-->trying ds=" + ds)
         for f in functions:
+            logging.debug("-->trying f=" + str(f))
             try:
                 date = f(ds)
             except (ValueError, OverflowError, AttributeError, TypeError):
+                logging.debug("-->Error")
                 date = None
 
             if date:
+                logging.debug("-->Success: " + str(date))
                 return date
 
     return None
