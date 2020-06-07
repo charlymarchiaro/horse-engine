@@ -1,32 +1,29 @@
-<div
-  id="container"
->
+<div id="container">
 
   <div
-    id=table
-    *ngIf="data && data.length > 0"
-  >
+    id="table"
+    *ngIf="data && data.length > 0">
     <table>
-      <tr>
-        <th
-          *ngFor="let fieldName of tableHeaders"
-        >
-          {{fieldName}}
-        </th>
-      </tr>
+      <tbody>
+        <tr>
+          <th *ngFor="let fieldName of tableHeaders">{{fieldName}}</th>
+        </tr>
 
-      <tr
-        *ngFor="let row of tableData"
-      >
-        <td
-          *ngFor="let value of row"
-        >
-          {{value}}
-        </td>
-      </tr>
+        <tr *ngFor="let row of tableData">
+          <td *ngFor="let field of row">
+            <div *ngIf="field.type === 'label'">{{field.value}}</div>
+            <div *ngIf="field.type === 'link'">
+              <a
+                href="{{field.value}}"
+                target="_blank">
+                {{field.label}}
+              </a>
+            </div>
+          </td>
+        </tr>
+      </tbody>
     </table>
 
   </div>
 
 </div>
-
