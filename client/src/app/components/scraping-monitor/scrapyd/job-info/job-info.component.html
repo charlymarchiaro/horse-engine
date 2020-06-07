@@ -1,32 +1,41 @@
-<div
-  id="container"
->
+<div id="container">
   <div
     id="info"
-    *ngIf="jobInfo"
-  >
-    <div
-      class="id-field"
-    >
-      <strong>Id:</strong> {{jobInfo.id}}
+    *ngIf="jobInfo">
+    <div class="field id-field">
+      <strong>Id:</strong>
+      <div
+        class="clickable"
+        (click)="clipboard.copy(jobInfo.id)">
+        {{jobInfo.id}}
+      </div>
     </div>
 
-    <div
-      class="spider-field"
-    >
-      <strong>Spider:</strong> {{jobInfo.spider}}
+    <div class="field spider-field">
+      <strong>Spider:</strong>
+      <div
+        class="clickable"
+        (click)="clipboard.copy(jobInfo.spider)">
+        {{jobInfo.spider}}
+      </div>
     </div>
 
-    <div
-      class="start-time-field"
-    >
-      <strong>Start time:</strong> {{jobInfo.start_time || '-'}}
+    <div class="field start-time-field">
+      <strong>Start time:</strong>
+      <div
+        class="clickable"
+        (click)="clipboard.copy(jobInfo.start_time)">
+        {{jobInfo.start_time || '-'}}
+      </div>
     </div>
 
-    <div
-      class="end-time-field"
-    >
-      <strong>End time:</strong> {{jobInfo.end_time || '-'}}
+    <div class="field end-time-field">
+      <strong>End time:</strong>
+      <div
+        class="clickable"
+        (click)="clipboard.copy(jobInfo.end_time)">
+        {{jobInfo.end_time || '-'}}
+      </div>
     </div>
   </div>
 </div>

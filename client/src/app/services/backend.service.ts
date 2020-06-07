@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { JobsListInfo, JobScheduleInfo, SpidersListInfo } from '../components/scraping-monitor/model/scrapyd/scrapyd.model';
-import { DatabaseQueryResultsRow } from '../components/scraping-monitor/model/shared/database.model';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { JobsListInfo, JobScheduleInfo, SpidersListInfo } from '../model/scrapyd.model';
 import { ArticleFilteringScheme, DateSpan, getArticleFilteringSchemeWhereCondition } from '../components/keyword-search/model';
-import { ResponseStatus } from '../model/backend.model';
 
-import { ArticleScrapingDetails, ArticleScrapingDetailsResponse } from '../model/article-scraping-details.model';
+import { ArticleScrapingDetails, ArticleScrapingDetailsResponse } from '../model/article.model';
 import { ArticleResponse, Article } from '../model/article.model';
 
 
@@ -52,31 +50,33 @@ export class BackendService {
   }
 
 
-  public cancelAllJobs(force: boolean = true) {
+  public cancelJob(jobId: string, force: boolean = true) {
 
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
+    const params = JSON.stringify({
+      job: jobId
+    });
+
+    const times = force ? 2 : 1;
+
+    for (let i = 0; i < times; i++) {
+      this.http.post<JobScheduleInfo>(
+        '/api/scrapyd/cancel-job',
+        params,
+        { headers }
+      ).subscribe(
+        r => console.log(r),
+        err => console.error(err)
+      );
+    }
+  }
+
+
+  public cancelAllJobs(force: boolean = true) {
     this.listJobs().subscribe(res => {
-
-      [...res.running, ...res.pending].forEach(job => {
-
-        const params = JSON.stringify({
-          job: job.id
-        });
-
-        const times = force ? 2 : 1;
-
-        for (let i = 0; i < times; i++) {
-          this.http.post<JobScheduleInfo>(
-            '/api/scrapyd/cancel-job',
-            params,
-            { headers }
-          ).subscribe(
-            res => console.log(res),
-            err => console.error(err)
-          );
-        }
-      });
+      [...res.running, ...res.pending]
+        .forEach(job => this.cancelJob(job.id, force));
     });
   }
 

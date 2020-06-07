@@ -15,18 +15,20 @@ from horse_scraper.items import Article
 from horse_scraper.spiders.article.model import ArticleData, SpiderType
 from horse_scraper.spiders.article.base_article_spider_params import (
     BaseArticleSpiderParams,
+    UrlFilter,
 )
 from horse_scraper.services.utils.parse_utils import extract_all_text, AttributeType
+from ..base_article_crawl_spider import BaseArticleCrawlSpider
+from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 
-class LaNacionParams(BaseArticleSpiderParams):
+class Params(BaseArticleSpiderParams):
     def _after_initialize(self) -> None:
         pass
 
     # Common params
     def _get_spider_base_name(self) -> str:
         return "la_nacion"
-
 
     def get_allowed_domains(self) -> List[str]:
         return ["lanacion.com.ar"]
@@ -38,25 +40,13 @@ class LaNacionParams(BaseArticleSpiderParams):
             "https://www.lanacion.com.ar/",
         ]
 
-    def get_crawl_rules(self) -> Tuple[Rule, ...]:
-        return (
-            Rule(
-                callback="parse_items",
-                link_extractor=LinkExtractor(allow=".*nid\d+",),
-                process_links="process_links",
-                follow=True,
-            ),
-        )
+    def get_url_filter(self) -> UrlFilter:
+        return UrlFilter(allow_re=[".*nid\d+"], deny_re=[])
 
     # Sitemap params
 
     def get_sitemap_urls(self) -> List[str]:
         return ["https://www.lanacion.com.ar/sitemap.xml"]
-
-    def get_sitemap_rules(self) -> List[Tuple[str, Union[str, None]]]:
-        return [
-            (".*nid\d+", "parse_items"),
-        ]
 
     def get_sitemap_follow(self) -> List[str]:
         return [".*"]
@@ -138,3 +128,16 @@ class LaNacionParams(BaseArticleSpiderParams):
         )
 
         return ArticleData(title, text, last_updated)
+
+
+# Spider implementations
+
+
+class CrawlSpider(BaseArticleCrawlSpider):
+    params = Params()
+    name = params.get_spider_name(SpiderType.CRAWL)
+
+
+class SitemapSpider(BaseArticleSitemapSpider):
+    params = Params()
+    name = params.get_spider_name(SpiderType.SITEMAP)

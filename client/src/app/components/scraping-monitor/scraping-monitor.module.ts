@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { MainComponent } from './main.component';
 import { JobInfoComponent } from './scrapyd/job-info/job-info.component';
 import { DatabaseQueryResultsComponent } from './scrapyd/database-query-results/database-query-results.component';
+import { MaterialComponentsModule } from '../../material-components.module';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -14,6 +16,8 @@ import { DatabaseQueryResultsComponent } from './scrapyd/database-query-results/
   ],
   imports: [
     CommonModule,
+    FormsModule,
+    MaterialComponentsModule,
   ],
   exports: [
     MainComponent,

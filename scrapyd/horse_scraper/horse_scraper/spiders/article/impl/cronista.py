@@ -14,32 +14,25 @@ from horse_scraper.items import Article
 from horse_scraper.spiders.article.model import ArticleData, SpiderType
 from horse_scraper.spiders.article.base_article_spider_params import (
     BaseArticleSpiderParams,
+    UrlFilter,
 )
 from horse_scraper.services.utils.parse_utils import extract_all_text, AttributeType
+from ..base_article_crawl_spider import BaseArticleCrawlSpider
+from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 
-class CronistaParams(BaseArticleSpiderParams):
-
-    date_allow_str: str
-
+class Params(BaseArticleSpiderParams):
     def _after_initialize(self) -> None:
-        today = date.today()
-
-        date_strings = []
-
-        for days in range(self.scheduleArgs.period_days_back):
-            search_date = today - timedelta(days=days)
-            year = format(search_date.year, "04")
-            day = format(search_date.day, "02")
-            month = format(search_date.month, "02")
-
-            date_strings.append(year + month + day)
-            self.date_allow_str = "|".join(date_strings)
+        self.date_allow_str = self.get_date_allow_str(
+            year_format="04",
+            month_format="02",
+            day_format="02",
+            concat_fn=lambda year, month, day: f"{year}{month}{day}",
+        )
 
     # Common params
     def _get_spider_base_name(self) -> str:
         return "cronista"
-
 
     def get_allowed_domains(self) -> List[str]:
         return ["cronista.com"]
@@ -51,16 +44,9 @@ class CronistaParams(BaseArticleSpiderParams):
             "https://www.cronista.com/",
         ]
 
-    def get_crawl_rules(self) -> Tuple[Rule, ...]:
-        return (
-            Rule(
-                callback="parse_items",
-                link_extractor=LinkExtractor(
-                    allow="(" + self.date_allow_str + ").*htm.*", deny=".*\/-ve\d+.html"
-                ),
-                process_links="process_links",
-                follow=True,
-            ),
+    def get_url_filter(self) -> UrlFilter:
+        return UrlFilter(
+            allow_re=[f"({self.date_allow_str}).*htm.*"], deny_re=[".*\/-ve\d+.html"]
         )
 
     # Sitemap params
@@ -74,12 +60,6 @@ class CronistaParams(BaseArticleSpiderParams):
             "https://www.cronista.com/sitemaps/v3/news-daily-pyme.xml",
             "https://www.cronista.com/sitemaps/v3/news-daily-rpm.xml",
             "https://www.cronista.com/sitemaps/v3/gnews-cronista.xml",
-        ]
-
-    def get_sitemap_rules(self) -> List[Tuple[str, Union[str, None]]]:
-        return [
-            (".*\/-ve\d+.html", None),
-            ("(" + self.date_allow_str + ").*htm.*", "parse_items"),
         ]
 
     def get_sitemap_follow(self) -> List[str]:
@@ -192,3 +172,16 @@ class CronistaParams(BaseArticleSpiderParams):
         text = "Nota Video"
 
         return ArticleData(title, text, last_updated)
+
+
+# Spider implementations
+
+
+class CrawlSpider(BaseArticleCrawlSpider):
+    params = Params()
+    name = params.get_spider_name(SpiderType.CRAWL)
+
+
+class SitemapSpider(BaseArticleSitemapSpider):
+    params = Params()
+    name = params.get_spider_name(SpiderType.SITEMAP)

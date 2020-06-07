@@ -16,6 +16,9 @@ spec:
         - name: postgres-storage
           persistentVolumeClaim:
             claimName: database-pvc
+        - name: dshm
+          emptyDir:
+            medium: Memory
       containers:
         - name: postgres
           image: charlymarchiaro/horse-engine-postgres
@@ -28,6 +31,8 @@ spec:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/data
               subPath: postgres
+            - mountPath: /dev/shm
+              name: dshm
           args:
             - -c
             - 'config_file=/etc/postgresql/postgresql.conf'

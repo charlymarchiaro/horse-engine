@@ -1,24 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { JobsListInfo } from './model/scrapyd/scrapyd.model';
+import { JobsListInfo } from '../../model/scrapyd.model';
 import { BackendService } from '../../services/backend.service';
-import { ArticleScrapingDetails } from '../../model/article-scraping-details.model';
+import { ArticleScrapingDetails } from '../../model/article.model';
 
-
-
-
-export const SPIDER_NAMES = [
-  'clarin_crawl',
-  'clarin_sitemap',
-  'cronista_crawl',
-  'cronista_sitemap',
-  'infobae_crawl',
-  'infobae_sitemap',
-  'la_nacion_crawl',
-  'la_nacion_sitemap',
-  'metro951_crawl',
-  'metro951_sitemap',
-];
 
 
 export const NUMBER_OF_DISPLAYED_ARTICLES = 10;
@@ -37,6 +22,9 @@ export class MainComponent implements OnInit, OnDestroy {
   public jobsListInfo: JobsListInfo;
   public lastScrapedArticlesInfo: ArticleScrapingDetails[] = [];
 
+
+  public scheduleKeyword = '';
+  public cancelKeyword = '';
 
 
   constructor(
@@ -76,6 +64,11 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
 
+  public onScheduleByKeywordClick() {
+    this.scheduleSpidersByKeword(this.scheduleKeyword)
+  }
+
+
   public onListJobsClick() {
     this.listJobs();
   }
@@ -83,6 +76,11 @@ export class MainComponent implements OnInit, OnDestroy {
 
   public onCancelAllJobsClick() {
     this.cancelAllJobs();
+  }
+
+
+  public onCancelByKeywordClick() {
+    this.cancelSpidersByKeword(this.cancelKeyword)
   }
 
 
@@ -94,11 +92,47 @@ export class MainComponent implements OnInit, OnDestroy {
 
 
   private scheduleAllSpiders() {
-    for (const spiderName of SPIDER_NAMES) {
-      this.backendService.scheduleSpider(spiderName).subscribe(
-        response => console.log(response)
-      );
-    }
+    this.backendService.listAllSpiders().subscribe(
+      response => {
+        response.spiders.forEach(
+          spiderName => this.backendService.scheduleSpider(spiderName).subscribe(
+            r => console.log(r)
+          )
+        );
+      }
+    );
+  }
+
+
+  private async scheduleSpidersByKeword(keyword: string) {
+    keyword = keyword.toLowerCase();
+
+    const spiders = await this.backendService.listAllSpiders().toPromise();
+
+    spiders.spiders.forEach(spiderName => {
+      if (spiderName.toLowerCase().includes(keyword)) {
+        this.backendService.scheduleSpider(spiderName).subscribe(
+          r => console.log(r)
+        );
+      }
+    });
+  }
+
+
+
+  private async cancelSpidersByKeword(keyword: string) {
+    keyword = keyword.toLowerCase();
+
+    const jobs = await this.backendService.listJobs().toPromise();
+
+    [...jobs.running, ...jobs.pending].forEach(job => {
+      if (
+        job.spider.toLowerCase().includes(keyword)
+        || job.id.toLowerCase().includes(keyword)
+      ) {
+        this.backendService.cancelJob(job.id);
+      }
+    });
   }
 
 

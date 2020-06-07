@@ -6,21 +6,32 @@
         display: flex;
         font-size: 13px;
 
-        .id-field{
+        .field {
+            display: flex;
+        }
+
+        .id-field {
             min-width: 300px;
         }
 
-        .spider-field{
+        .spider-field {
             min-width: 220px;
         }
 
-        .start-time-field{
+        .start-time-field {
             min-width: 300px;
         }
 
-        .end-time-field{
+        .end-time-field {
             min-width: 300px;
         }
+    }
 
+    .clickable {
+        cursor: pointer;
+
+        &:hover {
+            background-color: #00000015;
+        }
     }
 }

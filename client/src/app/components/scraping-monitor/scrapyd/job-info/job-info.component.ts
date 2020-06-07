@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { JobInfo } from '../../model/scrapyd/scrapyd.model';
+import { JobInfo } from '../../../../model/scrapyd.model';
+import { ClipboardService } from '../../../../services/utils/clipboard-service';
+
 
 
 
@@ -14,7 +16,9 @@ export class JobInfoComponent implements OnInit {
   @Input() public jobInfo: JobInfo;
 
 
-  constructor() { }
+  constructor(
+    public clipboard: ClipboardService,
+  ) { }
 
 
   ngOnInit() {
