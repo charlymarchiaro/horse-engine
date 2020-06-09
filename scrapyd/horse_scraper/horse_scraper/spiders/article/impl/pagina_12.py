@@ -28,34 +28,32 @@ from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 class Params(BaseArticleSpiderParams):
     def _after_initialize(self) -> None:
-        self.date_allow_str = self.get_date_allow_str(
-            year_format="04",
-            month_format="1",
-            day_format="1",
-            concat_fn=lambda year, month, day: f"/{year}/{month}/{day}/",
-        )
+        pass
 
     # Common params
     def _get_spider_base_name(self) -> str:
-        return "mdz"
+        return "pagina_12"
 
     def get_allowed_domains(self) -> List[str]:
-        return ["mdzol.com"]
+        return ["pagina12.com.ar"]
 
     # Crawl params
 
     def get_crawl_start_urls(self) -> List[str]:
         return [
-            "https://www.mdzol.com/",
+            "https://www.pagina12.com.ar/",
         ]
 
     def get_url_filter(self) -> UrlFilter:
-        return UrlFilter(allow_re=[f".*({self.date_allow_str}).*\d+.htm"], deny_re=[])
+        return UrlFilter(allow_re=[".*\/\d{6}\d*-.*"], deny_re=["\/autores\/"])
 
     # Sitemap params
 
     def get_sitemap_urls(self) -> List[str]:
-        return ["https://www.mdzol.com/include/sitemaps/"]
+        return [
+            "https://www.pagina12.com.ar/sitemap.xml.gz",
+            "https://www.pagina12.com.ar/breakingnews.xml",
+        ]
 
     def get_sitemap_follow(self) -> List[str]:
         return [".*"]
@@ -69,25 +67,24 @@ class Params(BaseArticleSpiderParams):
     # Parser functions
 
     def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:
-        return [
-            self.parser_1,
-        ]
+        return [self.parser_1]
 
     def parser_1(self, response):
 
         article_data = self.get_default_parser_results(response)
 
-        title = article_data.title
         last_updated = article_data.last_updated
+
+        # title
+        title = extract_all_text(response, root_xpath="//h1", exclude_list=[],)
 
         # text ----------
         text = extract_all_text(
             response,
-            root_xpath='//div [@class="newsfull__content"]',
+            root_xpath='//div[@class="article-text"]',
             exclude_list=[
                 (AttributeType.NAME, "script"),
                 (AttributeType.NAME, "style"),
-                (AttributeType.CLASS, "relacionadas"),
             ],
         )
 

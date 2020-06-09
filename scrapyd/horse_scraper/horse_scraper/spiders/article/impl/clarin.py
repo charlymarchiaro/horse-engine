@@ -1,4 +1,4 @@
-from typing import Tuple, List, Dict, Union, Callable, cast
+from typing import Tuple, List, Dict, Any, Union, Callable, cast
 
 import json
 import html
@@ -53,7 +53,7 @@ class Params(BaseArticleSpiderParams):
             "sitemap_news",
         ]
 
-    def should_parse_sitemap_entry(self, entry: Dict[str, str]) -> bool:
+    def should_parse_sitemap_entry(self, entry: Any) -> bool:
         return True
 
     def should_follow_sitemap_url(self, url: str) -> bool:

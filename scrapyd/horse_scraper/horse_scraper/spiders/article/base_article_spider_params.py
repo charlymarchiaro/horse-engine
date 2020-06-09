@@ -8,7 +8,7 @@ import dateparser  # type: ignore
 from datetime import datetime, date, timedelta
 from string import whitespace
 
-from typing import Tuple, List, Dict, Union, Callable, cast
+from typing import Tuple, List, Dict, Any, Union, Callable, cast
 from abc import abstractmethod
 
 import scrapy  # type: ignore
@@ -136,7 +136,7 @@ class BaseArticleSpiderParams:
         pass
 
     @abstractmethod
-    def should_parse_sitemap_entry(self, entry: Dict[str, str]) -> bool:
+    def should_parse_sitemap_entry(self, entry: Any) -> bool:
         pass
 
     @abstractmethod
