@@ -58,7 +58,7 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
 
         SitemapSpider.__init__(self, self.name, *args, **kwargs)
 
-    def sitemap_filter(self, entries: Iterator[Any]) -> Generator[Any, None, None]:
+    def sitemap_filter(self, entries: Any) -> Generator[Any, None, None]:
 
         for entry in entries:
 

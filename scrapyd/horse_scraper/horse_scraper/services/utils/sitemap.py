@@ -19,7 +19,7 @@ class Sitemap(object):
     """Class to parse Sitemap (type=urlset) and Sitemap Index
     (type=sitemapindex) files"""
 
-    def __init__(self, xmltext: str) -> None:
+    def __init__(self, xmltext: str):
         xmlp = lxml.etree.XMLParser(
             recover=True, remove_comments=True, resolve_entities=False
         )
