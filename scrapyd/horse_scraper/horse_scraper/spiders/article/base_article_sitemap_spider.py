@@ -63,7 +63,9 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
         for entry in entries:
 
             url: str = entry["loc"]
-            is_sitemap_entry = url.endswith(".xml") or url.endswith(".txt")
+            is_sitemap_entry = (
+                url.endswith(".xml") or url.endswith(".txt") or "sitemap" in url
+            )
 
             # it's sitemap entry --> filter if 'entry_date' info is present and outside search period
             if is_sitemap_entry:
