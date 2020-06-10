@@ -76,7 +76,7 @@ export class DatabaseQueryResultsComponent implements OnInit, OnChanges {
       { type: 'label', value: i.parseFunction || '—', },
       {
         type: 'link',
-        value: `http://localhost/api/articles/${i.article.id}?filter=%7B%0A%20%20%22include%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22relation%22%3A%20%22articleScrapingDetails%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22scope%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22include%22%3A%20%5B%7B%20%22relation%22%3A%20%22articleSpider%22%20%7D%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%20%22relation%22%3A%20%22articleSource%22%20%7D%0A%20%20%5D%0A%7D`,
+        value: `/api/articles/${i.article.id}?filter=%7B%0A%20%20%22include%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%22relation%22%3A%20%22articleScrapingDetails%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%22scope%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22include%22%3A%20%5B%7B%20%22relation%22%3A%20%22articleSpider%22%20%7D%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%20%22relation%22%3A%20%22articleSource%22%20%7D%0A%20%20%5D%0A%7D`,
         label: 'View',
         linkType: 'newWindow'
       },
