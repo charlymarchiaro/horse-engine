@@ -14,8 +14,16 @@
             <div *ngIf="field.type === 'label'">{{field.value}}</div>
             <div *ngIf="field.type === 'link'">
               <a
+                *ngIf="field.linkType && field.linkType === 'newTab'"
                 href="{{field.value}}"
                 target="_blank">
+                {{field.label}}
+              </a>
+              <a
+                *ngIf="field.linkType && field.linkType === 'newWindow'"
+                href="{{field.value}}"
+                target="popup"
+                (click)="window.open(field.value, '', 'width=1500, height=900')">
                 {{field.label}}
               </a>
             </div>
