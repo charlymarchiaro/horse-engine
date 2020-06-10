@@ -179,7 +179,7 @@ def get_publishing_date(
                 meta_tags[0], known_meta_tag["content"]
             )
 
-            logging.debug("matched string: " + date_str)
+            logging.debug("matched string: " + str(date_str))
             datetime_obj = parse_date_str(date_str, date_span, locale_date_order)
             if datetime_obj:
                 return datetime_obj
@@ -190,13 +190,13 @@ def get_publishing_date(
 
     url_regex_dict: Dict[str, RegexInfo] = {
         "YMD": RegexInfo(
-            f"({re_years_str})(-|\/)?(\d{{2}})(-|\/)?(\d{{2}})", [1, 3, 5]
+            f"({re_years_str})(-|\/)?(\d{{1,2}})(-|\/)?(\d{{1,2}})", [1, 3, 5]
         ),
         "DMY": RegexInfo(
-            f"(-|\/)?(\d{{2}})(-|\/)?(\d{{2}})({re_years_str})", [5, 3, 1]
+            f"(-|\/)?(\d{{1,2}})(-|\/)?(\d{{1,2}})({re_years_str})", [5, 3, 1]
         ),
         "MDY": RegexInfo(
-            f"(-|\/)?(\d{{2}})(-|\/)?(\d{{2}})({re_years_str})", [3, 5, 1]
+            f"(-|\/)?(\d{{1,2}})(-|\/)?(\d{{1,2}})({re_years_str})", [3, 5, 1]
         ),
     }
 
@@ -221,6 +221,9 @@ def get_publishing_date(
 def parse_date_str(
     date_str, date_span: DateSpan, locale_date_order: str
 ) -> Union[None, datetime]:
+
+    if not date_str:
+        return None
 
     functions = [
         lambda ds: dateparser.parse(ds, settings={"DATE_ORDER": "YMD"}),
