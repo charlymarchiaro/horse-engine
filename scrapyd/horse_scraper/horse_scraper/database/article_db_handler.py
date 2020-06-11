@@ -1,4 +1,4 @@
-from typing import Tuple, List, Union, Callable, Any, cast
+from typing import Tuple, List, Iterator, Union, Callable, Any, cast
 
 import os
 from datetime import datetime
@@ -171,6 +171,9 @@ class ArticleDbHandler(object):
 
         cnxn.commit()
 
+        # Close de connection
+        cnxn.close()
+
         return None
 
     def is_article_already_persisted(self, url: str, article_source_id: str) -> bool:
@@ -197,7 +200,60 @@ class ArticleDbHandler(object):
         cursor.execute(sql)
         rows = cursor.fetchall()
 
+        # Close de connection
+        cnxn.close()
+
         return len(rows) > 0
+
+    def get_already_persisted_articles(
+        self, urls: Iterator[str], article_source_id: str
+    ) -> Iterator[str]:
+
+        cnxn = self.get_db_connection()
+        cursor = cnxn.cursor()
+
+        # Create temp table
+        sql = f"""
+                CREATE TEMP TABLE temp_articles_to_check(
+                    url TEXT,
+                    article_source_id UUID
+                )
+                """
+        cursor.execute(sql)
+
+        values = map(lambda u: f"('{u}', '{article_source_id}')", urls)
+
+        values_str = ",".join(values)
+
+        # Populate temp table
+        sql = f"""
+                INSERT INTO temp_articles_to_check(
+                    url,
+                    article_source_id
+                )
+                VALUES {values_str}
+                """
+        cursor.execute(sql)
+
+        # Join with persisted articles table and get existing urls
+        sql = f"""
+                SELECT 
+                        article.url
+                FROM 
+                        temp_articles_to_check AS t
+                        INNER JOIN scraper.article AS article
+                            ON t.url like '%' || article.url
+                            AND article.article_source_id = t.article_source_id
+                """
+        cursor.execute(sql)
+        cnxn.commit()
+
+        rows = cursor.fetchall()
+
+        # Close de connection
+        cnxn.close()
+
+        return rows
 
     def get_spider_article_source_info(self, spider_name: str) -> ArticleSourceInfo:
 
@@ -228,6 +284,9 @@ class ArticleDbHandler(object):
 
         cursor.execute(sql)
         data = cursor.fetchone()
+
+        # Close de connection
+        cnxn.close()
 
         info = ArticleSourceInfo()
 

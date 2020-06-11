@@ -56,9 +56,15 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
         self.sitemap_rules = self.params.get_sitemap_rules()
         self.sitemap_follow = self.params.get_sitemap_follow()
 
+        self.db_handler = ArticleDbHandler()
+
         SitemapSpider.__init__(self, self.name, *args, **kwargs)
 
     def sitemap_filter(self, entries: Any) -> Generator[Any, None, None]:
+
+        # List article (not sitemap) entries, so that to check more
+        # efficiently if they are already persisted in the database
+        article_entries: List[Any] = []
 
         for entry in entries:
 
@@ -117,13 +123,16 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
                     # no valid rules apply --> skip
                     continue
 
-                if self.is_article_already_persisted(url):
-                    # already persisted --> skip
-                    continue
+                article_entries.append(entry)
 
+            continue
+
+        # Process article entries
+        if len(article_entries) > 0:
+            for entry in self.get_not_already_persisted_entries(article_entries):
                 logging.info(
                     f"--> Valid url (entry_date={entry_date}) >>> (parsing article): "
-                    + url
+                    + entry["loc"]
                 )
                 yield entry
 
@@ -180,15 +189,11 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
             if s.type == "sitemapindex":
                 for loc in iterloc(it, self.sitemap_alternate_links):
                     if any(x.search(loc) for x in self._follow):
-                        logging.info(
-                            "_parse_sitemap: type=sitemapindex --> c=_parse_sitemap"
-                        )
                         yield Request(loc, callback=self._parse_sitemap)
             elif s.type == "urlset":
                 for loc in iterloc(it, self.sitemap_alternate_links):
                     for r, c in self._cbs:
                         if r.search(loc):
-                            logging.info("_parse_sitemap: type=urlset --> c=" + str(c))
                             yield Request(loc, callback=c)
                             break
             else:
@@ -213,3 +218,19 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
             return False
 
         return True
+
+    def get_not_already_persisted_entries(self, entries: List[Any]) -> List[Any]:
+        persisted_urls = self.db_handler.get_already_persisted_articles(
+            urls=map(lambda e: str(e["loc"]), entries),
+            article_source_id=self.source_info.id,
+        )
+
+        result: List[Any] = []
+
+        for entry in entries:
+            if entry["loc"] in persisted_urls:
+                continue
+
+            result.append(entry)
+
+        return result

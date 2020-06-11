@@ -219,7 +219,3 @@ class BaseArticleSpider:
             return False
 
         return True
-
-    def is_article_already_persisted(self, url: str) -> bool:
-        handler = ArticleDbHandler()
-        return handler.is_article_already_persisted(url, self.source_info.id)
