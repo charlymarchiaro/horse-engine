@@ -143,6 +143,10 @@ class BaseArticleSpiderParams:
     def should_follow_sitemap_url(self, url: str) -> bool:
         pass
 
+    @abstractmethod
+    def should_follow_article_url(self, url: str) -> bool:
+        return True
+
     # Parser functions
     @abstractmethod
     def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:

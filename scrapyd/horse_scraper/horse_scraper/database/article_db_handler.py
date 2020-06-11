@@ -207,10 +207,10 @@ class ArticleDbHandler(object):
 
     def get_already_persisted_articles(
         self, urls: Iterator[str], article_source_id: str
-    ) -> Iterator[str]:
+    ) -> List[str]:
 
         cnxn = self.get_db_connection()
-        cursor = cnxn.cursor()
+        cursor = cnxn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
         # Create temp table
         sql = f"""
@@ -238,7 +238,7 @@ class ArticleDbHandler(object):
         # Join with persisted articles table and get existing urls
         sql = f"""
                 SELECT 
-                        article.url
+                        t.url AS url
                 FROM 
                         temp_articles_to_check AS t
                         INNER JOIN scraper.article AS article
@@ -253,7 +253,9 @@ class ArticleDbHandler(object):
         # Close de connection
         cnxn.close()
 
-        return rows
+        result = list(map(lambda i: i["url"], rows))
+
+        return result
 
     def get_spider_article_source_info(self, spider_name: str) -> ArticleSourceInfo:
 

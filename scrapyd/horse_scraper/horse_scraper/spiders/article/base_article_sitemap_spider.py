@@ -205,7 +205,7 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
                 return False
         for r in self.params.url_filter.allow_re:
             if re.search(r, url):
-                return True
+                return self.params.should_follow_article_url(url)
         return False
 
     def should_follow_sitemap_url(self, url: str) -> bool:
