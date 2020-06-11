@@ -27,6 +27,9 @@ spec:
           resources:
             requests:
               cpu: 10m
+            limits:
+              cpu: 800m
+              memory: 1024Mi
           volumeMounts:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/data
@@ -35,7 +38,7 @@ spec:
               name: dshm
           args:
             - -c
-            - 'config_file=/etc/postgresql/postgresql.conf'
+            - "config_file=/etc/postgresql/postgresql.conf"
           env:
             - name: POSTGRES_USER
               value: sa
