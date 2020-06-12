@@ -239,7 +239,7 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
         persisted_urls = self.db_handler.get_already_persisted_articles(
             urls=map(lambda e: str(e["loc"]), entries),
             article_source_id=self.source_info.id,
-            keep_query_string=self.keep_url_query_string,
+            keep_query_string=self.params.keep_url_query_string,
         )
 
         result: List[Any] = []
