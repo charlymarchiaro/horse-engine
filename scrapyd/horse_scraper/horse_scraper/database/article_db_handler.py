@@ -221,19 +221,17 @@ class ArticleDbHandler(object):
                 """
         cursor.execute(sql)
 
-        values = map(lambda u: f"('{u}', '{article_source_id}')", urls)
-
-        values_str = ",".join(values)
+        values = map(lambda u: f"('{u}')", urls)
 
         # Populate temp table
-        sql = f"""
-                INSERT INTO temp_articles_to_check(
-                    url,
-                    article_source_id
-                )
-                VALUES {values_str}
-                """
-        cursor.execute(sql)
+        for values_str in values:
+            sql = f"""
+                    INSERT INTO temp_articles_to_check(
+                        url
+                    )
+                    VALUES {values_str}
+                    """
+            cursor.execute(sql)
 
         # Join with persisted articles table and get existing urls
         sql = f"""
@@ -241,9 +239,10 @@ class ArticleDbHandler(object):
                         t.url AS url
                 FROM 
                         temp_articles_to_check AS t
-                        INNER JOIN scraper.article AS article
+                        INNER JOIN scraper.article AS article                            
                             ON t.url like '%' || article.url
-                            AND article.article_source_id = t.article_source_id
+                WHERE
+                        article.article_source_id = '{article_source_id}'
                 """
         cursor.execute(sql)
         cnxn.commit()

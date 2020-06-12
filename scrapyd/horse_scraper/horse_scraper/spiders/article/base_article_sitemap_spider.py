@@ -4,6 +4,7 @@ import logging
 import re
 import json
 import dateparser  # type: ignore
+from dateutil.parser import parse as dateutil_parse  # type: ignore
 
 from typing import Tuple, List, Dict, Any, Iterator, Generator, Union, Callable, cast
 from abc import abstractmethod
@@ -137,13 +138,28 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
                 yield entry
 
     def extract_entry_date(self, entry: Any) -> Union[datetime, None]:
-        try:
-            if "entry_date" in entry:
-                return dateparser.parse(entry["entry_date"])
+        if "entry_date" in entry:
+
+            functions = [
+                lambda ds: dateutil_parse(ds),
+                lambda ds: dateparser.parse(ds),
+            ]
+
+            for f in functions:
+                try:
+                    date = f(entry["entry_date"])
+                except (ValueError, OverflowError, AttributeError, TypeError):
+                    date = None
+
+                # Parsed OK
+                if date:
+                    return date
+
+            # Could not parse
             return None
 
-        except:
-            return None
+        # No entry_date field
+        return None
 
     def _parse_sitemap(self, response):
         logging.info("_parse_sitemap: " + response.url)
