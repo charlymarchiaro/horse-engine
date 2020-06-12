@@ -24,7 +24,12 @@ from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 class Params(BaseArticleSpiderParams):
     def _after_initialize(self) -> None:
-        pass
+        self.date_allow_str = self.get_date_allow_str(
+            year_format="04",
+            month_format="02",
+            day_format="02",
+            concat_fn=lambda year, month, day: f"{year}-{month}",
+        )
 
     # Common params
     def _get_spider_base_name(self) -> str:
@@ -57,9 +62,16 @@ class Params(BaseArticleSpiderParams):
     def should_follow_sitemap_url(self, url: str) -> bool:
         # notas-YYYY
         s = re.search("\/notas-(\d{4})-", url)
-        if s and int(s.group(1)) < 2019:
+        if not s:
+            return True
+
+        s = re.search(f"\/notas-({self.date_allow_str})", url)
+        if not s:
             return False
 
+        return True
+
+    def should_follow_article_url(self, url: str) -> bool:
         return True
 
     # Parser functions
