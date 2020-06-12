@@ -190,13 +190,13 @@ def get_publishing_date(
 
     url_regex_dict: Dict[str, RegexInfo] = {
         "YMD": RegexInfo(
-            f"({re_years_str})(-|\/)?(\d{{1,2}})(-|\/)?(\d{{1,2}})", [1, 3, 5]
+            f"({re_years_str})(-|\/|\_)?(\d{{1,2}})(-|\/|\_)?(\d{{1,2}})", [1, 3, 5]
         ),
         "DMY": RegexInfo(
-            f"(-|\/)?(\d{{1,2}})(-|\/)?(\d{{1,2}})({re_years_str})", [5, 3, 1]
+            f"(-|\/|\_)?(\d{{1,2}})(-|\/|\_)?(\d{{1,2}})({re_years_str})", [5, 3, 1]
         ),
         "MDY": RegexInfo(
-            f"(-|\/)?(\d{{1,2}})(-|\/)?(\d{{1,2}})({re_years_str})", [3, 5, 1]
+            f"(-|\/|\_)?(\d{{1,2}})(-|\/|\_)?(\d{{1,2}})({re_years_str})", [3, 5, 1]
         ),
     }
 
