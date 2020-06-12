@@ -25,9 +25,11 @@ class ArticleDbHandler(object):
             user=user, password=password, host=server, port=port, database=db_name,
         )
 
-    def persist(self, item: Article) -> Union[Article, None]:
+    def persist(self, item: Article, keep_query_string: bool) -> Union[Article, None]:
 
-        if self.is_article_already_persisted(item["url"], item["source_id"]):
+        if self.is_article_already_persisted(
+            item["url"], item["source_id"], keep_query_string
+        ):
             logging.info("Article already persisted --> skipping.")
             logging.info("")
             return item
@@ -37,7 +39,7 @@ class ArticleDbHandler(object):
 
         article_source_id = f"'{item['source_id']}'"
 
-        url = f"'{self.sanitize_url(item['url'])}'"
+        url = f"'{self.sanitize_url(item['url'], keep_query_string)}'"
 
         title = (
             f"'{self.sanitize_value(item['title'])}'"
@@ -176,13 +178,14 @@ class ArticleDbHandler(object):
 
         return None
 
-    def is_article_already_persisted(self, url: str, article_source_id: str) -> bool:
+    def is_article_already_persisted(
+        self, url: str, article_source_id: str, keep_query_string: bool
+    ) -> bool:
 
         cnxn = self.get_db_connection()
         cursor = cnxn.cursor()
 
-        url = self.sanitize_value(url)
-        url = self.sanitize_url(url)
+        url = self.sanitize_url(url, keep_query_string)
 
         sql = f"""
                 SELECT
@@ -206,7 +209,7 @@ class ArticleDbHandler(object):
         return len(rows) > 0
 
     def get_already_persisted_articles(
-        self, urls: Iterator[str], article_source_id: str
+        self, urls: Iterator[str], article_source_id: str, keep_query_string: bool,
     ) -> List[str]:
 
         cnxn = self.get_db_connection()
@@ -221,7 +224,12 @@ class ArticleDbHandler(object):
                 """
         cursor.execute(sql)
 
-        values = map(lambda u: f"('{u}')", urls)
+        # Map urls to values str
+        def url_map(url):
+            url = self.sanitize_url(url, keep_query_string)
+            return f"('{url}')"
+
+        values = map(url_map, urls)
 
         # Populate temp table
         for values_str in values:
@@ -311,11 +319,14 @@ class ArticleDbHandler(object):
             return ""
         return value.replace("'", '"')
 
-    def sanitize_url(self, url) -> str:
+    def sanitize_url(self, url: str, keep_query_string: bool) -> str:
+        url = self.sanitize_value(url)
         parse_result: ParseResult = urlparse(url)
 
         scheme: str = "%s://" % parse_result.scheme
         parsed: str = parse_result.geturl().replace(scheme, "", 1)
-        parsed = parsed.split("?")[0]
+
+        if not keep_query_string:
+            parsed = parsed.split("?")[0]
 
         return parsed

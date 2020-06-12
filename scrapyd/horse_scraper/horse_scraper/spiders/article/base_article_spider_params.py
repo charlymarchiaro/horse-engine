@@ -51,6 +51,9 @@ class BaseArticleSpiderParams:
 
     url_filter: UrlFilter
 
+    # Override to keep query string of the article's url
+    keep_url_query_string: bool = False
+
     def __init__(self, *args, **kwargs):
         pass
 

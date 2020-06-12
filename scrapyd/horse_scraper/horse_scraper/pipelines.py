@@ -11,4 +11,4 @@ from .database.article_db_handler import ArticleDbHandler
 class HorseScraperPipeline(object):
     def process_item(self, item, spider):
         handler = ArticleDbHandler()
-        handler.persist(item)
+        handler.persist(item, spider.params.keep_url_query_string)
