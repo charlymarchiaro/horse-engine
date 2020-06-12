@@ -51,22 +51,24 @@ class Params(BaseArticleSpiderParams):
 
     def get_url_filter(self) -> UrlFilter:
         return UrlFilter(
-            allow_re=["^.{40,}$"],
+            allow_re=["^[^\?]{40,}.*$"],
             deny_re=[
+                ".*taxonomy\/",
+                ".*archivo.urgente24.*",
                 ".*core\/",
                 ".*profiles\/",
                 ".*README.txt",
                 ".*web.config",
-                ".*admin\/",
-                ".*comment\/reply\/",
+                ".*admin",
+                ".*comment\/reply",
                 ".*filter\/tips",
-                ".*node\/add\/",
+                ".*node\/add",
                 ".*search\/",
-                ".*user\/register\/",
-                ".*user\/password\/",
-                ".*user\/login\/",
-                ".*user\/logout\/",
-                ".*user\/reset\/",
+                ".*user\/register",
+                ".*user\/password",
+                ".*user\/login",
+                ".*user\/logout",
+                ".*user\/reset",
             ],
         )
 
