@@ -50,7 +50,7 @@ class Params(BaseArticleSpiderParams):
         ]
 
     def get_url_filter(self) -> UrlFilter:
-        return UrlFilter(allow_re=[f".*{self.date_allow_str}.*"], deny_re=[])
+        return UrlFilter(allow_re=[f".*{self.date_allow_str}.*"], deny_re=[".*\?.*"])
 
     # Sitemap params
 
@@ -67,6 +67,9 @@ class Params(BaseArticleSpiderParams):
         return True
 
     def should_follow_sitemap_url(self, url: str) -> bool:
+        return True
+
+    def should_follow_article_url(self, url: str) -> bool:
         return True
 
     # Parser functions

@@ -70,6 +70,9 @@ class Params(BaseArticleSpiderParams):
             return True
         return False
 
+    def should_follow_article_url(self, url: str) -> bool:
+        return True
+
     # Parser functions
 
     def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:
