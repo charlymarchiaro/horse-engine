@@ -52,6 +52,7 @@ class Params(BaseArticleSpiderParams):
                 ".*calendar\/.*",
                 ".*controller=.*",
                 ".*action~.*",
+                ".*\/tag\/.*",
             ],
         )
 
