@@ -12,6 +12,7 @@ from scrapy.http import Request, HtmlResponse  # type: ignore
 from scrapy.linkextractors import LinkExtractor  # type: ignore
 from scrapy.spiders import CrawlSpider, Rule  # type: ignore
 from scrapy.utils.log import configure_logging  # type: ignore
+from scrapy.exceptions import CloseSpider  # type: ignore
 
 from datetime import datetime, date, timedelta
 from string import whitespace
@@ -28,6 +29,7 @@ from horse_scraper.settings import (
     LOG_LEVEL,
     FEED_EXPORT_ENCODING,
     CRAWL_PERIOD_DAYS_BACK,
+    CRAWL_MAX_RUN_TIME_HOURS,
 )
 from horse_scraper.database.article_db_handler import ArticleDbHandler
 
@@ -38,6 +40,7 @@ from .default_article_parser import DefaultArticleParser
 
 class BaseArticleCrawlSpider(BaseArticleSpider, CrawlSpider):
 
+    start_time: datetime
     follow_current_article_links = True
 
     def __init__(self, *args, **kwargs):
@@ -54,10 +57,19 @@ class BaseArticleCrawlSpider(BaseArticleSpider, CrawlSpider):
         self.start_urls = self.params.get_crawl_start_urls()
         self.rules = self.params.get_crawl_rules()
 
+        self.start_time = datetime.now()
+
         CrawlSpider.__init__(self, self.name, *args, **kwargs)
 
     def process_links(self, links):
+
+        if self.get_current_run_time_hours() > CRAWL_MAX_RUN_TIME_HOURS:
+            raise CloseSpider("Max run time exceeded")
+
         if not self.follow_current_article_links:
             return []
 
         return links
+
+    def get_current_run_time_hours(self) -> float:
+        return (datetime.now() - self.start_time).total_seconds() / 3600
