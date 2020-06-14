@@ -112,6 +112,44 @@ class RegexInfo:
         self.groups = groups
 
 
+def sanitize_date_str(
+    date_str: str, date_span: DateSpan, locale_date_order: str
+) -> Union[None, datetime]:
+
+    ds_params = get_datespan_params(date_span)
+
+    re_years_str = "|".join(map(lambda v: str(v), ds_params.years))
+
+    regex_dict: Dict[str, RegexInfo] = {
+        "YMD": RegexInfo(
+            f"({re_years_str})(-|\/|\_)?(\d{{1,2}})(-|\/|\_)?(\d{{1,2}})", [1, 3, 5]
+        ),
+        "DMY": RegexInfo(
+            f"(\d{{1,2}})(-|\/|\_)?(\d{{1,2}})(-|\/|\_)?({re_years_str})", [5, 3, 1]
+        ),
+        "MDY": RegexInfo(
+            f"(\d{{1,2}})(-|\/|\_)?(\d{{1,2}})(-|\/|\_)?({re_years_str})", [3, 5, 1]
+        ),
+    }
+
+    regex_list = [regex_dict["YMD"], regex_dict[locale_date_order]]
+
+    for regex in regex_list:
+        date_match = re.search(regex.rex, date_str)
+        if date_match:
+            year = date_match.group(regex.groups[0])
+            month = date_match.group(regex.groups[1])
+            day = date_match.group(regex.groups[2])
+            date_str = f"{year}/{month}/{day}"
+
+            logging.debug("matched string: " + date_str)
+            datetime_obj = parse_date_str(date_str, locale_date_order)
+            if datetime_obj:
+                return datetime_obj
+
+    return None
+
+
 # Forked ad modified from newspaper3k library:
 # https://github.com/codelucas/newspaper
 def get_publishing_date(
@@ -143,7 +181,7 @@ def get_publishing_date(
                 date_str = date_match.group(regex.groups[0])
 
                 logging.debug("matched string: " + date_str)
-                datetime_obj = parse_date_str(date_str, date_span, locale_date_order)
+                datetime_obj = parse_date_str(date_str, locale_date_order)
                 if datetime_obj:
                     return datetime_obj
 
@@ -185,47 +223,20 @@ def get_publishing_date(
             )
 
             logging.debug("matched string: " + str(date_str))
-            datetime_obj = parse_date_str(date_str, date_span, locale_date_order)
+            datetime_obj = parse_date_str(date_str, locale_date_order)
             if datetime_obj:
                 return datetime_obj
 
     # Find in URL
     logging.debug("Searching in URL:\n")
-    re_years_str = "|".join(map(lambda v: str(v), ds_params.years))
-
-    url_regex_dict: Dict[str, RegexInfo] = {
-        "YMD": RegexInfo(
-            f"({re_years_str})(-|\/|\_)?(\d{{1,2}})(-|\/|\_)?(\d{{1,2}})", [1, 3, 5]
-        ),
-        "DMY": RegexInfo(
-            f"(-|\/|\_)?(\d{{1,2}})(-|\/|\_)?(\d{{1,2}})({re_years_str})", [5, 3, 1]
-        ),
-        "MDY": RegexInfo(
-            f"(-|\/|\_)?(\d{{1,2}})(-|\/|\_)?(\d{{1,2}})({re_years_str})", [3, 5, 1]
-        ),
-    }
-
-    url_regex_list = [url_regex_dict["YMD"], url_regex_dict[locale_date_order]]
-
-    for regex in url_regex_list:
-        date_match = re.search(regex.rex, url)
-        if date_match:
-            year = date_match.group(regex.groups[0])
-            month = date_match.group(regex.groups[1])
-            day = date_match.group(regex.groups[2])
-            date_str = f"{year}/{month}/{day}"
-
-            logging.debug("matched string: " + date_str)
-            datetime_obj = parse_date_str(date_str, date_span, locale_date_order)
-            if datetime_obj:
-                return datetime_obj
+    datetime_obj = sanitize_date_str(url, date_span, locale_date_order)
+    if datetime_obj:
+        return datetime_obj
 
     return None
 
 
-def parse_date_str(
-    date_str, date_span: DateSpan, locale_date_order: str
-) -> Union[None, datetime]:
+def parse_date_str(date_str, locale_date_order: str) -> Union[None, datetime]:
 
     if not date_str:
         return None
