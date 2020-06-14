@@ -197,19 +197,21 @@ class BaseArticleSpider:
         if isinstance(data, ArticleData) == False:
             raise Exception("Data is not an instance of ArticleData: " + str(data))
 
+        is_valid = True
+
         if data.title is None or data.title == "":
-            logging.debug("--> Article data is invalid: empty title")
-            return False
+            logging.info("--> Article data is invalid: empty title")
+            is_valid = False
 
         if data.text is None or data.text == "":
-            logging.debug("--> Article data is invalid: empty text")
-            return False
+            logging.info("--> Article data is invalid: empty text")
+            is_valid = False
 
         if data.last_updated is None:
-            logging.debug("--> Article data is invalid: empty last_updated")
-            return False
+            logging.info("--> Article data is invalid: empty last_updated")
+            is_valid = False
 
-        return True
+        return is_valid
 
     def is_article_date_inside_search_period(self, article: Article) -> bool:
         article_date = article["last_updated"].date()
