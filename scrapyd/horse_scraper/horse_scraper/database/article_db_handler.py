@@ -209,7 +209,7 @@ class ArticleDbHandler(object):
         return len(rows) > 0
 
     def get_already_persisted_articles(
-        self, urls: Iterator[str], article_source_id: str, keep_query_string: bool,
+        self, urls: List[str], article_source_id: str, keep_query_string: bool,
     ) -> List[str]:
 
         cnxn = self.get_db_connection()
@@ -218,23 +218,24 @@ class ArticleDbHandler(object):
         # Create temp table
         sql = f"""
                 CREATE TEMP TABLE temp_articles_to_check(
-                    url TEXT,
-                    article_source_id UUID
+                    id INT,
+                    url TEXT                    
                 )
                 """
         cursor.execute(sql)
 
         # Map urls to values str
-        def url_map(url):
-            url = self.sanitize_url(url, keep_query_string)
-            return f"('{url}')"
+        values: List[str] = []
 
-        values = map(url_map, urls)
+        for id in range(len(urls)):
+            url = self.sanitize_url(urls[id], keep_query_string)
+            values.append(f"('{id}', '{url}')")
 
         # Populate temp table
         for values_str in values:
             sql = f"""
                     INSERT INTO temp_articles_to_check(
+                        id,
                         url
                     )
                     VALUES {values_str}
@@ -244,7 +245,7 @@ class ArticleDbHandler(object):
         # Join with persisted articles table and get existing urls
         sql = f"""
                 SELECT 
-                        t.url AS url
+                        t.id as id
                 FROM 
                         temp_articles_to_check AS t
                         INNER JOIN scraper.article AS article                            
@@ -260,7 +261,12 @@ class ArticleDbHandler(object):
         # Close de connection
         cnxn.close()
 
-        result = list(map(lambda i: i["url"], rows))
+        fetched_ids = list(map(lambda i: i["id"], rows))
+
+        result: List[str] = []
+
+        for id in fetched_ids:
+            result.append(urls[id])
 
         return result
 
