@@ -248,8 +248,11 @@ class ArticleDbHandler(object):
                         t.id as id
                 FROM 
                         temp_articles_to_check AS t
-                        INNER JOIN scraper.article AS article                            
+                        INNER JOIN scraper.article AS article
                             ON t.url like '%' || article.url
+                        INNER JOIN scraper.article_scraping_details AS details
+                            ON details.article_id = article.id
+                            AND details.result = 'success'
                 WHERE
                         article.article_source_id = '{article_source_id}'
                 """
