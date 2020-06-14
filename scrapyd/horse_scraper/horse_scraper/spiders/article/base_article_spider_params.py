@@ -29,8 +29,11 @@ from horse_scraper.settings import (
     LOG_LEVEL,
     FEED_EXPORT_ENCODING,
 )
-from horse_scraper.database.article_db_handler import ArticleDbHandler  # type: ignore
-from .default_article_parser import DefaultArticleParser
+from horse_scraper.database.article_db_handler import ArticleDbHandler
+from horse_scraper.services.utils.parse_utils import (
+    sanitize_date_str as parse_utils_sanitize_date_str,
+)
+from .default_article_parser import DefaultArticleParser, get_locale_date_order
 
 
 class UrlFilter:
@@ -183,3 +186,8 @@ class BaseArticleSpiderParams:
 
     def get_default_parser_results(self, response: HtmlResponse) -> ArticleData:
         return self.default_parser.parse(response, self.date_span, self.source_info)
+
+    def sanitize_date_str(self, date_str: str) -> Union[datetime, None]:
+        return parse_utils_sanitize_date_str(
+            date_str, self.date_span, get_locale_date_order(self.source_info.country)
+        )
