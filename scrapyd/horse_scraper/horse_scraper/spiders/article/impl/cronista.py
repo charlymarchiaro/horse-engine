@@ -156,6 +156,8 @@ class Params(BaseArticleSpiderParams):
     # Nota video
     def parser_3(self, response):
 
+        article_data = self.get_default_parser_results(response)
+
         # title ----------
         title_tag = response.xpath("//title//text()").extract_first()
 
@@ -169,7 +171,7 @@ class Params(BaseArticleSpiderParams):
         )
 
         # last_updated ----------
-        last_updated = datetime.now()
+        last_updated = article_data.last_updated
 
         # text ----------
         text = "Nota Video"
