@@ -113,12 +113,14 @@ class RegexInfo:
 
 
 def sanitize_date_str(
-    date_str: str, date_span: DateSpan, locale_date_order: str
+    date_str: str, date_span: Union[DateSpan, None], locale_date_order: str
 ) -> Union[None, datetime]:
 
-    ds_params = get_datespan_params(date_span)
-
-    re_years_str = "|".join(map(lambda v: str(v), ds_params.years))
+    if date_span:
+        ds_params = get_datespan_params(date_span)
+        re_years_str = "|".join(map(lambda v: str(v), ds_params.years))
+    else:
+        re_years_str = "\d{4}"
 
     regex_dict: Dict[str, RegexInfo] = {
         "YMD": RegexInfo(

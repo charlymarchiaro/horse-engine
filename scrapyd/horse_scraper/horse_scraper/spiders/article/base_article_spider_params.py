@@ -189,5 +189,5 @@ class BaseArticleSpiderParams:
 
     def sanitize_date_str(self, date_str: str) -> Union[datetime, None]:
         return parse_utils_sanitize_date_str(
-            date_str, self.date_span, get_locale_date_order(self.source_info.country)
+            date_str, None, get_locale_date_order(self.source_info.country)
         )
