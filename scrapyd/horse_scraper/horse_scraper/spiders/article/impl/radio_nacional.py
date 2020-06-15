@@ -76,7 +76,30 @@ class Params(BaseArticleSpiderParams):
     # Parser functions
 
     def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:
-        return []
+        return [
+            self.parser_1,
+        ]
+
+    def parser_1(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+        last_updated = article_data.last_updated
+
+        images = response.xpath(
+            '//section[contains(@class, "entry-content")]//img'
+        ).extract()
+
+        is_photo_gallery = len(article_data.text) == 0 and images and len(images) > 0
+
+        # text ----------
+        if is_photo_gallery:
+            text = "Galería de fotos"
+        else:
+            text = article_data.text
+
+        return ArticleData(title, text, last_updated)
 
 
 # Spider implementations
