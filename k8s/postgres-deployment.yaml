@@ -28,7 +28,7 @@ spec:
             requests:
               cpu: 10m
             limits:
-              cpu: 800m
+              cpu: 1500m
               memory: 1024Mi
           volumeMounts:
             - name: postgres-storage
