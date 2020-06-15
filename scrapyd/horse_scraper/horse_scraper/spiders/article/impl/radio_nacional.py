@@ -85,7 +85,6 @@ class Params(BaseArticleSpiderParams):
         article_data = self.get_default_parser_results(response)
 
         title = article_data.title
-        last_updated = article_data.last_updated
 
         images = response.xpath(
             '//section[contains(@class, "entry-content")]//img'
@@ -93,11 +92,18 @@ class Params(BaseArticleSpiderParams):
 
         is_photo_gallery = len(article_data.text) == 0 and images and len(images) > 0
 
-        # text ----------
         if is_photo_gallery:
             text = "Galería de fotos"
+            last_updated = self.sanitize_date_str(
+                extract_all_text(
+                    response,
+                    root_xpath='//span[contains(@class, "meta-date")]',
+                    exclude_list=[],
+                )
+            )
         else:
             text = article_data.text
+            last_updated = article_data.last_updated
 
         return ArticleData(title, text, last_updated)
 
