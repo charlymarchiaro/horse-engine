@@ -78,7 +78,7 @@ class Params(BaseArticleSpiderParams):
     # Sitemap params
 
     def get_sitemap_urls(self) -> List[str]:
-        return []
+        return ["https://urgente24.com/sitemap.xml"]
 
     def get_sitemap_follow(self) -> List[str]:
         return [".*"]
