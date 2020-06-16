@@ -67,7 +67,7 @@ class Params(BaseArticleSpiderParams):
                 ".*\/infoautos\/.*",
                 ".*\/infotecnologia\/.*",
             ],
-            deny_re=[],
+            deny_re=[".*automotiva.com.ar\/.*"],
         )
 
     # Sitemap params
@@ -92,6 +92,7 @@ class Params(BaseArticleSpiderParams):
     def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:
         return [
             self.parser_1,
+            self.parser_2,
         ]
 
     def parser_1(self, response):
@@ -105,6 +106,26 @@ class Params(BaseArticleSpiderParams):
         text = extract_all_text(
             response,
             root_xpath='//section[contains(@itemprop, "articleBody")]',
+            exclude_list=[
+                (AttributeType.NAME, "script"),
+                (AttributeType.NAME, "style"),
+            ],
+        )
+
+        return ArticleData(title, text, last_updated)
+
+    # Infoautos, infotecnologia
+    def parser_2(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+        last_updated = article_data.last_updated
+
+        # text ----------
+        text = extract_all_text(
+            response,
+            root_xpath='//div[contains(@class, "description")]',
             exclude_list=[
                 (AttributeType.NAME, "script"),
                 (AttributeType.NAME, "style"),
