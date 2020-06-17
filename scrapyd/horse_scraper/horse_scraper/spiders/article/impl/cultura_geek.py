@@ -42,6 +42,22 @@ class Params(BaseArticleSpiderParams):
     def get_crawl_start_urls(self) -> List[str]:
         return [
             "http://culturageek.com.ar/",
+            "https://culturageek.com.ar/category/tecnoticias/",
+            "https://culturageek.com.ar/category/tecnoticias/ciencia/",
+            "https://culturageek.com.ar/category/tecnoticias/games/",
+            "https://culturageek.com.ar/category/tecnoticias/guia/",
+            "https://culturageek.com.ar/category/tecnoticias/movil-tecnoticias/",
+            "https://culturageek.com.ar/category/tecnoticias/tvcine/",
+            "https://culturageek.com.ar/category/tecnoticias/gadgets-y-hardware/",
+            "https://culturageek.com.ar/category/tecnoticias/social-tecnoticias/",
+            "https://culturageek.com.ar/category/tecnoticias/sports/",
+            "https://culturageek.com.ar/category/antitecno/",
+            "https://culturageek.com.ar/category/programas-anteriores/",
+            "https://culturageek.com.ar/category/entevistas/",
+            "https://culturageek.com.ar/category/reviews-games-y-gadgets/",
+            "https://culturageek.com.ar/category/reviews-games-y-gadgets/videojuegos/",
+            "https://culturageek.com.ar/category/reviews-games-y-gadgets/smartphones/",
+            "https://culturageek.com.ar/category/reviews-games-y-gadgets/gadgets-accesorios-y-tech/",
         ]
 
     def get_url_filter(self) -> UrlFilter:
@@ -50,18 +66,7 @@ class Params(BaseArticleSpiderParams):
             deny_re=[
                 ".*culturageek.com.ar(\/.+\/.+\/).*",
                 ".*culturageek.com.ar(\/(.){1,20}\/).*",
-                # For some reason it's trying to parse the following
-                # urls that are outside the domain:
-                ".*www.pinterest.com\/.*",
-                ".*www.tumblr.com\/.*",
-                ".*twitter.com\/.*",
-                ".*api.whatsapp.com\/.*",
-                ".*www.facebook.com\/.*",
-                ".*www.reddit.com\/.*",
-                ".*www.tumblr.com\/.*",
-                ".*skype.com\/.*",
-                ".*telegram.me\/.*",
-                ".*www.linkedin.com\/.*",
+                ".*share=.*",
             ],
         )
 
@@ -80,7 +85,8 @@ class Params(BaseArticleSpiderParams):
         return True
 
     def should_follow_article_url(self, url: str) -> bool:
-        return True
+        # Ignore if domain is only present in query
+        return url.split("?")[0].find("culturageek.com.ar") != -1
 
     # Parser functions
 
