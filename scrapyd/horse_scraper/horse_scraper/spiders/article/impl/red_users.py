@@ -42,6 +42,48 @@ class Params(BaseArticleSpiderParams):
     def get_crawl_start_urls(self) -> List[str]:
         return [
             "http://www.redusers.com/noticias/",
+            "http://www.redusers.com/noticias/category/actualidad-nacional/",
+            "http://www.redusers.com/noticias/category/automoviles/",
+            "http://www.redusers.com/noticias/category/colecciones/",
+            "http://www.redusers.com/noticias/category/content-studio/",
+            "http://www.redusers.com/noticias/category/empresas/",
+            "http://www.redusers.com/noticias/category/hardware/",
+            "http://www.redusers.com/noticias/category/internet/",
+            "http://www.redusers.com/noticias/category/juegos/",
+            "http://www.redusers.com/noticias/category/mobile/",
+            "http://www.redusers.com/noticias/category/power/",
+            "http://www.redusers.com/noticias/category/programacion-2/",
+            "http://www.redusers.com/noticias/category/seguridad/",
+            "http://www.redusers.com/noticias/category/software/",
+            "http://www.redusers.com/noticias/category/telecomunicaciones/",
+            "http://www.redusers.com/noticias/category/userlandia/",
+            "http://www.redusers.com/noticias/category/users/",
+            "http://www.redusers.com/noticias/cat-reviews/elegidos/",
+            "http://www.redusers.com/noticias/cat-reviews/gaming/",
+            "http://www.redusers.com/noticias/cat-reviews/hardware/",
+            "http://www.redusers.com/noticias/cat-reviews/imagen-y-sonido/",
+            "http://www.redusers.com/noticias/cat-reviews/impresora/",
+            "http://www.redusers.com/noticias/cat-reviews/mobile/",
+            "http://www.redusers.com/noticias/cat-reviews/notebooks-y-pcs/",
+            "http://www.redusers.com/noticias/cat-reviews/perifericos/",
+            "http://www.redusers.com/noticias/cat-reviews/scanners/",
+            "http://www.redusers.com/noticias/cat-reviews/smart-tv/",
+            "http://www.redusers.com/noticias/cat-reviews/software/",
+            "http://www.redusers.com/noticias/cat-reviews/tablet/",
+            "http://www.redusers.com/noticias/marcas-publicaciones/colecciones/",
+            "http://www.redusers.com/noticias/marcas-publicaciones/guias-users/",
+            "http://www.redusers.com/noticias/marcas-publicaciones/informes-users/",
+            "http://www.redusers.com/noticias/marcas-publicaciones/libros/",
+            "http://www.redusers.com/noticias/marcas-publicaciones/power/",
+            "http://www.redusers.com/noticias/marcas-publicaciones/users/",
+            "http://www.redusers.com/noticias/cat_trucos/trucos-hardware/",
+            "http://www.redusers.com/noticias/cat_trucos/trucos-internet/",
+            "http://www.redusers.com/noticias/cat_trucos/trucos-juegos/",
+            "http://www.redusers.com/noticias/cat_trucos/trucos-moviles/",
+            "http://www.redusers.com/noticias/cat_trucos/trucos-multimedia/",
+            "http://www.redusers.com/noticias/cat_trucos/trucos-office/",
+            "http://www.redusers.com/noticias/cat_trucos/trucos-utilitarios/",
+            "http://www.redusers.com/noticias/cat_trucos/trucos-windows/",
         ]
 
     def get_url_filter(self) -> UrlFilter:
@@ -71,6 +113,7 @@ class Params(BaseArticleSpiderParams):
     def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:
         return [
             self.parser_1,
+            self.parser_2,
         ]
 
     def parser_1(self, response):
@@ -83,7 +126,38 @@ class Params(BaseArticleSpiderParams):
         # text ----------
         text = extract_all_text(
             response,
-            root_xpath='//section[contains(@class, "post_area")]',
+            root_xpath='//div[contains(@class, "post_content")]',
+            exclude_list=[
+                (AttributeType.NAME, "script"),
+                (AttributeType.NAME, "style"),
+                (AttributeType.CLASS, "breadcrumb"),
+                (AttributeType.CLASS, "post_barracompartir"),
+                (AttributeType.CLASS, "post_recuadros"),
+                (AttributeType.CLASS, "magzine"),
+                (AttributeType.ID, "comments"),
+            ],
+        )
+
+        return ArticleData(title, text, last_updated)
+
+    def parser_2(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+
+        last_updated = dateparser.parse(
+            extract_all_text(
+                response,
+                root_xpath='//div[contains(@class, "post_fecha_autor")]',
+                exclude_list=[],
+            )
+        )
+
+        # text ----------
+        text = extract_all_text(
+            response,
+            root_xpath='//div[contains(@class, "post_content")]',
             exclude_list=[
                 (AttributeType.NAME, "script"),
                 (AttributeType.NAME, "style"),
