@@ -122,15 +122,20 @@ def sanitize_date_str(
     else:
         re_years_str = "\d{4}"
 
+    separator_str = "(-|\/|\_|\.)"
+
     regex_dict: Dict[str, RegexInfo] = {
         "YMD": RegexInfo(
-            f"({re_years_str})(-|\/|\_)?(\d{{1,2}})(-|\/|\_)?(\d{{1,2}})", [1, 3, 5]
+            f"({re_years_str}){separator_str}?(\d{{1,2}}){separator_str}?(\d{{1,2}})",
+            [1, 3, 5],
         ),
         "DMY": RegexInfo(
-            f"(\d{{1,2}})(-|\/|\_)?(\d{{1,2}})(-|\/|\_)?({re_years_str})", [5, 3, 1]
+            f"(\d{{1,2}}){separator_str}?(\d{{1,2}}){separator_str}?({re_years_str})",
+            [5, 3, 1],
         ),
         "MDY": RegexInfo(
-            f"(\d{{1,2}})(-|\/|\_)?(\d{{1,2}})(-|\/|\_)?({re_years_str})", [3, 5, 1]
+            f"(\d{{1,2}}){separator_str}?(\d{{1,2}}){separator_str}?({re_years_str})",
+            [3, 5, 1],
         ),
     }
 
