@@ -67,7 +67,7 @@ class Params(BaseArticleSpiderParams):
                 ".*\/infoautos\/.*",
                 ".*\/infotecnologia\/.*",
             ],
-            deny_re=[".*automotiva.com.ar\/.*"],
+            deny_re=[".*link:.*", ".*automotiva.com.ar.*"],
         )
 
     # Sitemap params
