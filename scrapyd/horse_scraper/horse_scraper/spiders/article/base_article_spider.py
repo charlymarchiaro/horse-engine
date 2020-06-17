@@ -85,10 +85,23 @@ class BaseArticleSpider:
 
         article = Article()
 
-        data, parse_function = self.call_parser_functions(
+        article_date, data, parse_function = self.call_parser_functions(
             response, self.params.get_parser_functions()
         )
 
+        # The article date is outside the search period --> skip
+        if article_date and not self.is_article_date_inside_search_period(article_date):
+            date_str = article_date.strftime("%d/%m/%Y")
+            logging.info(
+                "Article date ("
+                + date_str
+                + ") is outside the search period --> skipping."
+            )
+            logging.info("")
+
+            return None
+
+        # Data is not valid
         if data is None:
             article["source_id"] = self.source_info.id
             article["url"] = response.url
@@ -113,24 +126,14 @@ class BaseArticleSpider:
         article["error"] = None
         article["error_details"] = None
 
-        is_valid_date = self.is_article_date_inside_search_period(article)
+        return article
 
-        if is_valid_date:
-            return article
-
-        date_str = article["last_updated"].strftime("%d/%m/%Y")
-        logging.info(
-            "Article date (" + date_str + ") is outside the search period --> skipping."
-        )
-        logging.info("")
-
-        return None
-
+    # Returns: article_date, article_data, f_name
     def call_parser_functions(
         self,
         response: HtmlResponse,
         parser_functions: List[Callable[[HtmlResponse], ArticleData]],
-    ) -> Tuple[Union[ArticleData, None], Union[str, None]]:
+    ) -> Tuple[Union[datetime, None], Union[ArticleData, None], Union[str, None]]:
 
         for f in parser_functions:
 
@@ -146,7 +149,7 @@ class BaseArticleSpider:
                 if self.is_article_data_valid(article_data):
                     logging.info("--> Success")
                     logging.info("")
-                    return article_data, f_name
+                    return article_data.last_updated, article_data, f_name
                 else:
                     logging.debug("--> Failed")
 
@@ -175,7 +178,7 @@ class BaseArticleSpider:
             if self.is_article_data_valid(article_data):
                 logging.info("--> Success")
                 logging.info("")
-                return article_data, f_name
+                return article_data.last_updated, article_data, f_name
             else:
                 logging.debug("--> Failed")
 
@@ -191,7 +194,7 @@ class BaseArticleSpider:
         logging.error("All parse attempts failed")
         logging.info("")
 
-        return None, None
+        return article_data.last_updated, None, None
 
     def is_article_data_valid(self, data: ArticleData) -> bool:
         if isinstance(data, ArticleData) == False:
@@ -213,11 +216,10 @@ class BaseArticleSpider:
 
         return is_valid
 
-    def is_article_date_inside_search_period(self, article: Article) -> bool:
-        article_date = article["last_updated"].date()
+    def is_article_date_inside_search_period(self, article_date: datetime) -> bool:
         start_search_date = self.date_span.from_date_incl
 
-        if article_date <= start_search_date:
+        if article_date.date() <= start_search_date:
             return False
 
         return True
