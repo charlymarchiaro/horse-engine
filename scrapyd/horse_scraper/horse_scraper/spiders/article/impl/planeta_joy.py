@@ -66,7 +66,7 @@ class Params(BaseArticleSpiderParams):
         ]
 
     def get_url_filter(self) -> UrlFilter:
-        return UrlFilter(allow_re=[".*\?.*id=\d{4,}"], deny_re=[])
+        return UrlFilter(allow_re=[".*\?.*id=\d{4,}"], deny_re=[".*&url=.*"])
 
     # Sitemap params
 
@@ -83,7 +83,8 @@ class Params(BaseArticleSpiderParams):
         return True
 
     def should_follow_article_url(self, url: str) -> bool:
-        return url.find("planetajoy.com") != -1
+        # Ignore if domain is only present in query
+        return url.split("?")[0].find("planetajoy.com") != -1
 
     # Parser functions
 
