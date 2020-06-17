@@ -69,7 +69,13 @@ class BaseArticleCrawlSpider(BaseArticleSpider, CrawlSpider):
         if not self.follow_current_article_links:
             return []
 
-        return links
+        links_to_follow = []
+
+        for link in links:
+            if self.params.should_follow_article_url(link.url):
+                links_to_follow.append(link)
+
+        return links_to_follow
 
     def get_current_run_time_hours(self) -> float:
         return (datetime.now() - self.start_time).total_seconds() / 3600
