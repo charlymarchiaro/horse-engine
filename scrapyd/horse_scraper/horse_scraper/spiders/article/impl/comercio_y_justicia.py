@@ -42,11 +42,29 @@ class Params(BaseArticleSpiderParams):
     def get_crawl_start_urls(self) -> List[str]:
         return [
             "https://comercioyjusticia.info/",
+            "https://comercioyjusticia.info/blog/category/justicia/",
+            "https://comercioyjusticia.info/blog/category/economia/",
+            "https://comercioyjusticia.info/blog/category/mercado-financiero/",
+            "https://comercioyjusticia.info/blog/category/comercio-exterior/",
+            "https://comercioyjusticia.info/blog/category/negocios/",
+            "https://comercioyjusticia.info/blog/category/negocios/marketing/",
+            "https://comercioyjusticia.info/blog/category/tecnologia/",
+            "https://comercioyjusticia.info/blog/category/pymes/",
+            "https://comercioyjusticia.info/blog/category/profesionales/",
+            "https://comercioyjusticia.info/blog/category/formacioncontinua/",
+            "https://comercioyjusticia.info/blog/category/rrhh/",
+            "https://comercioyjusticia.info/blog/category/coronavirus/",
+            "https://comercioyjusticia.info/blog/category/leyes-y-comentarios/",
+            "https://comercioyjusticia.info/blog/category/arte/",
+            "https://comercioyjusticia.info/blog/category/rse/",
+            "https://comercioyjusticia.info/blog/category/mundopsy/",
+            "https://comercioyjusticia.info/blog/category/opinion/",
         ]
 
     def get_url_filter(self) -> UrlFilter:
         return UrlFilter(
-            allow_re=[".*comercioyjusticia.info\/.+\/(.){20,}\/"], deny_re=[]
+            allow_re=[".*comercioyjusticia.info\/.+\/(.){20,}\/"],
+            deny_re=[".*\/page\/\d+.*", ".*\/category\/.*"],
         )
 
     # Sitemap params
