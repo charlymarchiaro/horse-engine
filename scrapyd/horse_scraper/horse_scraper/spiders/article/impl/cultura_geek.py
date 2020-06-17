@@ -50,6 +50,18 @@ class Params(BaseArticleSpiderParams):
             deny_re=[
                 ".*culturageek.com.ar(\/.+\/.+\/).*",
                 ".*culturageek.com.ar(\/(.){1,20}\/).*",
+                # For some reason it's trying to parse the following
+                # urls that are outside the domain:
+                ".*www.pinterest.com\/.*",
+                ".*www.tumblr.com\/.*",
+                ".*twitter.com\/.*",
+                ".*api.whatsapp.com\/.*",
+                ".*www.facebook.com\/.*",
+                ".*www.reddit.com\/.*",
+                ".*www.tumblr.com\/.*",
+                ".*skype.com\/.*",
+                ".*telegram.me\/.*",
+                ".*www.linkedin.com\/.*",
             ],
         )
 
