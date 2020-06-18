@@ -16,6 +16,10 @@ export function getDatePart(date: Date): Date {
 }
 
 
+export function getDateDiffMilisec(date1: Date, date2: Date): number {
+  return date2.getTime() - date1.getTime();
+}
+
 
 export function clone(object: any): any {
   return JSON.parse(JSON.stringify(object));

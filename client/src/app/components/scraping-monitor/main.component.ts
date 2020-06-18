@@ -35,12 +35,12 @@ export class MainComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.jobsPollingTimer = setInterval(
       () => this.updateJobsInfo(),
-      1000
+      2000
     );
 
     this.lastScrapedArticlesInfoTimer = setInterval(
       () => this.updateLastScrapedArticlesInfo(),
-      2000
+      5000
     );
 
     this.updateJobsInfo();
