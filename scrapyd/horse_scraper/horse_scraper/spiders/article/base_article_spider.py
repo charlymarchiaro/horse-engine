@@ -47,11 +47,15 @@ class BaseArticleSpider:
     # Default parser
     default_parser = DefaultArticleParser()
 
+    start_time: datetime
+
     def __init__(self, name: str, *args, **kwargs):
         self.setup_logger()
         self.init_date_span()
         self.init_source_info()
         self.init_params()
+
+        self.start_time = datetime.now()
 
     def setup_logger(self):
         logger = logging.getLogger()
@@ -223,3 +227,6 @@ class BaseArticleSpider:
             return False
 
         return True
+
+    def get_current_run_time_hours(self) -> float:
+        return (datetime.now() - self.start_time).total_seconds() / 3600

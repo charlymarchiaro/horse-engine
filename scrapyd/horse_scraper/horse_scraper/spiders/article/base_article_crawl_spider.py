@@ -40,7 +40,6 @@ from .default_article_parser import DefaultArticleParser
 
 class BaseArticleCrawlSpider(BaseArticleSpider, CrawlSpider):
 
-    start_time: datetime
     follow_current_article_links = True
 
     def __init__(self, *args, **kwargs):
@@ -56,8 +55,6 @@ class BaseArticleCrawlSpider(BaseArticleSpider, CrawlSpider):
         self.allowed_domains = self.params.get_allowed_domains()
         self.start_urls = self.params.get_crawl_start_urls()
         self.rules = self.params.get_crawl_rules()
-
-        self.start_time = datetime.now()
 
         CrawlSpider.__init__(self, self.name, *args, **kwargs)
 
@@ -76,6 +73,3 @@ class BaseArticleCrawlSpider(BaseArticleSpider, CrawlSpider):
                 links_to_follow.append(link)
 
         return links_to_follow
-
-    def get_current_run_time_hours(self) -> float:
-        return (datetime.now() - self.start_time).total_seconds() / 3600

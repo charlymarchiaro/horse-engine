@@ -16,6 +16,7 @@ from scrapy.spiders import SitemapSpider, Rule  # type: ignore
 from scrapy.spiders.sitemap import iterloc  # type: ignore
 from scrapy.utils.log import configure_logging  # type: ignore
 from scrapy.utils.sitemap import sitemap_urls_from_robots  # type: ignore
+from scrapy.exceptions import CloseSpider  # type: ignore
 
 from datetime import datetime, date, timedelta
 from string import whitespace
@@ -32,6 +33,7 @@ from horse_scraper.settings import (
     LOG_LEVEL,
     FEED_EXPORT_ENCODING,
     SITEMAP_PERIOD_DAYS_BACK,
+    SITEMAP_MAX_RUN_TIME_HOURS,
 )
 from horse_scraper.database.article_db_handler import ArticleDbHandler
 from horse_scraper.services.utils.sitemap import Sitemap
@@ -62,6 +64,8 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
         SitemapSpider.__init__(self, self.name, *args, **kwargs)
 
     def sitemap_filter(self, entries: Any) -> Generator[Any, None, None]:
+        # Check if max run time has been exceeded
+        self.check_max_run_time()
 
         # List article (not sitemap) entries, so that to check more
         # efficiently if they are already persisted in the database
@@ -162,6 +166,9 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
         return None
 
     def _parse_sitemap(self, response):
+        # Check if max run time has been exceeded
+        self.check_max_run_time()
+
         logging.info("_parse_sitemap: " + response.url)
 
         # robots.txt
@@ -216,6 +223,9 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
                 logging.warning("_parse_sitemap: invalid type: " + s.type)
 
     def should_follow_article_url(self, url: str) -> bool:
+        # Check if max run time has been exceeded
+        self.check_max_run_time()
+
         for r in self.params.url_filter.deny_re:
             if re.search(r, url):
                 return False
@@ -225,6 +235,9 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
         return False
 
     def should_follow_sitemap_url(self, url: str) -> bool:
+        # Check if max run time has been exceeded
+        self.check_max_run_time()
+
         return self.params.should_follow_sitemap_url(url)
 
     def is_sitemap_entry_inside_search_period(self, entry_date: datetime) -> bool:
@@ -251,3 +264,7 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
             result.append(entry)
 
         return result
+
+    def check_max_run_time(self):
+        if self.get_current_run_time_hours() > SITEMAP_MAX_RUN_TIME_HOURS:
+            raise CloseSpider("Max run time exceeded")
