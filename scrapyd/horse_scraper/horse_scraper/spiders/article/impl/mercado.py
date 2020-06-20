@@ -63,7 +63,6 @@ class Params(BaseArticleSpiderParams):
         ]
         allowed_categories_str = "|".join(allowed_categories)
 
-        print(allowed_categories_str)
         return UrlFilter(
             allow_re=[f".*({allowed_categories_str})\/.{{10,}}\/"], deny_re=[]
         )
