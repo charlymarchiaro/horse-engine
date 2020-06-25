@@ -139,6 +139,8 @@ class BaseArticleSpider:
         parser_functions: List[Callable[[HtmlResponse], ArticleData]],
     ) -> Tuple[Union[datetime, None], Union[ArticleData, None], Union[str, None]]:
 
+        article_date: datetime
+
         for f in parser_functions:
 
             if callable(f) == False:
@@ -153,9 +155,12 @@ class BaseArticleSpider:
                 if self.is_article_data_valid(article_data):
                     logging.info("--> Success")
                     logging.info("")
-                    return article_data.last_updated, article_data, f_name
+                    article_date = article_data.last_updated
+                    return article_date, article_data, f_name
                 else:
                     logging.debug("--> Failed")
+                    if article_data.last_updated:
+                        article_date = article_data.last_updated
 
             except Exception as e:
                 logging.debug("--> Failed")
@@ -182,9 +187,12 @@ class BaseArticleSpider:
             if self.is_article_data_valid(article_data):
                 logging.info("--> Success")
                 logging.info("")
-                return article_data.last_updated, article_data, f_name
+                article_date = article_data.last_updated
+                return article_date, article_data, f_name
             else:
                 logging.debug("--> Failed")
+                if article_data.last_updated:
+                    article_date = article_data.last_updated
 
         except Exception as e:
             logging.debug("--> Failed")
@@ -198,7 +206,7 @@ class BaseArticleSpider:
         logging.error("All parse attempts failed")
         logging.info("")
 
-        return article_data.last_updated, None, None
+        return article_date, None, None
 
     def is_article_data_valid(self, data: ArticleData) -> bool:
         if isinstance(data, ArticleData) == False:
