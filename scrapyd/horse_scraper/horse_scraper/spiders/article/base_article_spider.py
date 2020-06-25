@@ -139,7 +139,7 @@ class BaseArticleSpider:
         parser_functions: List[Callable[[HtmlResponse], ArticleData]],
     ) -> Tuple[Union[datetime, None], Union[ArticleData, None], Union[str, None]]:
 
-        article_date: datetime
+        article_date: Union[datetime, None]
 
         for f in parser_functions:
 
