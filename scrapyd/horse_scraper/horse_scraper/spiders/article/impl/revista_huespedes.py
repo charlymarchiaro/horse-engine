@@ -50,7 +50,7 @@ class Params(BaseArticleSpiderParams):
     def get_url_filter(self) -> UrlFilter:
         return UrlFilter(
             allow_re=["revistahuespedes.com.ar\/.+\/.{20,}"],
-            deny_re=["revistahuespedes.com.ar\/.+\/.+\/.*"],
+            deny_re=["revistahuespedes.com.ar\/.+\/.+\/.*", ".*\/tag\/.*"],
         )
 
     # Sitemap params
