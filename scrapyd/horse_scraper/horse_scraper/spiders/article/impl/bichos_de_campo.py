@@ -50,7 +50,10 @@ class Params(BaseArticleSpiderParams):
         ]
 
     def get_url_filter(self) -> UrlFilter:
-        return UrlFilter(allow_re=["^[^\?]{55,}.*$"], deny_re=[".*wp-admin.*"])
+        return UrlFilter(
+            allow_re=["^[^\?]{55,}.*$"],
+            deny_re=[".*wp-admin.*", ".*\/tag\/.*", ".*\/author\/.*"],
+        )
 
     # Sitemap params
 
