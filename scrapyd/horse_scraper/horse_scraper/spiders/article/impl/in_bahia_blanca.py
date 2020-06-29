@@ -80,7 +80,11 @@ class Params(BaseArticleSpiderParams):
     # Sitemap params
 
     def get_sitemap_urls(self) -> List[str]:
-        return ["https://inbahiablanca.info/sitemap_categories_posts.xml"]
+        return [
+            # Sitemap disabled because article dates are wrongly set
+            # as the most recent date for the entire list.
+            # "https://inbahiablanca.info/sitemap_categories_posts.xml"
+        ]
 
     def get_sitemap_follow(self) -> List[str]:
         return [".*"]
