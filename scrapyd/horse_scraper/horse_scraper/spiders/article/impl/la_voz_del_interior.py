@@ -59,7 +59,18 @@ class Params(BaseArticleSpiderParams):
     def get_url_filter(self) -> UrlFilter:
         return UrlFilter(
             allow_re=[".*lavoz.com.ar\/.+\/.{10,}"],
-            deny_re=[".*lavoz.com.ar\/.+\/.+\/.+", ".*.html$"],
+            deny_re=[
+                ".*lavoz.com.ar\/.+\/.+\/.+",
+                ".*.html$",
+                ".*\/files\/.*",
+                ".*\/beneficios\/.*",
+                ".*\/categoria\/.*",
+                ".*\/personas\/.*",
+                ".*\/temas\/.*",
+                ".*\/clublavoz\/.*",
+                ".*\/autor\/.*",
+                ".*\/lugares\/.*",
+            ],
         )
 
     # Sitemap params
@@ -82,7 +93,52 @@ class Params(BaseArticleSpiderParams):
     # Parser functions
 
     def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:
-        return []
+        return [
+            self.parser_1,
+            self.parser_2,
+            self.parser_3,
+        ]
+
+    def parser_1(self, response):
+        return self.get_default_parser_results(response)
+
+    def parser_2(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+        last_updated = article_data.last_updated
+
+        # text ----------
+        text = extract_all_text(
+            response,
+            root_xpath='//div[contains(@class, "article-container")]',
+            exclude_list=[
+                (AttributeType.NAME, "script"),
+                (AttributeType.NAME, "style"),
+            ],
+        )
+
+        return ArticleData(title, text, last_updated)
+
+    def parser_3(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+        last_updated = article_data.last_updated
+
+        # text ----------
+        text = extract_all_text(
+            response,
+            root_xpath='//div[contains(@class, "entry-content")]',
+            exclude_list=[
+                (AttributeType.NAME, "script"),
+                (AttributeType.NAME, "style"),
+            ],
+        )
+
+        return ArticleData(title, text, last_updated)
 
 
 # Spider implementations
