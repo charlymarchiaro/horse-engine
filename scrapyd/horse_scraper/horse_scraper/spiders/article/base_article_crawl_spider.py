@@ -58,6 +58,24 @@ class BaseArticleCrawlSpider(BaseArticleSpider, CrawlSpider):
 
         CrawlSpider.__init__(self, self.name, *args, **kwargs)
 
+    def start_requests(self):
+        # Splash is disabled --> use default method
+        if self.params.splash_enabled == False:
+            yield from super().start_requests()
+
+        # Splash is enabled
+        for url in self.start_urls:
+            yield scrapy.Request(
+                url,
+                self.parse,
+                meta={
+                    "splash": {
+                        "endpoint": "render.html",
+                        "args": {"wait": self.params.splash_wait_time},
+                    }
+                },
+            )
+
     def process_links(self, links):
 
         if self.get_current_run_time_hours() > CRAWL_MAX_RUN_TIME_HOURS:

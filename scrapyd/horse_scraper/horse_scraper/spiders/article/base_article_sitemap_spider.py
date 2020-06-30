@@ -63,6 +63,23 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
 
         SitemapSpider.__init__(self, self.name, *args, **kwargs)
 
+    def create_request(self, url, callback) -> Request:
+        # Splash is disabled --> use default method
+        if self.params.splash_enabled == False:
+            return Request(url, callback)
+
+        # Splash is enabled
+        return Request(
+            url,
+            self.parse,
+            meta={
+                "splash": {
+                    "endpoint": "render.html",
+                    "args": {"wait": self.params.splash_wait_time},
+                }
+            },
+        )
+
     def sitemap_filter(self, entries: Any) -> Generator[Any, None, None]:
         # Check if max run time has been exceeded
         self.check_max_run_time()
@@ -175,7 +192,7 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
         if response.url.endswith("/robots.txt"):
             logging.info("_parse_sitemap: robots.txt")
             for url in sitemap_urls_from_robots(response.text, base_url=response.url):
-                yield Request(url, callback=self._parse_sitemap)
+                yield self.create_request(url, callback=self._parse_sitemap)
 
         # text sitemap
         elif response.url.endswith(".txt"):
@@ -192,7 +209,7 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
             for loc in iterloc(it, self.sitemap_alternate_links):
                 for r, c in self._cbs:
                     if r.search(loc):
-                        yield Request(loc, callback=c)
+                        yield self.create_request(loc, callback=c)
                         break
 
         # xml sitemap
@@ -212,12 +229,12 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
             if s.type == "sitemapindex":
                 for loc in iterloc(it, self.sitemap_alternate_links):
                     if any(x.search(loc) for x in self._follow):
-                        yield Request(loc, callback=self._parse_sitemap)
+                        yield self.create_request(loc, callback=self._parse_sitemap)
             elif s.type == "urlset":
                 for loc in iterloc(it, self.sitemap_alternate_links):
                     for r, c in self._cbs:
                         if r.search(loc):
-                            yield Request(loc, callback=c)
+                            yield self.create_request(loc, callback=c)
                             break
             else:
                 logging.warning("_parse_sitemap: invalid type: " + s.type)

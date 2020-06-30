@@ -57,6 +57,10 @@ class BaseArticleSpiderParams:
     # Override to keep query string of the article's url
     keep_url_query_string: bool = False
 
+    # Override to use Splash to parse dynamically loaded content
+    splash_enabled: bool = False
+    splash_wait_time: float = 0.5
+
     def __init__(self, *args, **kwargs):
         pass
 
