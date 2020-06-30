@@ -133,13 +133,15 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
 
                 entry_date = self.extract_entry_date(entry)
 
-                if not entry_date:
-                    # 'entry_date' info missing --> skip
-                    continue
+                # check if entry_date is inside the search period
+                if self.params.ignore_missing_sitemap_entry_date == False:
+                    if not entry_date:
+                        # 'entry_date' info missing --> skip
+                        continue
 
-                if not self.is_sitemap_entry_inside_search_period(entry_date):
-                    # 'entry_date' is outside search period --> skip
-                    continue
+                    if not self.is_sitemap_entry_inside_search_period(entry_date):
+                        # 'entry_date' is outside search period --> skip
+                        continue
 
                 if not self.params.should_parse_sitemap_entry(entry):
                     # no valid rules apply --> skip
