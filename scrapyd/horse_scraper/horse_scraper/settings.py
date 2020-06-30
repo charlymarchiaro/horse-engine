@@ -60,15 +60,18 @@ REDIRECT_ENABLED = True
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-# SPIDER_MIDDLEWARES = {
-#    'horse_scraper.middlewares.HorseScraperSpiderMiddleware': 543,
-# }
+SPIDER_MIDDLEWARES = {
+    "scrapy_splash.SplashDeduplicateArgsMiddleware": 100,
+    #    'horse_scraper.middlewares.HorseScraperSpiderMiddleware': 543,
+}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-# DOWNLOADER_MIDDLEWARES = {
-#    'horse_scraper.middlewares.HorseScraperDownloaderMiddleware': 543,
-# }
+DOWNLOADER_MIDDLEWARES = {
+    #    'horse_scraper.middlewares.HorseScraperDownloaderMiddleware': 543,
+    "scrapy_splash.SplashCookiesMiddleware": 723,
+    "scrapy_splash.SplashMiddleware": 725,
+}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
@@ -112,3 +115,9 @@ CRAWL_PERIOD_DAYS_BACK = 15
 SITEMAP_PERIOD_DAYS_BACK = 15
 CRAWL_MAX_RUN_TIME_HOURS = 6
 SITEMAP_MAX_RUN_TIME_HOURS = 6
+
+# Splash
+SPLASH_URL = "http://splash-cluster-ip-service:8050/"
+DUPEFILTER_CLASS = "scrapy_splash.SplashAwareDupeFilter"
+HTTPCACHE_STORAGE = "scrapy_splash.SplashAwareFSCacheStorage"
+
