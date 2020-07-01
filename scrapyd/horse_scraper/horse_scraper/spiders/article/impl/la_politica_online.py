@@ -56,7 +56,10 @@ class Params(BaseArticleSpiderParams):
         ]
 
     def get_url_filter(self) -> UrlFilter:
-        return UrlFilter(allow_re=[".*\/nota\/.+"], deny_re=[])
+        return UrlFilter(
+            allow_re=[".*\/nota\/\d{6,}.+"],
+            deny_re=[".*\_commentpage\_.*", ".*\_page\_.*"],
+        )
 
     # Sitemap params
 
@@ -73,7 +76,18 @@ class Params(BaseArticleSpiderParams):
         return True
 
     def should_follow_article_url(self, url: str) -> bool:
-        return True
+
+        try:
+            # Filtering by id (integer) present in URL
+            match = re.search(".*\/nota\/(\d{6,}).+", url)
+            if match:
+                article_id = int(match.group(1))
+                if article_id > 120000:
+                    return True
+            return False
+
+        except:
+            return False
 
     # Parser functions
 
