@@ -14,6 +14,8 @@ from scrapy.spiders import CrawlSpider, Rule  # type: ignore
 from scrapy.utils.log import configure_logging  # type: ignore
 from scrapy.exceptions import CloseSpider  # type: ignore
 
+from scrapy_splash import SplashJsonResponse, SplashTextResponse  # type: ignore
+
 from datetime import datetime, date, timedelta
 from string import whitespace
 
@@ -75,6 +77,24 @@ class BaseArticleCrawlSpider(BaseArticleSpider, CrawlSpider):
                     }
                 },
             )
+
+    def _requests_to_follow(self, response):
+        if not isinstance(
+            response, (HtmlResponse, SplashJsonResponse, SplashTextResponse)
+        ):
+            return
+
+        seen = set()
+        for rule_index, rule in enumerate(self._rules):
+            links = [
+                lnk
+                for lnk in rule.link_extractor.extract_links(response)
+                if lnk not in seen
+            ]
+            for link in rule.process_links(links):
+                seen.add(link)
+                request = self._build_request(rule_index, link)
+                yield rule._process_request(request, response)
 
     def process_links(self, links):
 

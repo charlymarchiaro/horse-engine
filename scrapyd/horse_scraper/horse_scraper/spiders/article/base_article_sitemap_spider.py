@@ -71,7 +71,7 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
         # Splash is enabled
         return Request(
             url,
-            self.parse,
+            callback,
             meta={
                 "splash": {
                     "endpoint": "render.html",
