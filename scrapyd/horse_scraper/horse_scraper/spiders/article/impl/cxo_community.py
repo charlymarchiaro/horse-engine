@@ -47,6 +47,20 @@ class Params(BaseArticleSpiderParams):
     def get_crawl_start_urls(self) -> List[str]:
         return [
             "https://www.cxo-community.com/",
+            "https://www.cxo-community.com/p/columnista.html",
+            "https://www.cxo-community.com/p/newsletter-diario-daily.html",
+            "https://www.cxo-community.com/search/label/%23blog",
+            "https://www.cxo-community.com/search/label/%23destacado",
+            "https://www.cxo-community.com/search/label/%23infograf%C3%ADa",
+            "https://www.cxo-community.com/search/label/%23informe",
+            "https://www.cxo-community.com/search/label/%23video",
+            "https://www.cxo-community.com/search/label/%23radio",
+            "https://www.cxo-community.com/search/label/%23frase",
+            "https://www.cxo-community.com/search/label/%23picture",
+            "https://www.cxo-community.com/search/label/%23noticia",
+            "https://www.cxo-community.com/p/biblioteca.html",
+            "https://www.cxo-community.com/p/nego2cio.html",
+            "https://www.cxo-community.com/p/canaltv.html",
         ]
 
     def get_url_filter(self) -> UrlFilter:
