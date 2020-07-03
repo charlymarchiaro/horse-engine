@@ -1,0 +1,119 @@
+from typing import Tuple, List, Dict, Any, Union, Callable, cast
+
+import json
+import html
+import dateparser  # type: ignore
+from datetime import datetime, date, timedelta
+from string import whitespace
+import re
+
+from scrapy.http import Request, HtmlResponse  # type: ignore
+from scrapy.linkextractors import LinkExtractor  # type: ignore
+from scrapy.spiders import Rule  # type: ignore
+
+from horse_scraper.items import Article
+from horse_scraper.spiders.article.model import ArticleData, SpiderType
+from horse_scraper.spiders.article.base_article_spider_params import (
+    BaseArticleSpiderParams,
+    UrlFilter,
+)
+from horse_scraper.services.utils.parse_utils import (
+    extract_all_text,
+    AttributeType,
+    get_publishing_date,
+)
+from ..base_article_crawl_spider import BaseArticleCrawlSpider
+from ..base_article_sitemap_spider import BaseArticleSitemapSpider
+
+
+class Params(BaseArticleSpiderParams):
+    def _after_initialize(self) -> None:
+        pass
+
+    # Common params
+    def _get_spider_base_name(self) -> str:
+        return "tiempo_argentino"
+
+    def get_allowed_domains(self) -> List[str]:
+        return ["tiempoar.com.ar"]
+
+    # Crawl params
+
+    def get_crawl_start_urls(self) -> List[str]:
+        return [
+            "https://www.tiempoar.com.ar/",
+            "https://www.tiempoar.com.ar/temas",
+            "https://www.tiempoar.com.ar/monitor-de-medios",
+            "https://www.tiempoar.com.ar/radiografia-del-vaciamiento",
+            "https://www.tiempoar.com.ar/fotogaleria",
+            "https://www.tiempoar.com.ar/barcelona-en-tiempo",
+            "https://www.tiempoar.com.ar/revista-t",
+            "https://www.tiempoar.com.ar/seccion/politica",
+            "https://www.tiempoar.com.ar/seccion/economia",
+            "https://www.tiempoar.com.ar/seccion/informacion-general",
+            "https://www.tiempoar.com.ar/seccion/mundo",
+            "https://www.tiempoar.com.ar/seccion/cultura",
+            "https://www.tiempoar.com.ar/seccion/espectaculos",
+            "https://www.tiempoar.com.ar/seccion/deportes",
+            "https://www.tiempoar.com.ar/seccion/gestion",
+            "https://www.tiempoar.com.ar/archivo",
+            "https://www.tiempoar.com.ar/clima",
+        ]
+
+    def get_url_filter(self) -> UrlFilter:
+        return UrlFilter(allow_re=[".*\/nota\/.+", ".*\/revista-t\/.+"], deny_re=[])
+
+    # Sitemap params
+
+    def get_sitemap_urls(self) -> List[str]:
+        return []
+
+    def get_sitemap_follow(self) -> List[str]:
+        return [".*"]
+
+    def should_parse_sitemap_entry(self, entry: Any) -> bool:
+        return True
+
+    def should_follow_sitemap_url(self, url: str) -> bool:
+        return True
+
+    def should_follow_article_url(self, url: str) -> bool:
+        return True
+
+    # Parser functions
+
+    def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:
+        return [
+            self.parser_1,
+        ]
+
+    def parser_1(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+        text = article_data.text
+
+        # last_updated ----------
+        last_updated = dateparser.parse(
+            extract_all_text(
+                response,
+                root_xpath='//span[contains(@class, "release-date")]',
+                exclude_list=[],
+            )
+        )
+
+        return ArticleData(title, text, last_updated)
+
+
+# Spider implementations
+
+
+class CrawlSpider(BaseArticleCrawlSpider):
+    params = Params()
+    name = params.get_spider_name(SpiderType.CRAWL)
+
+
+class SitemapSpider(BaseArticleSitemapSpider):
+    params = Params()
+    name = params.get_spider_name(SpiderType.SITEMAP)
