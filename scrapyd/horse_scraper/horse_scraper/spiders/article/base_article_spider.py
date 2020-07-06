@@ -83,6 +83,23 @@ class BaseArticleSpider:
         handler = ArticleDbHandler()
         self.source_info = handler.get_spider_article_source_info(self.name)
 
+    def create_request(self, url, callback) -> Request:
+        # Splash is disabled --> use default method
+        if self.params.splash_enabled == False:
+            return Request(url, callback)
+
+        # Splash is enabled
+        return Request(
+            url,
+            callback,
+            meta={
+                "splash": {
+                    "endpoint": "render.html",
+                    "args": {"wait": self.params.splash_wait_time},
+                }
+            },
+        )
+
     def parse_items(self, response: HtmlResponse):
         logging.info("Parsing: " + response.url)
         logging.info("")

@@ -63,23 +63,6 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
 
         SitemapSpider.__init__(self, self.name, *args, **kwargs)
 
-    def create_request(self, url, callback) -> Request:
-        # Splash is disabled --> use default method
-        if self.params.splash_enabled == False:
-            return Request(url, callback)
-
-        # Splash is enabled
-        return Request(
-            url,
-            callback,
-            meta={
-                "splash": {
-                    "endpoint": "render.html",
-                    "args": {"wait": self.params.splash_wait_time},
-                }
-            },
-        )
-
     def sitemap_filter(self, entries: Any) -> Generator[Any, None, None]:
         # Check if max run time has been exceeded
         self.check_max_run_time()
