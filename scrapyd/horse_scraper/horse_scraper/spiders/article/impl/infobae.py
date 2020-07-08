@@ -29,6 +29,9 @@ class Params(BaseArticleSpiderParams):
             day_format="02",
             concat_fn=lambda year, month, day: f"/{year}/{month}/{day}/",
         )
+        # Enable Selenium to parse dynamically loaded content
+        self.selenium_enabled = True
+        self.selenium_wait_time = 0.5
 
     # Common params
     def _get_spider_base_name(self) -> str:
