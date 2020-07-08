@@ -107,9 +107,10 @@ class BaseArticleSpider:
         errback=None,
         flags=None,
         cb_kwargs=None,
+        force_normal_request=False,
     ) -> Request:
         # Selenium is disabled --> use default method
-        if self.params.selenium_enabled == False:
+        if force_normal_request or self.params.selenium_enabled == False:
             return Request(
                 url=url,
                 callback=callback,
@@ -334,10 +335,8 @@ class wait_time_seconds(object):
         pass
 
     def __call__(self, driver):
-        logging.info(
-            f"###################################### Waiting {self.time_secs} seconds..."
-        )
+        logging.debug(f"Waiting {self.time_secs} seconds...")
         time.sleep(self.time_secs)
-        logging.info(f"###################################### --> finished")
+        logging.debug(f"--> Finished")
         return True
 

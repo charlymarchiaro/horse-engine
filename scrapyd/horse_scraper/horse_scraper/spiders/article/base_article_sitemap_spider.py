@@ -10,12 +10,13 @@ from typing import Tuple, List, Dict, Any, Iterator, Generator, Union, Callable,
 from abc import abstractmethod
 
 import scrapy  # type: ignore
-from scrapy.http import Request, HtmlResponse  # type: ignore
+from scrapy.http import Request, HtmlResponse, XmlResponse  # type: ignore
 from scrapy.linkextractors import LinkExtractor  # type: ignore
 from scrapy.spiders import SitemapSpider, Rule  # type: ignore
 from scrapy.spiders.sitemap import iterloc  # type: ignore
 from scrapy.utils.log import configure_logging  # type: ignore
 from scrapy.utils.sitemap import sitemap_urls_from_robots  # type: ignore
+from scrapy.utils.gz import gunzip, gzip_magic_number  # type: ignore
 from scrapy.exceptions import CloseSpider  # type: ignore
 
 from datetime import datetime, date, timedelta
@@ -176,7 +177,9 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
         if response.url.endswith("/robots.txt"):
             logging.info("_parse_sitemap: robots.txt")
             for url in sitemap_urls_from_robots(response.text, base_url=response.url):
-                yield self.create_request(url=url, callback=self._parse_sitemap)
+                yield self.create_request(
+                    url=url, callback=self._parse_sitemap, force_normal_request=True
+                )
 
         # text sitemap
         elif response.url.endswith(".txt"):
@@ -213,7 +216,11 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
             if s.type == "sitemapindex":
                 for loc in iterloc(it, self.sitemap_alternate_links):
                     if any(x.search(loc) for x in self._follow):
-                        yield self.create_request(url=loc, callback=self._parse_sitemap)
+                        yield self.create_request(
+                            url=loc,
+                            callback=self._parse_sitemap,
+                            force_normal_request=True,
+                        )
             elif s.type == "urlset":
                 for loc in iterloc(it, self.sitemap_alternate_links):
                     for r, c in self._cbs:
@@ -222,6 +229,29 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
                             break
             else:
                 logging.warning("_parse_sitemap: invalid type: " + s.type)
+
+    def _get_sitemap_body(self, response):
+        """Return the sitemap body contained in the given response,
+        or None if the response is not a sitemap.
+        """
+        if isinstance(response, XmlResponse):
+            return response.body
+        elif gzip_magic_number(response):
+            return gunzip(response.body)
+        # actual gzipped sitemap files are decompressed above ;
+        # if we are here (response body is not gzipped)
+        # and have a response for .xml.gz,
+        # it usually means that it was already gunzipped
+        # by HttpCompression middleware,
+        # the HTTP response being sent with "Content-Encoding: gzip"
+        # without actually being a .xml.gz file in the first place,
+        # merely XML gzip-compressed on the fly,
+        # in other word, here, we have plain XML
+        if self.params.ignore_sitemap_termination:
+            return response.body
+
+        elif response.url.endswith(".xml") or response.url.endswith(".xml.gz"):
+            return response.body
 
     def should_follow_article_url(self, url: str) -> bool:
         # Check if max run time has been exceeded

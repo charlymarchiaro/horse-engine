@@ -60,6 +60,9 @@ class BaseArticleSpiderParams:
     # Override to ignore missing sitemap entry dates
     ignore_missing_sitemap_entry_date: bool = False
 
+    # Override to ignore sitemap termination
+    ignore_sitemap_termination: bool = False
+
     # Override to use Selenium to parse dynamically loaded content
     selenium_enabled: bool = False
     selenium_wait_time: Union[float, None] = None
