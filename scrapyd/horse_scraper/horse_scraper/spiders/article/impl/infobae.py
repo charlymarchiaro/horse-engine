@@ -31,7 +31,7 @@ class Params(BaseArticleSpiderParams):
         )
         # Enable Selenium to parse dynamically loaded content
         self.selenium_enabled = True
-        self.selenium_wait_time = 0.5
+        self.selenium_wait_time = 5
 
     # Common params
     def _get_spider_base_name(self) -> str:
@@ -56,7 +56,16 @@ class Params(BaseArticleSpiderParams):
     # Sitemap params
 
     def get_sitemap_urls(self) -> List[str]:
-        return ["https://www.infobae.com/sitemap-index.xml"]
+        return [
+            "https://www.infobae.com/sitemap.xml",
+            "https://www.infobae.com/news_sitemap.xml",
+            "https://www.infobae.com/sitemap-america.xml",
+            "https://www.infobae.com/news_sitemap-america.xml",
+            "https://www.infobae.com/sitemap-teleshow.xml",
+            "https://www.infobae.com/news_sitemap-teleshow.xml",
+            "https://www.infobae.com/sitemap-playfutbol.xml",
+            "https://www.infobae.com/news_sitemap-playfutbol.xml",
+        ]
 
     def get_sitemap_follow(self) -> List[str]:
         return [".*"]
