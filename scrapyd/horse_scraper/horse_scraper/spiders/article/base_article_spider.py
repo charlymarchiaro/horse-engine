@@ -14,7 +14,10 @@ from scrapy.spiders import SitemapSpider, Rule  # type: ignore
 from scrapy.spiders.sitemap import iterloc  # type: ignore
 from scrapy.utils.log import configure_logging  # type: ignore
 
+from scrapy_selenium import SeleniumRequest  # type: ignore
+
 from datetime import datetime, date, timedelta
+import time
 from string import whitespace
 
 from horse_scraper.items import Article
@@ -55,6 +58,9 @@ class BaseArticleSpider:
         self.init_source_info()
         self.init_params()
 
+        if self.params.selenium_enabled:
+            self.setup_selenium()
+
         self.start_time = datetime.now()
 
     def setup_logger(self):
@@ -83,21 +89,68 @@ class BaseArticleSpider:
         handler = ArticleDbHandler()
         self.source_info = handler.get_spider_article_source_info(self.name)
 
-    def create_request(self, url, callback) -> Request:
-        # Splash is disabled --> use default method
-        if self.params.splash_enabled == False:
-            return Request(url, callback)
+    def setup_selenium(self):
+        pass
+
+    def create_request(
+        self,
+        url,
+        callback=None,
+        method="GET",
+        headers=None,
+        body=None,
+        cookies=None,
+        meta=None,
+        encoding="utf-8",
+        priority=0,
+        dont_filter=False,
+        errback=None,
+        flags=None,
+        cb_kwargs=None,
+    ) -> Request:
+        # Selenium is disabled --> use default method
+        if self.params.selenium_enabled == False:
+            return Request(
+                url=url,
+                callback=callback,
+                method=method,
+                headers=headers,
+                body=body,
+                cookies=cookies,
+                meta=meta,
+                encoding=encoding,
+                priority=priority,
+                dont_filter=dont_filter,
+                errback=errback,
+                flags=flags,
+                cb_kwargs=cb_kwargs,
+            )
+
+        if self.params.selenium_wait_time:
+            wait_time = self.params.selenium_wait_time
+        else:
+            wait_time = 0.5
 
         # Splash is enabled
-        return Request(
-            url,
-            callback,
-            meta={
-                "splash": {
-                    "endpoint": "render.html",
-                    "args": {"wait": self.params.splash_wait_time},
-                }
-            },
+        logging.debug("Creating selenium request: " + url)
+        return SeleniumRequest(
+            url=url,
+            callback=callback,
+            wait_time=10,
+            wait_until=wait_time_seconds(wait_time),
+            screenshot=self.params.selenium_screenshot,
+            script=self.params.selenium_script,
+            method=method,
+            headers=headers,
+            body=body,
+            cookies=cookies,
+            meta=meta,
+            encoding=encoding,
+            priority=priority,
+            dont_filter=dont_filter,
+            errback=errback,
+            flags=flags,
+            cb_kwargs=cb_kwargs,
         )
 
     def parse_items(self, response: HtmlResponse):
@@ -156,6 +209,21 @@ class BaseArticleSpider:
         parser_functions: List[Callable[[HtmlResponse], ArticleData]],
     ) -> Tuple[Union[datetime, None], Union[ArticleData, None], Union[str, None]]:
 
+        # If selenium is enabled, initialize the response with
+        # the processed body content
+        if self.params.selenium_enabled:
+            html = " ".join(response.selector.xpath("*").extract())
+            response = HtmlResponse(
+                url=response.url,
+                status=response.status,
+                headers=response.headers,
+                body=html,
+                flags=response.flags,
+                request=response.request,
+                certificate=response.certificate,
+                encoding=response._encoding,
+            )
+
         article_date: Union[datetime, None] = None
 
         for f in parser_functions:
@@ -198,7 +266,10 @@ class BaseArticleSpider:
 
         try:
             article_data = self.default_parser.parse(
-                response, self.date_span, self.source_info
+                response,
+                self.date_span,
+                self.source_info,
+                self.params.selenium_enabled,
             )
 
             if self.is_article_data_valid(article_data):
@@ -255,3 +326,18 @@ class BaseArticleSpider:
 
     def get_current_run_time_hours(self) -> float:
         return (datetime.now() - self.start_time).total_seconds() / 3600
+
+
+class wait_time_seconds(object):
+    def __init__(self, time_secs):
+        self.time_secs = time_secs
+        pass
+
+    def __call__(self, driver):
+        logging.info(
+            f"###################################### Waiting {self.time_secs} seconds..."
+        )
+        time.sleep(self.time_secs)
+        logging.info(f"###################################### --> finished")
+        return True
+

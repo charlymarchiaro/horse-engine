@@ -40,7 +40,6 @@ from horse_scraper.services.utils.sitemap import Sitemap
 
 from .base_article_spider import BaseArticleSpider
 from .base_article_spider_params import BaseArticleSpiderParams
-from .default_article_parser import DefaultArticleParser
 
 
 class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
@@ -177,7 +176,7 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
         if response.url.endswith("/robots.txt"):
             logging.info("_parse_sitemap: robots.txt")
             for url in sitemap_urls_from_robots(response.text, base_url=response.url):
-                yield self.create_request(url, callback=self._parse_sitemap)
+                yield self.create_request(url=url, callback=self._parse_sitemap)
 
         # text sitemap
         elif response.url.endswith(".txt"):
@@ -194,7 +193,7 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
             for loc in iterloc(it, self.sitemap_alternate_links):
                 for r, c in self._cbs:
                     if r.search(loc):
-                        yield self.create_request(loc, callback=c)
+                        yield self.create_request(url=loc, callback=c)
                         break
 
         # xml sitemap
@@ -214,12 +213,12 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
             if s.type == "sitemapindex":
                 for loc in iterloc(it, self.sitemap_alternate_links):
                     if any(x.search(loc) for x in self._follow):
-                        yield self.create_request(loc, callback=self._parse_sitemap)
+                        yield self.create_request(url=loc, callback=self._parse_sitemap)
             elif s.type == "urlset":
                 for loc in iterloc(it, self.sitemap_alternate_links):
                     for r, c in self._cbs:
                         if r.search(loc):
-                            yield self.create_request(loc, callback=c)
+                            yield self.create_request(url=loc, callback=c)
                             break
             else:
                 logging.warning("_parse_sitemap: invalid type: " + s.type)

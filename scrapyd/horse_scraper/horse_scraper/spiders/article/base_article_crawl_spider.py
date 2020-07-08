@@ -14,8 +14,6 @@ from scrapy.spiders import CrawlSpider, Rule  # type: ignore
 from scrapy.utils.log import configure_logging  # type: ignore
 from scrapy.exceptions import CloseSpider  # type: ignore
 
-from scrapy_splash import SplashJsonResponse, SplashTextResponse  # type: ignore
-
 from datetime import datetime, date, timedelta
 from string import whitespace
 
@@ -37,7 +35,6 @@ from horse_scraper.database.article_db_handler import ArticleDbHandler
 
 from .base_article_spider import BaseArticleSpider
 from .base_article_spider_params import BaseArticleSpiderParams
-from .default_article_parser import DefaultArticleParser
 
 
 class BaseArticleCrawlSpider(BaseArticleSpider, CrawlSpider):
@@ -61,18 +58,16 @@ class BaseArticleCrawlSpider(BaseArticleSpider, CrawlSpider):
         CrawlSpider.__init__(self, self.name, *args, **kwargs)
 
     def start_requests(self):
-        # Splash is disabled --> use default method
-        if self.params.splash_enabled == False:
+        # Selenium is disabled --> use default method
+        if self.params.selenium_enabled == False:
             yield from super().start_requests()
 
-        # Splash is enabled
+        # Selenium is enabled
         for url in self.start_urls:
-            yield self.create_request(url, callback=self.parse)
+            yield self.create_request(url=url, dont_filter=True)
 
     def _requests_to_follow(self, response):
-        if not isinstance(
-            response, (HtmlResponse, SplashJsonResponse, SplashTextResponse)
-        ):
+        if not isinstance(response, (HtmlResponse)):
             return
 
         seen = set()
@@ -86,6 +81,14 @@ class BaseArticleCrawlSpider(BaseArticleSpider, CrawlSpider):
                 seen.add(link)
                 request = self._build_request(rule_index, link)
                 yield rule._process_request(request, response)
+
+    def _build_request(self, rule_index, link):
+        return self.create_request(
+            url=link.url,
+            callback=self._callback,
+            errback=self._errback,
+            meta=dict(rule=rule_index, link_text=link.text),
+        )
 
     def process_links(self, links):
 

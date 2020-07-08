@@ -60,9 +60,12 @@ class BaseArticleSpiderParams:
     # Override to ignore missing sitemap entry dates
     ignore_missing_sitemap_entry_date: bool = False
 
-    # Override to use Splash to parse dynamically loaded content
-    splash_enabled: bool = False
-    splash_wait_time: float = 0.5
+    # Override to use Selenium to parse dynamically loaded content
+    selenium_enabled: bool = False
+    selenium_wait_time: Union[float, None] = None
+    selenium_wait_until: Union[Any, None] = None
+    selenium_screenshot: bool = False
+    selenium_script: Union[str, None] = None
 
     def __init__(self, *args, **kwargs):
         pass
@@ -192,7 +195,9 @@ class BaseArticleSpiderParams:
         return "|".join(date_strings)
 
     def get_default_parser_results(self, response: HtmlResponse) -> ArticleData:
-        return self.default_parser.parse(response, self.date_span, self.source_info)
+        return self.default_parser.parse(
+            response, self.date_span, self.source_info, self.selenium_enabled
+        )
 
     def sanitize_date_str(self, date_str: str) -> Union[datetime, None]:
         return parse_utils_sanitize_date_str(
