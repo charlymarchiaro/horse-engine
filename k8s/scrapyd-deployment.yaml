@@ -12,6 +12,10 @@ spec:
       labels:
         component: scrapyd
     spec:
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
       containers:
         - name: scrapyd
           image: charlymarchiaro/horse-engine-scrapyd
@@ -23,6 +27,9 @@ spec:
             limits:
               cpu: 1500m
               memory: 4096Mi
+          volumeMounts:
+            - mountPath: /dev/shm
+              name: dshm
           env:
             - name: DB_USER
               value: sa
