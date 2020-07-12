@@ -123,6 +123,6 @@ SELENIUM_DRIVER_ARGUMENTS = [
     "--headless",
     "--log-level=3",
     "--no-sandbox",
-    "--disable-dev-shm-usage",
+    # "--disable-dev-shm-usage",
 ]
 
