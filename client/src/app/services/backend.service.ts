@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { JobsListInfo, JobScheduleInfo, SpidersListInfo } from '../model/scrapyd.model';
 import { ArticleFilteringScheme, DateSpan, getArticleFilteringSchemeWhereCondition } from '../components/keyword-search/model';
 
-import { ArticleScrapingDetails, ArticleScrapingDetailsResponse } from '../model/article.model';
+import { ArticleScrapingDetails, ArticleScrapingDetailsResponse, ArticleSpiderResponse, ArticleSpider } from '../model/article.model';
 import { ArticleResponse, Article } from '../model/article.model';
 
 
@@ -25,6 +25,23 @@ export class BackendService {
     return this.http.get<SpidersListInfo>(
       '/api/scrapyd/list-spiders'
     );
+  }
+
+
+  public listAllSpidersDetail() {
+    const params = {
+      filter: JSON.stringify({
+        include: [
+          {
+            relation: 'articleSource',
+          },
+        ]
+      })
+    };
+
+    return this.http.get<ArticleSpiderResponse[]>(
+      '/api/article-spiders', { params }
+    ).map(r => r.map(i => new ArticleSpider(i)));
   }
 
 

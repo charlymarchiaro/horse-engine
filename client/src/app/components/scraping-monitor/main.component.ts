@@ -85,20 +85,33 @@ export class MainComponent implements OnInit, OnDestroy {
 
 
   private listAllSpiders() {
-    this.backendService.listAllSpiders().subscribe(
-      response => console.log(response)
+    this.backendService.listAllSpidersDetail().subscribe(
+      response => console.log(response.sort(
+        (a, b) => a.name > b.name ? 1 : -1
+      ))
     );
   }
 
 
   private scheduleAllSpiders() {
-    this.backendService.listAllSpiders().subscribe(
+    this.backendService.listAllSpidersDetail().subscribe(
       response => {
-        response.spiders.forEach(
-          spiderName => this.backendService.scheduleSpider(spiderName).subscribe(
-            r => console.log(r)
-          )
-        );
+        response.sort(
+          // Sort by parseCategory, tier, reach and name
+          (a, b) => {
+            if (a.parseCategory !== b.parseCategory) {
+              return a.parseCategory === 'base' && b.parseCategory === 'full' ? 1 : -1;
+            }
+            return (a.articleSource.tier - b.articleSource.tier)
+              || (b.articleSource.reach - a.articleSource.reach)
+              || (a.name > b.name ? 1 : -1);
+          }
+        )
+          .forEach(
+            spider => this.backendService.scheduleSpider(spider.name).subscribe(
+              r => console.log(r)
+            )
+          );
       }
     );
   }
