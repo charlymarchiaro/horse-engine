@@ -117,10 +117,10 @@ CRAWL_MAX_RUN_TIME_HOURS = 6
 SITEMAP_MAX_RUN_TIME_HOURS = 6
 
 # Selenium
-SELENIUM_DRIVER_NAME = "chrome"
-SELENIUM_DRIVER_EXECUTABLE_PATH = which("chromedriver")
+SELENIUM_DRIVER_NAME = "firefox"
+SELENIUM_DRIVER_EXECUTABLE_PATH = which("geckodriver")
 SELENIUM_DRIVER_ARGUMENTS = [
-    "--headless",
+    "-headless",
     "--log-level=3",
     "--no-sandbox",
     # "--disable-dev-shm-usage",
