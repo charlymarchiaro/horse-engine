@@ -34,6 +34,8 @@ class Params(BaseArticleSpiderParams):
             day_format="02",
             concat_fn=lambda year, month, day: f"/{year}/{month}/{day}/",
         )
+        # Override to stop redirects 
+        self.dont_redirect = True
 
     # Common params
     def _get_spider_base_name(self) -> str:

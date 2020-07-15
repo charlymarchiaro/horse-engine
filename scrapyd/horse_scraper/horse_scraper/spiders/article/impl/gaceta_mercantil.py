@@ -30,7 +30,7 @@ class Params(BaseArticleSpiderParams):
     def _after_initialize(self) -> None:
         # Enable Splash to parse dynamically loaded content
         self.splash_enabled = True
-        self.splash_wait_time = 1
+        self.splash_wait_time = 5
         self.splash_private_mode_enabled = False
 
     # Common params
@@ -74,6 +74,7 @@ class Params(BaseArticleSpiderParams):
     def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:
         return [
             self.parser_1,
+            self.parser_2,
         ]
 
     def parser_1(self, response):
@@ -90,6 +91,34 @@ class Params(BaseArticleSpiderParams):
                 (AttributeType.NAME, "script"),
                 (AttributeType.NAME, "style"),
                 (AttributeType.NG_BIND, "relacionada"),
+            ],
+        )
+
+        # last_updated
+        last_updated = dateparser.parse(
+            extract_all_text(
+                response,
+                root_xpath='(//div[contains(@class, "content_date")])[1]',
+                exclude_list=[],
+            )
+        )
+
+        return ArticleData(title, text, last_updated)
+
+    def parser_2(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+
+        # text ----------
+        text = extract_all_text(
+            response,
+            root_xpath='//div[contains(@ng-if, "nota.categoria.id") and not (contains(@class, "banner"))]',
+            exclude_list=[
+                (AttributeType.NAME, "script"),
+                (AttributeType.NAME, "style"),
+                (AttributeType.NG_BIND, "share"),
             ],
         )
 

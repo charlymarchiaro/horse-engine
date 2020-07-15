@@ -45,7 +45,13 @@ class Params(BaseArticleSpiderParams):
         ]
 
     def get_url_filter(self) -> UrlFilter:
-        return UrlFilter(allow_re=[".*-\d{6}\d*.html"], deny_re=[])
+        return UrlFilter(
+            allow_re=[".*-\d{6}\d*.html"],
+            deny_re=[
+                "laopinionaustral.com.ar\/amp\/.*",
+                "laopinionaustral.com.ar.*\/\/.*",
+            ],
+        )
 
     # Sitemap params
 
