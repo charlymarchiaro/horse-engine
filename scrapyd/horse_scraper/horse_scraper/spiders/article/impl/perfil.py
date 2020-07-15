@@ -28,9 +28,9 @@ from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 class Params(BaseArticleSpiderParams):
     def _after_initialize(self) -> None:
-        # Enable Selenium to parse dynamically loaded content
-        self.selenium_enabled = True
-        self.selenium_wait_time = 5
+        # Enable Splash to parse dynamically loaded content
+        self.splash_enabled = True
+        self.splash_wait_time = 1
         # Override to ignore sitemap termination
         self.ignore_sitemap_termination = True
 
