@@ -101,10 +101,10 @@ class Params(BaseArticleSpiderParams):
         )
 
         matches = re.findall('"content":"(?P<text>.+?)","type":"', script_text)
-        html = " ".join(matches)
+        html = "".join(matches)
 
         response = response.replace(body=html)
-        text = "".join(response.xpath("//text()").extract())
+        text = " || ".join(response.xpath("//text()").extract())
 
         return ArticleData(title, text, last_updated)
 
