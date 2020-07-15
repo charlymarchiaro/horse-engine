@@ -5,6 +5,7 @@ import html
 import dateparser  # type: ignore
 from datetime import datetime, date, timedelta
 from string import whitespace
+import re
 
 from scrapy.http import Request, HtmlResponse  # type: ignore
 from scrapy.linkextractors import LinkExtractor  # type: ignore
@@ -29,9 +30,6 @@ class Params(BaseArticleSpiderParams):
             day_format="02",
             concat_fn=lambda year, month, day: f"/{year}/{month}/{day}/",
         )
-        # Enable Selenium to parse dynamically loaded content
-        self.selenium_enabled = True
-        self.selenium_wait_time = 5
 
     # Common params
     def _get_spider_base_name(self) -> str:
@@ -85,9 +83,32 @@ class Params(BaseArticleSpiderParams):
         return [
             self.parser_1,
             self.parser_2,
+            self.parser_3,
         ]
 
     def parser_1(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+        last_updated = article_data.last_updated
+
+        # text ----------
+        script_text = extract_all_text(
+            response,
+            root_xpath='//script[contains(@type, "application/javascript") and contains(text(), "window.Fusion")]',
+            exclude_list=[],
+        )
+
+        matches = re.findall('"content":"(?P<text>.+?)","type":"', script_text)
+        html = "".join(matches)
+
+        response = response.replace(body=html)
+        text = "".join(response.xpath("//text()").extract())
+
+        return ArticleData(title, text, last_updated)
+
+    def parser_2(self, response):
 
         # title ----------
         title = (
@@ -118,7 +139,7 @@ class Params(BaseArticleSpiderParams):
 
         return ArticleData(title, text, last_updated)
 
-    def parser_2(self, response):
+    def parser_3(self, response):
 
         # Datos artículo (json) ----------
         script_datos_articulo_json = response.xpath(
