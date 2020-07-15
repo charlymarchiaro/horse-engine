@@ -25,9 +25,6 @@ from horse_scraper.services.utils.parse_utils import (
 from ..base_article_crawl_spider import BaseArticleCrawlSpider
 from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
-from selenium.webdriver.common.by import By  # type: ignore
-from selenium.webdriver.support import expected_conditions as EC  # type: ignore
-
 
 class Params(BaseArticleSpiderParams):
     def _after_initialize(self) -> None:
@@ -37,9 +34,9 @@ class Params(BaseArticleSpiderParams):
             day_format="02",
             concat_fn=lambda year, month, day: f"{month}{day}{year}",
         )
-        # Enable Selenium to parse dynamically loaded content
-        self.selenium_enabled = True
-        self.selenium_wait_time = 0.5
+        # Enable Splash to parse dynamically loaded content
+        self.splash_enabled = True
+        self.splash_wait_time = 3.0
 
     # Common params
     def _get_spider_base_name(self) -> str:

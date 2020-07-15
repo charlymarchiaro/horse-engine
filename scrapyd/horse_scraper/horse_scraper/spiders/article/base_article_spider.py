@@ -14,7 +14,7 @@ from scrapy.spiders import SitemapSpider, Rule  # type: ignore
 from scrapy.spiders.sitemap import iterloc  # type: ignore
 from scrapy.utils.log import configure_logging  # type: ignore
 
-from scrapy_selenium import SeleniumRequest  # type: ignore
+from scrapy_splash import SplashRequest  # type: ignore
 
 from datetime import datetime, date, timedelta
 import time
@@ -58,9 +58,6 @@ class BaseArticleSpider:
         self.init_source_info()
         self.init_params()
 
-        if self.params.selenium_enabled:
-            self.setup_selenium()
-
         self.start_time = datetime.now()
 
     def setup_logger(self):
@@ -89,9 +86,6 @@ class BaseArticleSpider:
         handler = ArticleDbHandler()
         self.source_info = handler.get_spider_article_source_info(self.name)
 
-    def setup_selenium(self):
-        pass
-
     def create_request(
         self,
         url,
@@ -109,8 +103,14 @@ class BaseArticleSpider:
         cb_kwargs=None,
         force_normal_request=False,
     ) -> Request:
-        # Selenium is disabled --> use default method
-        if force_normal_request or self.params.selenium_enabled == False:
+
+        req_meta = {"dont_redirect": self.params.dont_redirect}
+
+        if meta:
+            req_meta.update(meta)
+
+        # Splash is disabled --> use default method
+        if force_normal_request or self.params.splash_enabled == False:
             return Request(
                 url=url,
                 callback=callback,
@@ -118,7 +118,7 @@ class BaseArticleSpider:
                 headers=headers,
                 body=body,
                 cookies=cookies,
-                meta=meta,
+                meta=req_meta,
                 encoding=encoding,
                 priority=priority,
                 dont_filter=dont_filter,
@@ -127,25 +127,36 @@ class BaseArticleSpider:
                 cb_kwargs=cb_kwargs,
             )
 
-        if self.params.selenium_wait_time:
-            wait_time = self.params.selenium_wait_time
-        else:
-            wait_time = 0.5
-
         # Splash is enabled
-        logging.debug("Creating selenium request: " + url)
-        return SeleniumRequest(
+
+        if self.params.splash_private_mode_enabled:
+            private_mode_enabled = "true"
+        else:
+            private_mode_enabled = "false"
+
+        script = f"""
+            function main(splash, args)
+            splash.private_mode_enabled = {private_mode_enabled}
+            assert(splash:go(args.url))
+            assert(splash:wait({self.params.splash_wait_time}))  
+            return {{
+                html = splash:html(),
+            }}
+            end
+        """
+
+        logging.debug("Creating Splash request: " + url)
+        return SplashRequest(
             url=url,
             callback=callback,
-            wait_time=10,
-            wait_until=wait_time_seconds(wait_time),
-            screenshot=self.params.selenium_screenshot,
-            script=self.params.selenium_script,
+            endpoint="execute",
+            cache_args=["lua_source"],
+            args={"lua_source": script},
             method=method,
             headers=headers,
             body=body,
             cookies=cookies,
-            meta=meta,
+            meta=req_meta,
             encoding=encoding,
             priority=priority,
             dont_filter=dont_filter,
@@ -210,21 +221,6 @@ class BaseArticleSpider:
         parser_functions: List[Callable[[HtmlResponse], ArticleData]],
     ) -> Tuple[Union[datetime, None], Union[ArticleData, None], Union[str, None]]:
 
-        # If selenium is enabled, initialize the response with
-        # the processed body content
-        if self.params.selenium_enabled:
-            html = " ".join(response.selector.xpath("*").extract())
-            response = HtmlResponse(
-                url=response.url,
-                status=response.status,
-                headers=response.headers,
-                body=html,
-                flags=response.flags,
-                request=response.request,
-                certificate=response.certificate,
-                encoding=response._encoding,
-            )
-
         article_date: Union[datetime, None] = None
 
         for f in parser_functions:
@@ -267,10 +263,7 @@ class BaseArticleSpider:
 
         try:
             article_data = self.default_parser.parse(
-                response,
-                self.date_span,
-                self.source_info,
-                self.params.selenium_enabled,
+                response, self.date_span, self.source_info, self.params.splash_enabled,
             )
 
             if self.is_article_data_valid(article_data):

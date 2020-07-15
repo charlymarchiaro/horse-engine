@@ -28,9 +28,10 @@ from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 class Params(BaseArticleSpiderParams):
     def _after_initialize(self) -> None:
-        # Enable Selenium to parse dynamically loaded content
-        self.selenium_enabled = True
-        self.selenium_wait_time = 0.5
+        # Enable Splash to parse dynamically loaded content
+        self.splash_enabled = True
+        self.splash_wait_time = 1
+        self.splash_private_mode_enabled = False
 
     # Common params
     def _get_spider_base_name(self) -> str:
@@ -96,7 +97,7 @@ class Params(BaseArticleSpiderParams):
         last_updated = dateparser.parse(
             extract_all_text(
                 response,
-                root_xpath='(//div[contains(@class,"fecha_nota")])[1]',
+                root_xpath='(//div[contains(@class, "content_date")])[1]',
                 exclude_list=[],
             )
         )

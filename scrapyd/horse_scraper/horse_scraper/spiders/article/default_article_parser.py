@@ -19,7 +19,7 @@ class DefaultArticleParser:
         response: HtmlResponse,
         date_span: DateSpan,
         source_info: ArticleSourceInfo,
-        selenium_enabled: bool,
+        splash_enabled: bool,
     ) -> ArticleData:
 
         article = Article(response.url)

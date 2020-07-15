@@ -39,10 +39,15 @@ build:
         "**/*.conf": .
         "**/*.cfg": .
 
-    - image: charlymarchiaro/horse-engine-postgres
-      context: postgres
+    - image: charlymarchiaro/horse-engine-splash
+      context: splash
       docker:
         dockerfile: Dockerfile.dev
+
+    # - image: charlymarchiaro/horse-engine-postgres
+    #   context: postgres
+    #   docker:
+    #     dockerfile: Dockerfile.dev
 
 deploy:
   kubectl:
@@ -50,4 +55,5 @@ deploy:
       - k8s/client-deployment.yaml
       - k8s/api-deployment.yaml
       - k8s/scrapyd-deployment.yaml
-      - k8s/postgres-deployment.yaml
+      - k8s/splash-deployment.yaml
+      # - k8s/postgres-deployment.yaml

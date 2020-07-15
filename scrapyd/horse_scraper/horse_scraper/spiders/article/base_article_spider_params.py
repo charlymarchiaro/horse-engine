@@ -57,18 +57,19 @@ class BaseArticleSpiderParams:
     # Override to keep query string of the article's url
     keep_url_query_string: bool = False
 
+    # Override to stop redirects 
+    dont_redirect: bool = False
+
     # Override to ignore missing sitemap entry dates
     ignore_missing_sitemap_entry_date: bool = False
 
     # Override to ignore sitemap termination
     ignore_sitemap_termination: bool = False
 
-    # Override to use Selenium to parse dynamically loaded content
-    selenium_enabled: bool = False
-    selenium_wait_time: Union[float, None] = None
-    selenium_wait_until: Union[Any, None] = None
-    selenium_screenshot: bool = False
-    selenium_script: Union[str, None] = None
+    # Override to use Splash to parse dynamically loaded content
+    splash_enabled: bool = False
+    splash_wait_time: Union[float, None] = None
+    splash_private_mode_enabled: bool = True
 
     def __init__(self, *args, **kwargs):
         pass
@@ -199,7 +200,7 @@ class BaseArticleSpiderParams:
 
     def get_default_parser_results(self, response: HtmlResponse) -> ArticleData:
         return self.default_parser.parse(
-            response, self.date_span, self.source_info, self.selenium_enabled
+            response, self.date_span, self.source_info, self.splash_enabled
         )
 
     def sanitize_date_str(self, date_str: str) -> Union[datetime, None]:

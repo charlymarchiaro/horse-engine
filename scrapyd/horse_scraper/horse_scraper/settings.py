@@ -62,15 +62,18 @@ REDIRECT_ENABLED = True
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-# SPIDER_MIDDLEWARES = {
-#     'horse_scraper.middlewares.HorseScraperSpiderMiddleware': 543,
-# }
+SPIDER_MIDDLEWARES = {
+    "scrapy_splash.SplashDeduplicateArgsMiddleware": 100,
+    # "horse_scraper.middlewares.HorseScraperSpiderMiddleware": 543,
+}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-    # 'horse_scraper.middlewares.HorseScraperDownloaderMiddleware': 543,
-    "scrapy_selenium.SeleniumMiddleware": 800,
+    # "horse_scraper.middlewares.HorseScraperDownloaderMiddleware": 543,
+    "scrapy_splash.SplashCookiesMiddleware": 723,
+    "scrapy_splash.SplashMiddleware": 725,
+    "scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware": 810,
 }
 
 # Enable or disable extensions
@@ -106,6 +109,12 @@ ITEM_PIPELINES = {
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
+# Splash
+SPLASH_URL = "http://splash-cluster-ip-service:8050/"
+DUPEFILTER_CLASS = "scrapy_splash.SplashAwareDupeFilter"
+HTTPCACHE_STORAGE = "scrapy_splash.SplashAwareFSCacheStorage"
+
+
 FEED_EXPORT_ENCODING = "utf-8"
 
 LOG_LEVEL = "INFO"
@@ -115,14 +124,4 @@ CRAWL_PERIOD_DAYS_BACK = 15
 SITEMAP_PERIOD_DAYS_BACK = 15
 CRAWL_MAX_RUN_TIME_HOURS = 6
 SITEMAP_MAX_RUN_TIME_HOURS = 6
-
-# Selenium
-SELENIUM_DRIVER_NAME = "firefox"
-SELENIUM_DRIVER_EXECUTABLE_PATH = which("geckodriver")
-SELENIUM_DRIVER_ARGUMENTS = [
-    "-headless",
-    "--log-level=3",
-    "--no-sandbox",
-    # "--disable-dev-shm-usage",
-]
 

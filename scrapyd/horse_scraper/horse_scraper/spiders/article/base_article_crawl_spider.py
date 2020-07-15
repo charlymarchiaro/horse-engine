@@ -14,6 +14,8 @@ from scrapy.spiders import CrawlSpider, Rule  # type: ignore
 from scrapy.utils.log import configure_logging  # type: ignore
 from scrapy.exceptions import CloseSpider  # type: ignore
 
+from scrapy_splash import SplashJsonResponse, SplashTextResponse  # type: ignore
+
 from datetime import datetime, date, timedelta
 from string import whitespace
 
@@ -58,16 +60,18 @@ class BaseArticleCrawlSpider(BaseArticleSpider, CrawlSpider):
         CrawlSpider.__init__(self, self.name, *args, **kwargs)
 
     def start_requests(self):
-        # Selenium is disabled --> use default method
-        if self.params.selenium_enabled == False:
+        # Splash is disabled --> use default method
+        if self.params.splash_enabled == False:
             yield from super().start_requests()
 
-        # Selenium is enabled
+        # Splash is enabled
         for url in self.start_urls:
             yield self.create_request(url=url, dont_filter=True)
 
     def _requests_to_follow(self, response):
-        if not isinstance(response, (HtmlResponse)):
+        if not isinstance(
+            response, (HtmlResponse, SplashJsonResponse, SplashTextResponse)
+        ):
             return
 
         seen = set()
