@@ -117,7 +117,7 @@ HTTPCACHE_STORAGE = "scrapy_splash.SplashAwareFSCacheStorage"
 
 FEED_EXPORT_ENCODING = "utf-8"
 
-LOG_LEVEL = "DEBUG"
+LOG_LEVEL = "INFO"
 
 # App params
 CRAWL_PERIOD_DAYS_BACK = 15
