@@ -28,7 +28,7 @@ from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 class Params(BaseArticleSpiderParams):
     def _after_initialize(self) -> None:
-        # Override to stop redirects 
+        # Override to stop redirects
         self.dont_redirect = True
 
     # Common params
@@ -95,61 +95,14 @@ class Params(BaseArticleSpiderParams):
 
     def get_url_filter(self) -> UrlFilter:
 
-        allowed_categories = [
-            "nota-principal",
-            "infopublicidad",
-            "infogerentes",
-            "plus",
-            "que-dice-la-gente",
-            "y-ademas",
-            "infotrivias",
-            "infoganadores",
-            "infoautos",
-            "infotecnologia",
-            "lo-que-viene",
-            "infonegocios-en-uy",
-            "infonegocios-en-py",
-            "hay-equipo",
-            "que-esta-pasando-ahora",
-            "que-esta-pasando",
-            "un-cafe-con",
-            "inforecuerdos",
-            "infoencuesta",
-            "enfoque",
-            "ciudad-informa",
-            "in-neuquen",
-            "in-mar-del-plata",
-            "in-tucuman",
-            "in-salta",
-            "in-litoral",
-            "infonegocios-miami",
-            "columnista-invitado",
-            "in-semanal",
-            "40-de-las-grandes",
-            "infobursatil",
-            "in-litoral-1",
-            "financial-times",
-            "infomujeres-1",
-            "las-rosas",
-            "el-cronista",
-            "bien-de-familia",
-            "in-bahia-blanca",
-            "in-jujuy",
-            "in-mendoza",
-            "si-estas-por-buenos-aires",
-            "politica-y-algo-mas",
-            "in-carlos-paz",
-            "in-san-francisco",
-            "contenido-patrocinado",
-            "en-foco",
-            "top-100-brands",
-            "infovino",
-        ]
-        allowed_categories_str = "|".join(allowed_categories)
-
         return UrlFilter(
-            allow_re=[f".*{allowed_categories_str}\/.{10,}"],
-            deny_re=[".*page=\d+.*", ".*link:.*", ".*automotiva.com.ar.*"],
+            allow_re=[".*infonegocios.info\/.+\/.{10,}"],
+            deny_re=[
+                ".*infonegocios.info\/.+\/.+\/.*",
+                ".*page=\d+.*",
+                ".*link:.*",
+                ".*automotiva.com.ar.*",
+            ],
         )
 
     # Sitemap params
