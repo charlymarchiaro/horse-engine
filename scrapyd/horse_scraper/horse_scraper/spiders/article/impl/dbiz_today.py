@@ -104,6 +104,8 @@ class Params(BaseArticleSpiderParams):
             self.parser_1,
             self.parser_2,
             self.parser_3,
+            self.parser_4,
+            self.parser_5,
         ]
 
     def parser_1(self, response):
@@ -140,6 +142,29 @@ class Params(BaseArticleSpiderParams):
         # text ----------
         text = extract_all_text(
             response,
+            root_xpath="//article",
+            exclude_list=[
+                (AttributeType.NAME, "script"),
+                (AttributeType.NAME, "style"),
+            ],
+        )
+
+        # last_updated
+        last_updated = dateparser.parse(
+            extract_all_text(response, root_xpath="(//article/p)[1]", exclude_list=[],)
+        )
+
+        return ArticleData(title, text, last_updated)
+
+    def parser_3(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+
+        # text ----------
+        text = extract_all_text(
+            response,
             root_xpath="(//article)[1]",
             exclude_list=[
                 (AttributeType.NAME, "script"),
@@ -153,7 +178,29 @@ class Params(BaseArticleSpiderParams):
 
         return ArticleData(title, text, last_updated)
 
-    def parser_3(self, response):
+    def parser_4(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+
+        # text ----------
+        text = extract_all_text(
+            response,
+            root_xpath="//article",
+            exclude_list=[
+                (AttributeType.NAME, "script"),
+                (AttributeType.NAME, "style"),
+            ],
+        )
+
+        # last_updated
+        # Publish dates are missing --> use current datetime
+        last_updated = datetime.now()
+
+        return ArticleData(title, text, last_updated)
+
+    def parser_5(self, response):
 
         article_data = self.get_default_parser_results(response)
 
