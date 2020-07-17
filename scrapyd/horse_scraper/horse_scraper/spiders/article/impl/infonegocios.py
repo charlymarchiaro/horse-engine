@@ -102,6 +102,7 @@ class Params(BaseArticleSpiderParams):
                 ".*page=\d+.*",
                 ".*link:.*",
                 ".*automotiva.com.ar.*",
+                ".*\/tarjetero\/.*",
             ],
         )
 
