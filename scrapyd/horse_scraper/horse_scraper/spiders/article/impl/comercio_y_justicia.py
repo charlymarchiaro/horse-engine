@@ -89,6 +89,7 @@ class Params(BaseArticleSpiderParams):
     def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:
         return [
             self.parser_1,
+            self.parser_2,
         ]
 
     def parser_1(self, response):
@@ -103,6 +104,24 @@ class Params(BaseArticleSpiderParams):
             extract_all_text(
                 response,
                 root_xpath='//span[contains(@class, "date-time")]',
+                exclude_list=[],
+            )
+        )
+
+        return ArticleData(title, text, last_updated)
+
+    def parser_2(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+        text = article_data.text
+
+        # last_updated
+        last_updated = dateparser.parse(
+            extract_all_text(
+                response,
+                root_xpath='//article[contains(@id, "post")]//span[contains(@class, "meta-date")]',
                 exclude_list=[],
             )
         )
