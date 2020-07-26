@@ -64,7 +64,7 @@ class Params(BaseArticleSpiderParams):
     def get_url_filter(self) -> UrlFilter:
         return UrlFilter(
             allow_re=[".*comercioyjusticia.info\/.+\/(.){20,}\/"],
-            deny_re=[".*\/page\/\d+.*", ".*\/category\/.*"],
+            deny_re=[".*\/page\/\d+.*", ".*\/category\/.*", ".*\/tag\/.*", ".*\?.*",],
         )
 
     # Sitemap params
