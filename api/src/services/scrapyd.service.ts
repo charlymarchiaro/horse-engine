@@ -36,6 +36,11 @@ export class JobScheduleInfo {
   @property() jobid: string;
 }
 
+@model()
+export class BulkJobScheduleInfo {
+  @property.array(JobScheduleInfo) items: JobScheduleInfo[];
+}
+
 export interface Scrapyd {
   // this is where you define the Node.js methods that will be
   // mapped to REST/SOAP/gRPC operations as stated in the datasource
