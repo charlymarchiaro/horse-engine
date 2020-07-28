@@ -12,6 +12,10 @@ spec:
       labels:
         component: api
     spec:
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
       containers:
         - name: api
           image: charlymarchiaro/horse-engine-api
@@ -20,6 +24,9 @@ spec:
           resources:
             requests:
               cpu: 10m
+          volumeMounts:
+            - mountPath: /dev/shm
+              name: dshm
           env:
             - name: PG_HOST
               value: postgres-cluster-ip-service
