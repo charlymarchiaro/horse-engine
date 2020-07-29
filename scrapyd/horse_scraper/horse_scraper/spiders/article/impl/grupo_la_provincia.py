@@ -88,7 +88,18 @@ class Params(BaseArticleSpiderParams):
         return True
 
     def should_follow_article_url(self, url: str) -> bool:
-        return True
+        
+        try:
+            # Filtering by id (integer) present in URL
+            match = re.search(".*-(\d{5,})$", url)
+            if match:
+                article_id = int(match.group(1))
+                if article_id > 530000:
+                    return True
+            return False
+
+        except:
+            return False
 
     # Parser functions
 
