@@ -32,7 +32,7 @@ class Params(BaseArticleSpiderParams):
             year_format="04",
             month_format="02",
             day_format="02",
-            concat_fn=lambda year, month, day: f"/{year}/{month}/{day}/",
+            concat_fn=lambda year, month, day: f"/{year}/{month}/",
         )
 
     # Common params
