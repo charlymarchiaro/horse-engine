@@ -1,0 +1,24 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "..\\..\\..\\..\\ProgramData\\Anaconda3\\envs\\horse-scraper\\Lib\\site-packages\\scrapy"
+		},
+		{
+			"path": "..\\..\\..\\..\\ProgramData\\Anaconda3\\envs\\horse-scraper\\Lib\\site-packages\\newspaper"
+		},
+		{
+			"path": "..\\..\\..\\..\\ProgramData\\Anaconda3\\envs\\horse-scraper\\Lib\\site-packages\\scrapy_selenium"
+		},
+		{
+			"path": "..\\..\\..\\..\\ProgramData\\Anaconda3\\envs\\horse-scraper\\Lib\\site-packages\\selenium"
+		}
+	],
+	"settings": {
+		"mypy.targets": [
+			"scrapyd\\horse_scraper"
+		]
+	}
+}
