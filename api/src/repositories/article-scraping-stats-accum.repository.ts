@@ -18,7 +18,7 @@ export class ArticleScrapingStatsAccumRepository extends DefaultTransactionalRep
 
   async updateCurrentDateValues() {
 
-    const currentDateStr = moment().format('YYYY-MM-DD');
+    const CURRENT_DATE_STR = moment().format('YYYY-MM-DD');
 
     // Begin transaction
     const tx = await this.beginTransaction(IsolationLevel.READ_COMMITTED);
@@ -27,7 +27,7 @@ export class ArticleScrapingStatsAccumRepository extends DefaultTransactionalRep
 
       // Delete any existing data for current date
       const deletedCount = await this.deleteAll(
-        { date: { eq: currentDateStr } },
+        { date: { eq: CURRENT_DATE_STR } },
         { transaction: tx },
       );
 
@@ -75,7 +75,7 @@ export class ArticleScrapingStatsAccumRepository extends DefaultTransactionalRep
         ORDER BY
             source_name
         `,
-        [currentDateStr],
+        [CURRENT_DATE_STR],
         { transaction: tx },
       );
 

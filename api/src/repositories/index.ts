@@ -4,3 +4,4 @@ export * from './article-spider.repository';
 export * from './article.repository';
 export * from './article-scraping-stats-accum.repository';
 export * from './article-scraping-stats-dyn.repository';
+export * from './article-scraping-stats.repository';
