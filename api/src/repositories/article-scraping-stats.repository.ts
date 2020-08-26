@@ -183,6 +183,7 @@ export class ArticleScrapingStatsRepository extends DefaultTransactionalReposito
 
     const CURRENT_DATE_STR = moment().format('YYYY-MM-DD');
     const PSDD_H_PERIOD_DAYS_BACK = 60;
+    const SSCD_H_PERIOD_DAYS_BACK = 60;
 
     const result = await this.execute(
       `
@@ -270,8 +271,9 @@ export class ArticleScrapingStatsRepository extends DefaultTransactionalReposito
             AVG(dyn.published_count) AS val
         FROM 
             dyn
-        GROUP BY
-            source_name
+        WHERE
+            dyn.date >= $1::date - ${SSCD_H_PERIOD_DAYS_BACK}
+            AND dyn.date <= $1::date
       ),
       -- Succ. scraped count per day - 1 week
       SSCD_1W AS (
@@ -282,8 +284,7 @@ export class ArticleScrapingStatsRepository extends DefaultTransactionalReposito
             dyn
         WHERE
             dyn.date >= $1::date - 7
-        GROUP BY
-            source_name
+            AND dyn.date <= $1::date
       ),
       -- Published to scraped date diff histogram per day - historical
       PSDD_H AS (
@@ -296,8 +297,7 @@ export class ArticleScrapingStatsRepository extends DefaultTransactionalReposito
             dyn
         WHERE
             dyn.date >= $1::date - ${PSDD_H_PERIOD_DAYS_BACK}
-        GROUP BY
-            dyn.source_name
+            AND dyn.date <= $1::date
       ),
       -- Published to scraped date diff histogram per day - 1 week
       PSDD_1W AS (
@@ -310,8 +310,7 @@ export class ArticleScrapingStatsRepository extends DefaultTransactionalReposito
             dyn
         WHERE
             dyn.date >= $1::date - 7
-        GROUP BY
-            dyn.source_name
+            AND dyn.date <= $1::date
       )
       SELECT
            'TOTAL' AS source_name,
