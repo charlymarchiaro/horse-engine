@@ -20,6 +20,7 @@ export class ArticleScrapingStatsRepository extends DefaultTransactionalReposito
   async getStatsPerSource(): Promise<ArticleScrapingStats[]> {
 
     const CURRENT_DATE_STR = moment().format('YYYY-MM-DD');
+    const SSCD_H_PERIOD_DAYS_BACK = 60;
     const PSDD_H_PERIOD_DAYS_BACK = 60;
 
     const result = await this.execute(
@@ -104,6 +105,9 @@ export class ArticleScrapingStatsRepository extends DefaultTransactionalReposito
             AVG(dyn.published_count) AS val
         FROM 
             dyn
+        WHERE
+            dyn.date >= $1::date - ${SSCD_H_PERIOD_DAYS_BACK}
+            AND dyn.date <= $1::date
         GROUP BY
             source_name
       ),
@@ -116,6 +120,7 @@ export class ArticleScrapingStatsRepository extends DefaultTransactionalReposito
             dyn
         WHERE
             dyn.date >= $1::date - 7
+            AND dyn.date <= $1::date
         GROUP BY
             source_name
       ),
@@ -130,6 +135,7 @@ export class ArticleScrapingStatsRepository extends DefaultTransactionalReposito
             dyn
         WHERE
             dyn.date >= $1::date - ${PSDD_H_PERIOD_DAYS_BACK}
+            AND dyn.date <= $1::date
         GROUP BY
             dyn.source_name
       ),
@@ -144,6 +150,7 @@ export class ArticleScrapingStatsRepository extends DefaultTransactionalReposito
             dyn
         WHERE
             dyn.date >= $1::date - 7
+            AND dyn.date <= $1::date
         GROUP BY
             dyn.source_name
       )
@@ -182,8 +189,8 @@ export class ArticleScrapingStatsRepository extends DefaultTransactionalReposito
   async getStatsTotal(): Promise<ArticleScrapingStats> {
 
     const CURRENT_DATE_STR = moment().format('YYYY-MM-DD');
-    const PSDD_H_PERIOD_DAYS_BACK = 60;
     const SSCD_H_PERIOD_DAYS_BACK = 60;
+    const PSDD_H_PERIOD_DAYS_BACK = 60;
 
     const result = await this.execute(
       `
@@ -313,9 +320,9 @@ export class ArticleScrapingStatsRepository extends DefaultTransactionalReposito
             AND dyn.date <= $1::date
       )
       SELECT
-           'TOTAL' AS source_name,
-           PSR_H.val AS PSR_H,
-           PSR_1W.val AS PSR_1W,
+          'TOTAL' AS source_name,
+          PSR_H.val AS PSR_H,
+          PSR_1W.val AS PSR_1W,
           SSCD_H.val AS SSCD_H,
           SSCD_1W.val AS SSCD_1W,
           PSDD_H.c1 AS PSDDC1_H,
@@ -325,17 +332,17 @@ export class ArticleScrapingStatsRepository extends DefaultTransactionalReposito
           PSDD_1W.c2 AS PSDDC2_1W,
           PSDD_1W.c3 AS PSDDC3_1W
       FROM
-           PSR_H
-           INNER JOIN PSR_1W
-             ON PSR_H.source_name = PSR_1W.source_name
-           INNER JOIN SSCD_H
-             ON PSR_H.source_name = SSCD_H.source_name
+          PSR_H
+          INNER JOIN PSR_1W
+            ON PSR_H.source_name = PSR_1W.source_name
+          INNER JOIN SSCD_H
+            ON PSR_H.source_name = SSCD_H.source_name
           INNER JOIN SSCD_1W
-             ON PSR_H.source_name = SSCD_1W.source_name
+            ON PSR_H.source_name = SSCD_1W.source_name
           INNER JOIN PSDD_H
-             ON PSR_H.source_name = PSDD_H.source_name
+            ON PSR_H.source_name = PSDD_H.source_name
           INNER JOIN PSDD_1W
-             ON PSR_H.source_name = PSDD_1W.source_name
+            ON PSR_H.source_name = PSDD_1W.source_name
       `,
       [CURRENT_DATE_STR]
     );
