@@ -1,4 +1,5 @@
-import {Entity, model, property} from '@loopback/repository';
+import { Entity, model, property } from '@loopback/repository';
+import { ArticleSourceWithRelations } from './article-source.model';
 
 @model()
 export class ArticleScrapingStats extends Entity {
@@ -8,7 +9,12 @@ export class ArticleScrapingStats extends Entity {
     generated: false,
     required: true,
   })
-  element: string;
+  source_id: string;
+
+  @property({
+    type: 'object',
+  })
+  articleSource?: ArticleSourceWithRelations;
 
   @property({
     type: 'number',

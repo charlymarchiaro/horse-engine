@@ -36,7 +36,7 @@ export class ArticleScrapingStatsAccumRepository extends DefaultTransactionalRep
         `
         WITH data_1 AS (
           SELECT        
-              source.name AS source_name, 
+              source.id AS source_id, 
               CASE WHEN details.result = 'success' THEN 1 ELSE 0 END AS success,
               CASE WHEN details.result = 'error' THEN 1 ELSE 0 END AS error,
               article.url AS url
@@ -49,31 +49,31 @@ export class ArticleScrapingStatsAccumRepository extends DefaultTransactionalRep
         ),
         data_2 AS (
           SELECT
-              source_name,
+              source_id,
               SUM(success) AS success,
               SUM(error) AS error,
               COUNT(url) AS total
           FROM
               data_1
           GROUP BY
-              source_name
+              source_id
         )
         INSERT INTO
             scraper.article_scraping_stats_accum(
               date,
-              source_name,
+              source_id,
               total_error_count,
               total_success_count
             )
         SELECT
             $1,
-            source_name,
+            source_id,
             error,
             success
         FROM
             data_2
         ORDER BY
-            source_name
+            source_id
         `,
         [CURRENT_DATE_STR],
         { transaction: tx },

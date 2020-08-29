@@ -33,13 +33,12 @@ export class ArticleScrapingStatsDyn extends Entity {
     type: 'string',
     required: true,
     postgresql: {
-      columnName: 'source_name',
-      dataType: 'VARCHAR',
-      dataLength: 64,
+      columnName: 'source_id',
+      dataType: 'uuid',
       nullable: 'NO',
     }
   })
-  source_name: string;
+  source_id: string;
 
   @property({
     type: 'number',
