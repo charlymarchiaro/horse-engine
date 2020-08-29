@@ -63,11 +63,12 @@ import { BlankCasualComponent } from './@pages/layouts/blank-casual/blank-casual
 
 // App modules
 import { AppServicesModule } from './services/app-services.module';
+import { MaterialComponentsModule } from './material-components.module';
 import { SharedModule as AppSharedModule } from './components/shared/shared.module';
 import { ScrapingMonitorModule } from './components/scraping-monitor/scraping-monitor.module';
 import { KeywordSearchModule } from './components/keyword-search/keyword-search.module';
 import { DashboardModule } from './components/dashboard/dashboard.module';
-import { MaterialComponentsModule } from './material-components.module';
+import { ArticleScrapingStatsModule } from './components/article-scraping-stats/article-scraping-stats.module';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -132,6 +133,7 @@ export class AppHammerConfig extends HammerGestureConfig {
     ScrapingMonitorModule,
     KeywordSearchModule,
     DashboardModule,
+    ArticleScrapingStatsModule,
   ],
   providers: [QuickviewService, pagesToggleService, {
     provide: PERFECT_SCROLLBAR_CONFIG,

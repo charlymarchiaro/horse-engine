@@ -7,9 +7,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MainComponent implements OnInit {
 
+  isLoading = false;
+  errorMessage = false;
+  message = 'Something went terribly wrong. Just keep calm and carry on!';
+
+
   constructor() { }
+
 
   ngOnInit() {
   }
 
+
+  sampleRefresh() {
+    this.isLoading = true;
+    this.errorMessage = false;
+    setTimeout(() => {
+      this.isLoading = false;
+      this.errorMessage = true;
+    }, 3000);
+  }
 }
