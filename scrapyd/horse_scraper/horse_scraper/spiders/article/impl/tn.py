@@ -28,7 +28,12 @@ from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 class Params(BaseArticleSpiderParams):
     def _after_initialize(self) -> None:
-        pass
+        self.date_allow_str = self.get_date_allow_str(
+            year_format="04",
+            month_format="02",
+            day_format="02",
+            concat_fn=lambda year, month, day: f"/{year}/{month}/{day}/",
+        )
 
     # Common params
     def _get_spider_base_name(self) -> str:
@@ -57,14 +62,14 @@ class Params(BaseArticleSpiderParams):
         ]
 
     def get_url_filter(self) -> UrlFilter:
-        return UrlFilter(allow_re=[".*_\d{5,}$"], deny_re=[])
+        return UrlFilter(allow_re=[f".*({self.date_allow_str}).+_story"], deny_re=[])
 
     # Sitemap params
 
     def get_sitemap_urls(self) -> List[str]:
         return [
-            "https://tn.com.ar/sitemap_news.xml",
-            "https://tn.com.ar/googlenews.xml",
+            "https://tn.com.ar/arcio/sitemap/",
+            "https://tn.com.ar/arcio/news-sitemap/",
         ]
 
     def get_sitemap_follow(self) -> List[str]:
@@ -82,7 +87,28 @@ class Params(BaseArticleSpiderParams):
     # Parser functions
 
     def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:
-        return []
+        return [
+            self.parser_1,
+        ]
+
+    def parser_1(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+        last_updated = article_data.last_updated
+
+        # text ----------
+        script_text = extract_all_text(
+            response,
+            root_xpath='//script[@type="application/ld+json"]',
+            exclude_list=[],
+        )
+
+        matches = re.findall('articleBody":"(?P<text>.+)"}', script_text)
+        text = "".join(matches)
+
+        return ArticleData(title, text, last_updated)
 
 
 # Spider implementations
