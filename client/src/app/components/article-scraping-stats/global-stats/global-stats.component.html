@@ -1,0 +1,12 @@
+<pgcard
+  (onRefresh)="onRefresh()"
+  [Loading]="loadState.status === LoadStatus.loading"
+  [ShowMessage]="loadState.status === LoadStatus.error"
+  [Message]="loadState.errorMessage"
+  [MinimalHeader]="true">
+  <ng-template #CardTitle>Article scraping stats - Global</ng-template>
+  <ng-template #CardExtraControls></ng-template>
+  <h3><span class="semi-bold">Global stats</span></h3>
+  <p>We have crafted Pages Cards to suit any use case. Add a maximize button <i class="pg-fullscreen"></i> into your Cards controls bar to make the Cards go full-screen. This will come handy if you want to show lot of content inside a Cards and want to give the content some room to breath</p>
+  <br>
+</pgcard>

@@ -1,35 +1,21 @@
 <div class="container-fluid padding-25 sm-padding-10">
   <div class="row">
     <div class="col-lg-6 col-xlg-5">
-      <pgcard
-        (onRefresh)="sampleRefresh()"
-        [Loading]="isLoading"
-        [ShowMessage]="errorMessage"
-        [Message]="message"
-        [MinimalHeader]="true">
-        <ng-template #CardTitle>Article scraping stats</ng-template>
-        <ng-template #CardExtraControls></ng-template>
-        <h3>
-        <span class="semi-bold">Advance</span> Tools</h3>
-        <p>We have crafted Pages Cards to suit any use case. Add a maximize button <i class="pg-fullscreen"></i> into your Cards controls bar to make the Cards go full-screen. This will come handy if you want to show lot of content inside a Cards and want to give the content some room to breath</p>
-        <br>
-      </pgcard>
+      <app-article-psr-source-stats></app-article-psr-source-stats>
     </div>
 
     <div class="col-lg-6 col-xlg-5">
-      <pgcard
-        (onRefresh)="sampleRefresh()"
-        [Loading]="isLoading"
-        [ShowMessage]="errorMessage"
-        [Message]="message"
-        [MinimalHeader]="true">
-        <ng-template #CardTitle>Article scraping stats</ng-template>
-        <ng-template #CardExtraControls></ng-template>
-        <h3>
-        <span class="semi-bold">Advance</span> Tools</h3>
-        <p>We have crafted Pages Cards to suit any use case. Add a maximize button <i class="pg-fullscreen"></i> into your Cards controls bar to make the Cards go full-screen. This will come handy if you want to show lot of content inside a Cards and want to give the content some room to breath</p>
-        <br>
-      </pgcard>
+      <app-article-sscd-source-stats></app-article-sscd-source-stats>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-6 col-xlg-5">
+      <app-article-psdd-source-stats></app-article-psdd-source-stats>
+    </div>
+
+    <div class="col-lg-6 col-xlg-5">
+      <app-article-global-stats></app-article-global-stats>
     </div>
   </div>
 </div>
