@@ -28,15 +28,7 @@ from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 class Params(BaseArticleSpiderParams):
     def _after_initialize(self) -> None:
-        self.date_allow_str = self.get_date_allow_str(
-            year_format="04",
-            month_format="02",
-            day_format="02",
-            concat_fn=lambda year, month, day: f"{month}{day}{year}",
-        )
-        # Enable Splash to parse dynamically loaded content
-        self.splash_enabled = True
-        self.splash_wait_time = 5
+        pass
 
     # Common params
     def _get_spider_base_name(self) -> str:
@@ -63,12 +55,12 @@ class Params(BaseArticleSpiderParams):
         ]
 
     def get_url_filter(self) -> UrlFilter:
-        return UrlFilter(allow_re=[f".*-({self.date_allow_str})\_.+"], deny_re=[])
+        return UrlFilter(allow_re=[".*-n\d{6,}"], deny_re=[])
 
     # Sitemap params
 
     def get_sitemap_urls(self) -> List[str]:
-        return ["https://www.diariouno.com.ar/news-sitemap.xml"]
+        return ["https://www.diariouno.com.ar/sitemap.xml"]
 
     def get_sitemap_follow(self) -> List[str]:
         return [".*"]
