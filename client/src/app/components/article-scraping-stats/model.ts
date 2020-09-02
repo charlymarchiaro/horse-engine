@@ -56,12 +56,12 @@ export const Consts = {
         majDev: { full: { abs: 25, relH: 50 }, base: { abs: 25, relH: 50 }, },
       },
       c2: {
-        minDev: { full: { abs: 20, relH: 110 }, base: { abs: 20, relH: 110 }, },
-        majDev: { full: { abs: 50, relH: 120 }, base: { abs: 50, relH: 120 }, },
+        minDev: { full: { abs: 20, relH: 130 }, base: { abs: 20, relH: 130 }, },
+        majDev: { full: { abs: 50, relH: 150 }, base: { abs: 50, relH: 150 }, },
       },
       c3: {
-        minDev: { full: { abs: 15, relH: 110 }, base: { abs: 15, relH: 110 }, },
-        majDev: { full: { abs: 30, relH: 120 }, base: { abs: 30, relH: 120 }, },
+        minDev: { full: { abs: 15, relH: 130 }, base: { abs: 15, relH: 130 }, },
+        majDev: { full: { abs: 30, relH: 150 }, base: { abs: 30, relH: 150 }, },
       },
     },
   },
@@ -77,6 +77,7 @@ export type TrendSign = -1 | 0 | 1;
 
 export interface PsrDataRow {
   sourceName: string;
+  parseCategory: string;
 
   // H
   valH: string;
@@ -97,6 +98,7 @@ export interface PsrDataRow {
 
 export interface SscdDataRow {
   sourceName: string;
+  parseCategory: string;
 
   // H
   valH: string;
@@ -117,6 +119,7 @@ export interface SscdDataRow {
 
 export interface PsddDataRow {
   sourceName: string;
+  parseCategory: string;
 
   // H
   valHC1: string;

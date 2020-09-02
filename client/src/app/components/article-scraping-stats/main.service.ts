@@ -100,6 +100,7 @@ export class MainService {
 
       return ({
         sourceName: s.articleSource.name,
+        parseCategory: s.articleSource.parseCategory,
 
         // H
         valH: isNullOrUndefined(s.psr_h) ? '—' : s.psr_h.toFixed(1),
@@ -142,6 +143,7 @@ export class MainService {
 
       return ({
         sourceName: s.articleSource.name,
+        parseCategory: s.articleSource.parseCategory,
 
         // H
         valH: isNullOrUndefined(s.sscd_h) ? '—' : s.sscd_h.toFixed(1),
@@ -188,6 +190,7 @@ export class MainService {
 
       return ({
         sourceName: s.articleSource.name,
+        parseCategory: s.articleSource.parseCategory,
 
         // H
         valHC1: isNullOrUndefined(s.psddc1_h) ? '—' : s.psddc1_h.toFixed(1),
@@ -232,12 +235,12 @@ export class MainService {
         trendSignC2: (
           isNullOrUndefined(s.psddc2_h)
           || isNullOrUndefined(s.psddc2_1w)
-        ) ? 0 : (s.psddc2_1w > s.psddc2_h) ? 1 : -1,
+        ) ? 0 : (s.psddc2_1w > s.psddc2_h) ? -1 : 1,
 
         trendSignC3: (
           isNullOrUndefined(s.psddc3_h)
           || isNullOrUndefined(s.psddc3_1w)
-        ) ? 0 : (s.psddc3_1w > s.psddc3_h) ? 1 : -1,
+        ) ? 0 : (s.psddc3_1w > s.psddc3_h) ? -1 : 1,
 
         // Degradation level
         valDL: this.calcDegradationLevel(
@@ -408,6 +411,7 @@ export class MainService {
     let majThresRelH;
     let val;
     const H = stats[`psdd${psddCategory}_h`];
+    const sign = psddCategory === 'c1' ? 1 : -1;
 
     // H
     if (statAggr === 'H') {
@@ -427,9 +431,9 @@ export class MainService {
       }
 
       return (
-        val < majThresAbs
+        sign * val < sign * majThresAbs
           ? DeviationLevel.major
-          : val < minThresAbs
+          : sign * val < sign * minThresAbs
             ? DeviationLevel.minor
             : DeviationLevel.none
       );
@@ -454,8 +458,6 @@ export class MainService {
         minThresRelH = Consts.psdd.v1w[psddCategory].minDev.base.relH;
         majThresRelH = Consts.psdd.v1w[psddCategory].majDev.base.relH;
       }
-
-      const sign = psddCategory === 'c1' ? 1 : -1;
 
       return (
         sign * val < sign * majThresAbs

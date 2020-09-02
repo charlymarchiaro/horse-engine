@@ -57,7 +57,6 @@ export class SscdSourceStatsComponent implements OnInit {
 
   private onStatsChange(stats: SscdDataRow[]) {
 
-    console.log(stats)
     this.rows = stats;
 
     if (!stats) {

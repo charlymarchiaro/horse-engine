@@ -34,6 +34,6 @@ export class GlobalStatsComponent implements OnInit {
 
 
   private onStatsChange(stats: ArticleScrapingStatsFull) {
-    console.log(stats);
+
   }
 }

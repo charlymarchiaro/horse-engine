@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MainService } from '../main.service';
 import { LoadState, LoadStatus } from '../../../services/utils/load-status';
-import { isNullOrUndefined } from 'util';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { PsrDataRow } from '../model';
 
