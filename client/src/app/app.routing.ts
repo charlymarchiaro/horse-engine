@@ -23,7 +23,7 @@ export const AppRoutes: Routes = [
       { path: 'dashboard', component: Dashboard },
       { path: 'scraping-monitor', component: ScrapingMonitor },
       { path: 'keyword-search', component: KeywordSearch },
-      { path: '**', redirectTo: '' }
+      { path: '**', redirectTo: 'dashboard' }
     ]
   },
   {
