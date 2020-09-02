@@ -109,11 +109,11 @@ export class ScrapydController {
     spiders.sort(
       // Sort by parseCategory, tier, reach and name
       (a, b) => {
-        if (a.parseCategory !== b.parseCategory) {
-          return a.parseCategory === 'base' && b.parseCategory === 'full' ? 1 : -1;
-        }
         if (!a.articleSource || !b.articleSource) {
           throw exception('Article source data is missing.');
+        }
+        if (a.articleSource.parseCategory !== b.articleSource.parseCategory) {
+          return a.articleSource.parseCategory === 'base' && b.articleSource.parseCategory === 'full' ? 1 : -1;
         }
         return (a.articleSource.tier - b.articleSource.tier)
           || (b.articleSource.reach - a.articleSource.reach)

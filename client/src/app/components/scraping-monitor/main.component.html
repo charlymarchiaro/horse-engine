@@ -2,7 +2,11 @@
   <div id="control-panel">
     <button (click)="onListAllSpidersClick()">List all spiders</button>
 
-    <button (click)="onScheduleAllSpidersClick()">Schedule all spiders</button>
+    <button
+      (click)="onScheduleAllSpidersClick()"
+      [disabled]="true">
+      Schedule all spiders
+    </button>
 
     <button (click)="onScheduleByKeywordClick()">Schedule by keyword:</button>
     <input

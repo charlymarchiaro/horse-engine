@@ -278,11 +278,11 @@ export class MainService {
         return DeviationLevel.none;
       }
 
-      if (stats.parseCategory === 'full') {
+      if (stats.articleSource.parseCategory === 'full') {
         minThresAbs = Consts.psr.vH.minDev.full.abs;
         majThresAbs = Consts.psr.vH.majDev.full.abs;
 
-      } else if (stats.parseCategory === 'base') {
+      } else if (stats.articleSource.parseCategory === 'base') {
         minThresAbs = Consts.psr.vH.minDev.base.abs;
         majThresAbs = Consts.psr.vH.majDev.base.abs;
       }
@@ -303,13 +303,13 @@ export class MainService {
         return DeviationLevel.none;
       }
 
-      if (stats.parseCategory === 'full') {
+      if (stats.articleSource.parseCategory === 'full') {
         minThresAbs = Consts.psr.v1w.minDev.full.abs;
         majThresAbs = Consts.psr.v1w.majDev.full.abs;
         minThresRelH = Consts.psr.v1w.minDev.full.relH;
         majThresRelH = Consts.psr.v1w.majDev.full.relH;
 
-      } else if (stats.parseCategory === 'base') {
+      } else if (stats.articleSource.parseCategory === 'base') {
         minThresAbs = Consts.psr.v1w.minDev.base.abs;
         majThresAbs = Consts.psr.v1w.majDev.base.abs;
         minThresRelH = Consts.psr.v1w.minDev.base.relH;
@@ -347,11 +347,11 @@ export class MainService {
         return DeviationLevel.none;
       }
 
-      if (stats.parseCategory === 'full') {
+      if (stats.articleSource.parseCategory === 'full') {
         minThresAbs = Consts.sscd.vH.minDev.full.abs;
         majThresAbs = Consts.sscd.vH.majDev.full.abs;
 
-      } else if (stats.parseCategory === 'base') {
+      } else if (stats.articleSource.parseCategory === 'base') {
         minThresAbs = Consts.sscd.vH.minDev.base.abs;
         majThresAbs = Consts.sscd.vH.majDev.base.abs;
       }
@@ -372,13 +372,13 @@ export class MainService {
         return DeviationLevel.none;
       }
 
-      if (stats.parseCategory === 'full') {
+      if (stats.articleSource.parseCategory === 'full') {
         minThresAbs = Consts.sscd.v1w.minDev.full.abs;
         majThresAbs = Consts.sscd.v1w.majDev.full.abs;
         minThresRelH = Consts.sscd.v1w.minDev.full.relH;
         majThresRelH = Consts.sscd.v1w.majDev.full.relH;
 
-      } else if (stats.parseCategory === 'base') {
+      } else if (stats.articleSource.parseCategory === 'base') {
         minThresAbs = Consts.sscd.v1w.minDev.base.abs;
         majThresAbs = Consts.sscd.v1w.majDev.base.abs;
         minThresRelH = Consts.sscd.v1w.minDev.base.relH;
@@ -417,11 +417,11 @@ export class MainService {
         return DeviationLevel.none;
       }
 
-      if (stats.parseCategory === 'full') {
+      if (stats.articleSource.parseCategory === 'full') {
         minThresAbs = Consts.psdd.vH[psddCategory].minDev.full.abs;
         majThresAbs = Consts.psdd.vH[psddCategory].majDev.full.abs;
 
-      } else if (stats.parseCategory === 'base') {
+      } else if (stats.articleSource.parseCategory === 'base') {
         minThresAbs = Consts.psdd.vH[psddCategory].minDev.base.abs;
         majThresAbs = Consts.psdd.vH[psddCategory].majDev.base.abs;
       }
@@ -442,13 +442,13 @@ export class MainService {
         return DeviationLevel.none;
       }
 
-      if (stats.parseCategory === 'full') {
+      if (stats.articleSource.parseCategory === 'full') {
         minThresAbs = Consts.psdd.v1w[psddCategory].minDev.full.abs;
         majThresAbs = Consts.psdd.v1w[psddCategory].majDev.full.abs;
         minThresRelH = Consts.psdd.v1w[psddCategory].minDev.full.relH;
         majThresRelH = Consts.psdd.v1w[psddCategory].majDev.full.relH;
 
-      } else if (stats.parseCategory === 'base') {
+      } else if (stats.articleSource.parseCategory === 'base') {
         minThresAbs = Consts.psdd.v1w[psddCategory].minDev.base.abs;
         majThresAbs = Consts.psdd.v1w[psddCategory].majDev.base.abs;
         minThresRelH = Consts.psdd.v1w[psddCategory].minDev.base.relH;

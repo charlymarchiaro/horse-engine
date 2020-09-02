@@ -145,6 +145,18 @@ export class ArticleSource extends Entity {
   })
   adValue100: number;
 
+  @property({
+    type: 'string',
+    required: false,
+    postgresql: {
+      columnName: 'parse_category',
+      dataType: 'VARCHAR',
+      dataLength: 64,
+      nullable: 'YES',
+    }
+  })
+  parseCategory: string;
+
   @hasMany(() => Article)
   articles: Article[];
 

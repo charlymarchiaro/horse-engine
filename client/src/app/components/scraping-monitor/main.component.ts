@@ -65,7 +65,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
 
   public onScheduleByKeywordClick() {
-    this.scheduleSpidersByKeword(this.scheduleKeyword)
+    this.scheduleSpidersByKeword(this.scheduleKeyword);
   }
 
 
@@ -80,7 +80,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
 
   public onCancelByKeywordClick() {
-    this.cancelSpidersByKeword(this.cancelKeyword)
+    this.cancelSpidersByKeword(this.cancelKeyword);
   }
 
 
@@ -94,25 +94,8 @@ export class MainComponent implements OnInit, OnDestroy {
 
 
   private scheduleAllSpiders() {
-    this.backendService.listAllSpidersDetail().subscribe(
-      response => {
-        response.sort(
-          // Sort by parseCategory, tier, reach and name
-          (a, b) => {
-            if (a.parseCategory !== b.parseCategory) {
-              return a.parseCategory === 'base' && b.parseCategory === 'full' ? 1 : -1;
-            }
-            return (a.articleSource.tier - b.articleSource.tier)
-              || (b.articleSource.reach - a.articleSource.reach)
-              || (a.name > b.name ? 1 : -1);
-          }
-        )
-          .forEach(
-            spider => this.backendService.scheduleSpider(spider.name).subscribe(
-              r => console.log(r)
-            )
-          );
-      }
+    this.backendService.scheduleAllSpiders().subscribe(
+      r => console.log(r)
     );
   }
 

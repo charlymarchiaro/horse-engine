@@ -16,6 +16,7 @@ export class ArticleSource {
   adValue300: number;
   adValue180: number;
   adValue100: number;
+  parseCategory: string;
 
   constructor(r: ArticleSourceResponse) {
     this.id = r.id;
@@ -30,6 +31,7 @@ export class ArticleSource {
     this.adValue300 = parseInt(r.adValue300, 10);
     this.adValue180 = parseInt(r.adValue180, 10);
     this.adValue100 = parseInt(r.adValue100, 10);
+    this.parseCategory = r.parseCategory || 'full';
   }
 }
 
@@ -47,6 +49,7 @@ export interface ArticleSourceResponse {
   adValue300: string;
   adValue180: string;
   adValue100: string;
+  parseCategory?: string;
 }
 
 
@@ -113,7 +116,6 @@ export class ArticleSpider {
   id: string;
   name: string;
   kind: string;
-  parseCategory: string;
   articleSourceId: string;
   articleSource?: ArticleSource;
 
@@ -121,7 +123,6 @@ export class ArticleSpider {
     this.id = r.id;
     this.name = r.name;
     this.kind = r.kind;
-    this.parseCategory = r.parseCategory;
     this.articleSourceId = r.articleSourceId;
     this.articleSource = r.articleSource ? new ArticleSource(r.articleSource) : null;
   }
@@ -132,7 +133,6 @@ export interface ArticleSpiderResponse {
   id: string;
   name: string;
   kind: string;
-  parseCategory: string;
   articleSourceId: string;
   articleSource?: ArticleSourceResponse;
 }
@@ -177,7 +177,6 @@ export class ArticleScrapingDetails {
 export class ArticleScrapingStats {
   sourceId: string;
   articleSource?: ArticleSource;
-  parseCategory?: string;
   psr_h?: number;
   psr_1w?: number;
   sscd_h?: number;
@@ -192,7 +191,6 @@ export class ArticleScrapingStats {
   constructor(r: ArticleScrapingStatsResponse) {
     this.sourceId = r.source_id;
     this.articleSource = r.articleSource ? new ArticleSource(r.articleSource) : null;
-    this.parseCategory = r.parseCategory || 'full';
     this.psr_h = parseFloat(r.psr_h);
     this.psr_1w = parseFloat(r.psr_1w);
     this.sscd_h = parseFloat(r.sscd_h);
@@ -210,7 +208,6 @@ export class ArticleScrapingStats {
 export interface ArticleScrapingStatsResponse {
   source_id: string;
   articleSource?: ArticleSourceResponse;
-  parseCategory?: string;
   psr_h?: string;
   psr_1w?: string;
   sscd_h?: string;

@@ -60,6 +60,19 @@ export class BackendService {
   }
 
 
+  public scheduleAllSpiders() {
+    const params = JSON.stringify({});
+
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    return this.http.post<{ items: JobScheduleInfo[] }>(
+      '/api/scrapyd/schedule-all-spiders',
+      params,
+      { headers }
+    );
+  }
+
+
   public listJobs() {
     return this.http.get<JobsListInfo>(
       '/api/scrapyd/list-jobs'
