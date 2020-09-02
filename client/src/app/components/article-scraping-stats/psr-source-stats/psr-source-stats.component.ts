@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MainService } from '../main.service';
 import { LoadState, LoadStatus } from '../../../services/utils/load-status';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { PsrDataRow } from '../model';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -10,18 +11,19 @@ import { PsrDataRow } from '../model';
   templateUrl: './psr-source-stats.component.html',
   styleUrls: ['./psr-source-stats.component.scss']
 })
-export class PsrSourceStatsComponent implements OnInit {
+export class PsrSourceStatsComponent implements OnInit, OnDestroy {
 
   public loadState: LoadState;
   public LoadStatus = LoadStatus;
 
   public selected = [];
-  public columns: { [field: string]: any }[];
   public rows: { [field: string]: any }[];
   public visibleRows: { [field: string]: any }[];
   public sorts: { [field: string]: any }[];
 
   public searchKeyword: string;
+
+  private subscription = new Subscription();
 
 
   @ViewChild(DatatableComponent, { static: true }) table: DatatableComponent;
@@ -30,24 +32,25 @@ export class PsrSourceStatsComponent implements OnInit {
   constructor(
     private mainService: MainService,
   ) {
-    this.mainService.loadState$.subscribe(ls => this.loadState = ls);
-    this.mainService.sourcePsrData$.subscribe(s => this.onStatsChange(s));
+    this.subscription.add(
+      this.mainService.loadState$.subscribe(ls => this.loadState = ls)
+    );
+    this.subscription.add(
+      this.mainService.sourcePsrData$.subscribe(s => this.onStatsChange(s))
+    );
   }
 
 
   ngOnInit() {
-    this.columns = [
-      { prop: 'sourceName' },
-      { prop: 'valH' },
-      { prop: 'val1w' },
-      { prop: 'valTrend' },
-      { prop: 'dli', dir: 'desc' },
-    ];
-
     // Sort by degradation level by default
     this.sorts = [
       { prop: 'dli', dir: 'asc' },
     ];
+  }
+
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
 

@@ -1,3 +1,26 @@
+#content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.table-group {
+    display: flex;
+    min-width: 500px;
+    width: 50%;
+    flex-grow: 1;
+}
+
+.stats-table {
+    width: 50%;
+    padding: 0 30px;
+}
+
+.stats-table-2 {
+    width: 100%;
+    padding: 0 30px;
+}
+
 .table-item-label {
     display: inline-flex;
     align-items: center;

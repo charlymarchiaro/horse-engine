@@ -65,22 +65,22 @@ export class MainService {
 
     // PSR
     this.sourcePsrDataSubject.next(
-      this.processPsrData(stats)
+      this.processPsrData(stats.sources)
     );
 
     // SSCD
     this.sourceSscdDataSubject.next(
-      this.processSscdData(stats)
+      this.processSscdData(stats.sources)
     );
 
     // PSDD
     this.sourcePsddDataSubject.next(
-      this.processPsddData(stats)
+      this.processPsddData(stats.sources)
     );
 
     // Global
     this.globalDataSubject.next(
-      this.processGlobalData(stats)
+      this.processGlobalData(stats.total)
     );
   }
 
@@ -91,9 +91,9 @@ export class MainService {
   }
 
 
-  private processPsrData(stats: ArticleScrapingStatsFull): PsrDataRow[] {
+  private processPsrData(stats: ArticleScrapingStats[]): PsrDataRow[] {
 
-    const data: PsrDataRow[] = stats.sources.map(s => {
+    const data: PsrDataRow[] = stats.map(s => {
 
       const devLvlH = this.calcPsrDevLevel('H', s);
       const devLvl1w = this.calcPsrDevLevel('1W', s);
@@ -134,9 +134,9 @@ export class MainService {
   }
 
 
-  private processSscdData(stats: ArticleScrapingStatsFull): SscdDataRow[] {
+  private processSscdData(stats: ArticleScrapingStats[]): SscdDataRow[] {
 
-    const data: SscdDataRow[] = stats.sources.map(s => {
+    const data: SscdDataRow[] = stats.map(s => {
 
       const devLvlH = this.calcSscdDevLevel('H', s);
       const devLvl1w = this.calcSscdDevLevel('1W', s);
@@ -177,9 +177,9 @@ export class MainService {
   }
 
 
-  private processPsddData(stats: ArticleScrapingStatsFull): PsddDataRow[] {
+  private processPsddData(stats: ArticleScrapingStats[]): PsddDataRow[] {
 
-    const data: PsddDataRow[] = stats.sources.map(s => {
+    const data: PsddDataRow[] = stats.map(s => {
 
       const devLvlHC1 = this.calcPsddDevLevel('H', 'c1', s);
       const devLvl1wC1 = this.calcPsddDevLevel('1W', 'c1', s);
@@ -256,8 +256,40 @@ export class MainService {
   }
 
 
-  private processGlobalData(stats: ArticleScrapingStatsFull): GlobalDataRow {
-    return null;
+  private processGlobalData(stats: ArticleScrapingStats): GlobalDataRow {
+
+    stats = {
+      ...stats,
+      articleSource: {
+        id: null,
+        name: 'total',
+        country: null,
+        url: null,
+        category: null,
+        tier: null,
+        reach: null,
+        adValueBase: null,
+        adValue500: null,
+        adValue300: null,
+        adValue180: null,
+        adValue100: null,
+        parseCategory: 'full',
+      }
+    };
+
+    let psrData = this.processPsrData([stats]);
+    let sscdData = this.processSscdData([stats]);
+    let psddData = this.processPsddData([stats]);
+
+    psrData = (psrData && psrData.length > 0) ? psrData : [];
+    sscdData = (sscdData && sscdData.length > 0) ? sscdData : [];
+    psddData = (psddData && psddData.length > 0) ? psddData : [];
+
+    return {
+      psr: psrData[0],
+      sscd: sscdData[0],
+      psdd: psddData[0],
+    };
   }
 
 
