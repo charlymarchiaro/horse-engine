@@ -7,9 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MainComponent implements OnInit {
 
-  constructor() { }
+  public isLoading = false;
+  public errorMessage = false;
+  public message: string = null;
+
+
+  constructor(
+  ) { }
+
 
   ngOnInit() {
   }
-
 }

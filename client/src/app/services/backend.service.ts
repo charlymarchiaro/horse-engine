@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { JobsListInfo, JobScheduleInfo, SpidersListInfo } from '../model/scrapyd.model';
 import { ArticleFilteringScheme, DateSpan, getArticleFilteringSchemeWhereCondition } from '../components/keyword-search/model';
 
-import { ArticleScrapingDetails, ArticleScrapingDetailsResponse, ArticleSpiderResponse, ArticleSpider } from '../model/article.model';
+import { ArticleScrapingDetails, ArticleScrapingDetailsResponse, ArticleSpiderResponse, ArticleSpider, ArticleScrapingStatsResponse, ArticleScrapingStatsFullResponse, ArticleScrapingStats, ArticleScrapingStatsFull } from '../model/article.model';
 import { ArticleResponse, Article } from '../model/article.model';
 
 
@@ -54,6 +54,19 @@ export class BackendService {
 
     return this.http.post<JobScheduleInfo>(
       '/api/scrapyd/schedule-spider',
+      params,
+      { headers }
+    );
+  }
+
+
+  public scheduleAllSpiders() {
+    const params = JSON.stringify({});
+
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    return this.http.post<{ items: JobScheduleInfo[] }>(
+      '/api/scrapyd/schedule-all-spiders',
       params,
       { headers }
     );
@@ -166,6 +179,16 @@ export class BackendService {
     return this.http.get<ArticleResponse[]>(
       '/api/articles', { params },
     ).map(r => r.map(i => new Article(i)));
+  }
+
+
+  // Article stats
+  public getArticleStatsFull() {
+    const params = {};
+
+    return this.http.get<ArticleScrapingStatsFullResponse>(
+      '/api/article-stats/full-stats', { params }
+    ).map(r => new ArticleScrapingStatsFull(r));
   }
 }
 

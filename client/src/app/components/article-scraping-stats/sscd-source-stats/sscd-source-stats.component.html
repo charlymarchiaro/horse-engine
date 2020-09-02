@@ -1,0 +1,150 @@
+<pgcard
+  (onRefresh)="onRefresh()"
+  [Loading]="loadState.status === LoadStatus.loading"
+  [ShowMessage]="loadState.status === LoadStatus.error"
+  [Message]="loadState.errorMessage"
+  [MinimalHeader]="true">
+  <ng-template #CardTitle>Article scraping stats - SSCD</ng-template>
+  <ng-template #CardExtraControls></ng-template>
+  <h3><span class="semi-bold">SSCD (Successfuly scraped count per day)</span></h3>
+  <div class="pull-right">
+    <div class="col-xs-12">
+      <input
+        type="text"
+        class="form-control pull-right"
+        placeholder="Search"
+        (keyup)="updateFilter($event)"
+        [(ngModel)]="searchKeyword">
+    </div>
+  </div>
+  <ngx-datatable
+    class="table table-hover"
+    [rows]="visibleRows"
+    [columnMode]="'force'"
+    [headerHeight]="43"
+    [footerHeight]="50"
+    [rowHeight]="35"
+    [limit]="8"
+    [selected]="selected"
+    [sorts]="sorts">
+
+    <!-- sourceName -->
+    <ngx-datatable-column
+      name="Source name"
+      prop="sourceName"
+      [width]="200"
+      cellClass="d-flex align-items-center">
+      <ng-template
+        let-row="row"
+        let-value="value"
+        ngx-datatable-cell-template>
+        <div class="table-item-label">
+          <span class="label-icon">
+            <div
+              class="star"
+              *ngIf="row.parseCategory === 'full'">
+              ★
+            </div>
+          </span>
+          {{ value }}
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+
+    <!-- valH -->
+    <ngx-datatable-column
+      name="H"
+      prop="valH"
+      cellClass="d-flex align-items-center">
+      <ng-template
+        let-row="row"
+        let-value="value"
+        ngx-datatable-cell-template>
+        <div class="table-item-label">
+          <span class="label-icon">
+            <div
+              class="ok-indicator"
+              *ngIf="row.devLvlH === 'NONE'"><mat-icon>check_circle</mat-icon>
+            </div>
+            <div
+              class="minor-alert"
+              *ngIf="row.devLvlH === 'MINOR'"><mat-icon>error</mat-icon>
+            </div>
+            <div
+              class="major-alert"
+              *ngIf="row.devLvlH === 'MAJOR'"><mat-icon>error</mat-icon>
+            </div>
+          </span>
+          {{ value }}
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+
+    <!-- val1W -->
+    <ngx-datatable-column
+      name="1W"
+      prop="val1w"
+      cellClass="d-flex align-items-center">
+      <ng-template
+        let-row="row"
+        let-value="value"
+        ngx-datatable-cell-template>
+        <div class="table-item-label">
+          <span class="label-icon">
+            <div
+              class="ok-indicator"
+              *ngIf="row.devLvl1w === 'NONE'"><mat-icon>check_circle</mat-icon>
+            </div>
+            <div
+              class="minor-alert"
+              *ngIf="row.devLvl1w === 'MINOR'"><mat-icon>error</mat-icon>
+            </div>
+            <div
+              class="major-alert"
+              *ngIf="row.devLvl1w === 'MAJOR'"><mat-icon>error</mat-icon>
+            </div>
+          </span>
+          {{ value }}
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+
+    <!-- valTrend -->
+    <ngx-datatable-column
+      name="Trend %"
+      matTooltip="asd"
+      prop="valTrend"
+      cellClass="d-flex align-items-center">
+      <ng-template
+        let-row="row"
+        let-value="value"
+        ngx-datatable-cell-template>
+        <div class="table-item-label">
+          <span
+            *ngIf="row.trendSign === -1"
+            class="negative-trend">
+            {{ value }}
+          </span>
+          <span
+            *ngIf="row.trendSign !== -1"
+            class="positive-trend">
+            {{ value }}
+          </span>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+
+    <!-- dli -->
+    <ngx-datatable-column
+      name="DLI"
+      prop="dli"
+      cellClass="d-flex align-items-center">
+      <ng-template
+        let-row="row"
+        let-value="value"
+        ngx-datatable-cell-template>
+        {{value}}
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+</pgcard>

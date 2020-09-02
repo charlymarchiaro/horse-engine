@@ -52,18 +52,6 @@ export class ArticleSpider extends Entity {
   })
   kind: string;
 
-  @property({
-    type: 'string',
-    required: true,
-    postgresql: {
-      columnName: 'parse_category',
-      dataType: 'VARCHAR',
-      dataLength: 64,
-      nullable: 'NO',
-    }
-  })
-  parseCategory: string;
-
   @belongsTo(() => ArticleSource, {}, {
     postgresql: {
       columnName: 'article_source_id',

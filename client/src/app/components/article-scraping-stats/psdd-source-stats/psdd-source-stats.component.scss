@@ -1,0 +1,59 @@
+.table-item-label {
+    display: inline-flex;
+    align-items: center;
+    line-height: 36px;
+}
+
+.label-icon {
+    justify-content: center;
+    width: 24px;
+
+    .star {
+        color: #f3c549;
+        font-size: 17px;
+    }
+
+    .ok-indicator {
+        color: #19ad79;
+
+        .mat-icon {
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            height: 20px;
+            line-height: 20px;
+        }
+    }
+
+    .minor-alert {
+        color: #f3c549;
+
+        .mat-icon {
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            height: 20px;
+            line-height: 20px;
+        }
+    }
+
+    .major-alert {
+        color: #d94136;
+
+        .mat-icon {
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            height: 20px;
+            line-height: 20px;
+        }
+    }
+}
+
+.negative-trend {
+    color: #d94136;
+}
+
+.positive-trend {
+    color: #19ad79;
+}

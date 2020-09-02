@@ -16,6 +16,7 @@ export class ArticleSource {
   adValue300: number;
   adValue180: number;
   adValue100: number;
+  parseCategory: string;
 
   constructor(r: ArticleSourceResponse) {
     this.id = r.id;
@@ -30,6 +31,7 @@ export class ArticleSource {
     this.adValue300 = parseInt(r.adValue300, 10);
     this.adValue180 = parseInt(r.adValue180, 10);
     this.adValue100 = parseInt(r.adValue100, 10);
+    this.parseCategory = r.parseCategory || 'full';
   }
 }
 
@@ -47,6 +49,7 @@ export interface ArticleSourceResponse {
   adValue300: string;
   adValue180: string;
   adValue100: string;
+  parseCategory?: string;
 }
 
 
@@ -113,7 +116,6 @@ export class ArticleSpider {
   id: string;
   name: string;
   kind: string;
-  parseCategory: string;
   articleSourceId: string;
   articleSource?: ArticleSource;
 
@@ -121,7 +123,6 @@ export class ArticleSpider {
     this.id = r.id;
     this.name = r.name;
     this.kind = r.kind;
-    this.parseCategory = r.parseCategory;
     this.articleSourceId = r.articleSourceId;
     this.articleSource = r.articleSource ? new ArticleSource(r.articleSource) : null;
   }
@@ -132,7 +133,6 @@ export interface ArticleSpiderResponse {
   id: string;
   name: string;
   kind: string;
-  parseCategory: string;
   articleSourceId: string;
   articleSource?: ArticleSourceResponse;
 }
@@ -169,4 +169,70 @@ export class ArticleScrapingDetails {
   }
 }
 
+
+/**
+ * Article scraping stats
+ */
+
+export class ArticleScrapingStats {
+  sourceId: string;
+  articleSource?: ArticleSource;
+  psr_h?: number;
+  psr_1w?: number;
+  sscd_h?: number;
+  sscd_1w?: number;
+  psddc1_h?: number;
+  psddc2_h?: number;
+  psddc3_h?: number;
+  psddc1_1w?: number;
+  psddc2_1w?: number;
+  psddc3_1w?: number;
+
+  constructor(r: ArticleScrapingStatsResponse) {
+    this.sourceId = r.source_id;
+    this.articleSource = r.articleSource ? new ArticleSource(r.articleSource) : null;
+    this.psr_h = parseFloat(r.psr_h);
+    this.psr_1w = parseFloat(r.psr_1w);
+    this.sscd_h = parseFloat(r.sscd_h);
+    this.sscd_1w = parseFloat(r.sscd_1w);
+    this.psddc1_h = parseFloat(r.psddc1_h);
+    this.psddc2_h = parseFloat(r.psddc2_h);
+    this.psddc3_h = parseFloat(r.psddc3_h);
+    this.psddc1_1w = parseFloat(r.psddc1_1w);
+    this.psddc2_1w = parseFloat(r.psddc2_1w);
+    this.psddc3_1w = parseFloat(r.psddc3_1w);
+  }
+}
+
+
+export interface ArticleScrapingStatsResponse {
+  source_id: string;
+  articleSource?: ArticleSourceResponse;
+  psr_h?: string;
+  psr_1w?: string;
+  sscd_h?: string;
+  sscd_1w?: string;
+  psddc1_h?: string;
+  psddc2_h?: string;
+  psddc3_h?: string;
+  psddc1_1w?: string;
+  psddc2_1w?: string;
+  psddc3_1w?: string;
+}
+
+
+export class ArticleScrapingStatsFull {
+  sources: ArticleScrapingStats[];
+  total: ArticleScrapingStats;
+
+  constructor(r: ArticleScrapingStatsFullResponse) {
+    this.sources = r.sources.map(i => new ArticleScrapingStats(i));
+    this.total = new ArticleScrapingStats(r.total);
+  }
+}
+
+export interface ArticleScrapingStatsFullResponse {
+  sources: ArticleScrapingStatsResponse[];
+  total: ArticleScrapingStatsResponse;
+}
 

@@ -1,8 +1,9 @@
-import { DefaultTransactionalRepository, IsolationLevel } from '@loopback/repository';
+import { DefaultTransactionalRepository, IsolationLevel, repository } from '@loopback/repository';
 import { ArticleScrapingStats, ArticleScrapingStatsRelations } from '../models';
 import { DbDataSource } from '../datasources';
 import { inject } from '@loopback/core';
 import { ArticleSource } from '../models/article-source.model';
+import { ArticleSourceRepository } from './article-source.repository';
 import moment = require('moment');
 
 
@@ -13,6 +14,8 @@ export class ArticleScrapingStatsRepository extends DefaultTransactionalReposito
   > {
   constructor(
     @inject('datasources.db') dataSource: DbDataSource,
+    @repository(ArticleSourceRepository)
+    public articleSourceRepository: ArticleSourceRepository,
   ) {
     super(ArticleScrapingStats, dataSource);
   }
@@ -179,17 +182,12 @@ export class ArticleScrapingStatsRepository extends DefaultTransactionalReposito
       [CURRENT_DATE_STR]
     ) as ArticleScrapingStats[];
 
-    const sources = await this.execute(
-      `
-        SELECT * FROM scraper.article_source
-      `,
-      []
-    ) as ArticleSource[];
+    const sources = await this.articleSourceRepository.find();
 
     const result: ArticleScrapingStats[] = stats.map(s =>
       new ArticleScrapingStats({
         ...s,
-        articleSource: sources.find(i => i.id = s.source_id),
+        articleSource: sources.find(i => i.id === s.source_id),
       })
     );
 

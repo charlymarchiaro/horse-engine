@@ -1,0 +1,353 @@
+<pgcard
+  (onRefresh)="onRefresh()"
+  [Loading]="loadState.status === LoadStatus.loading"
+  [ShowMessage]="loadState.status === LoadStatus.error"
+  [Message]="loadState.errorMessage"
+  [MinimalHeader]="true">
+  <ng-template #CardTitle>Article scraping stats - Global</ng-template>
+  <ng-template #CardExtraControls></ng-template>
+  <h3><span class="semi-bold">Global stats</span></h3>
+
+  <div id="content">
+
+    <div class="table-group">
+
+      <!-- PSR -->
+      <div class="stats-table">
+
+        <h5>PSR</h5>
+
+        <ngx-datatable
+          class="table table-hover"
+          [rows]="rowsPsr"
+          [columnMode]="'force'"
+          [headerHeight]="43"
+          [footerHeight]="50"
+          [rowHeight]="35"
+          [selected]="selected">
+
+          <!-- field -->
+          <ngx-datatable-column
+            name="Field"
+            prop="field"
+            cellClass="d-flex align-items-center">
+            <ng-template
+              let-row="row"
+              let-value="value"
+              ngx-datatable-cell-template>
+              <div class="table-item-label">{{ value }}</div>
+            </ng-template>
+          </ngx-datatable-column>
+
+          <!-- value -->
+          <ngx-datatable-column
+            name="Value"
+            prop="value"
+            cellClass="d-flex align-items-center">
+            <ng-template
+              let-row="row"
+              let-value="value"
+              ngx-datatable-cell-template>
+              <!-- fieldType: val -->
+              <div
+                *ngIf="row.fieldType === 'val'"
+                class="table-item-label">
+                <span class="label-icon">
+                <div
+                    class="ok-indicator"
+                    *ngIf="row.devLvl === 'NONE'"><mat-icon>check_circle</mat-icon>
+                  </div>
+                <div
+                    class="minor-alert"
+                    *ngIf="row.devLvl === 'MINOR'"><mat-icon>error</mat-icon>
+                  </div>
+                <div
+                    class="major-alert"
+                    *ngIf="row.devLvl === 'MAJOR'"><mat-icon>error</mat-icon>
+                  </div>
+              </span>
+                {{ value }}
+              </div>
+
+              <!-- fieldType: trend -->
+              <div
+                *ngIf="row.fieldType === 'trend'"
+                class="table-item-label">
+                <span class="label-icon"></span>
+                <span
+                  *ngIf="row.trendSign === -1"
+                  class="negative-trend">
+                {{ value }}
+              </span>
+                <span
+                  *ngIf="row.trendSign !== -1"
+                  class="positive-trend">
+                {{ value }}
+              </span>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+
+      <!-- SSCD -->
+      <div class="stats-table">
+
+        <h5>SSCD</h5>
+
+        <ngx-datatable
+          class="table table-hover"
+          [rows]="rowsSscd"
+          [columnMode]="'force'"
+          [headerHeight]="43"
+          [footerHeight]="50"
+          [rowHeight]="35"
+          [selected]="selected">
+
+          <!-- field -->
+          <ngx-datatable-column
+            name="Field"
+            prop="field"
+            cellClass="d-flex align-items-center">
+            <ng-template
+              let-row="row"
+              let-value="value"
+              ngx-datatable-cell-template>
+              <div class="table-item-label">{{ value }}</div>
+            </ng-template>
+          </ngx-datatable-column>
+
+          <!-- value -->
+          <ngx-datatable-column
+            name="Value"
+            prop="value"
+            cellClass="d-flex align-items-center">
+            <ng-template
+              let-row="row"
+              let-value="value"
+              ngx-datatable-cell-template>
+              <!-- fieldType: val -->
+              <div
+                *ngIf="row.fieldType === 'val'"
+                class="table-item-label">
+                <span class="label-icon">
+                <div
+                    class="ok-indicator"
+                    *ngIf="row.devLvl === 'NONE'"><mat-icon>check_circle</mat-icon>
+                  </div>
+                <div
+                    class="minor-alert"
+                    *ngIf="row.devLvl === 'MINOR'"><mat-icon>error</mat-icon>
+                  </div>
+                <div
+                    class="major-alert"
+                    *ngIf="row.devLvl === 'MAJOR'"><mat-icon>error</mat-icon>
+                  </div>
+              </span>
+                {{ value }}
+              </div>
+
+              <!-- fieldType: trend -->
+              <div
+                *ngIf="row.fieldType === 'trend'"
+                class="table-item-label">
+                <span class="label-icon"></span>
+                <span
+                  *ngIf="row.trendSign === -1"
+                  class="negative-trend">
+                {{ value }}
+              </span>
+                <span
+                  *ngIf="row.trendSign !== -1"
+                  class="positive-trend">
+                {{ value }}
+              </span>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+
+    </div>
+
+    <div class="table-group">
+
+      <!-- PSDD -->
+      <div class="stats-table-2">
+
+        <h5>PSDD</h5>
+
+        <ngx-datatable
+          class="table table-hover"
+          [rows]="rowsPsdd"
+          [columnMode]="'force'"
+          [headerHeight]="43"
+          [footerHeight]="50"
+          [rowHeight]="35"
+          [selected]="selected">
+
+          <!-- field -->
+          <ngx-datatable-column
+            name="Field"
+            prop="field"
+            cellClass="d-flex align-items-center">
+            <ng-template
+              let-row="row"
+              let-value="value"
+              ngx-datatable-cell-template>
+              <div class="table-item-label">{{ value }}</div>
+            </ng-template>
+          </ngx-datatable-column>
+
+          <!-- value C1 -->
+          <ngx-datatable-column
+            name="Value C1"
+            prop="valueC1"
+            cellClass="d-flex align-items-center">
+            <ng-template
+              let-row="row"
+              let-value="value"
+              ngx-datatable-cell-template>
+              <!-- fieldType: val -->
+              <div
+                *ngIf="row.fieldType === 'val'"
+                class="table-item-label">
+                <span class="label-icon">
+                <div
+                    class="ok-indicator"
+                    *ngIf="row.devLvl === 'NONE'"><mat-icon>check_circle</mat-icon>
+                  </div>
+                <div
+                    class="minor-alert"
+                    *ngIf="row.devLvl === 'MINOR'"><mat-icon>error</mat-icon>
+                  </div>
+                <div
+                    class="major-alert"
+                    *ngIf="row.devLvl === 'MAJOR'"><mat-icon>error</mat-icon>
+                  </div>
+              </span>
+                {{ value }}
+              </div>
+
+              <!-- fieldType: trend -->
+              <div
+                *ngIf="row.fieldType === 'trend'"
+                class="table-item-label">
+                <span class="label-icon"></span>
+                <span
+                  *ngIf="row.trendSign === -1"
+                  class="negative-trend">
+                {{ value }}
+              </span>
+                <span
+                  *ngIf="row.trendSign !== -1"
+                  class="positive-trend">
+                {{ value }}
+              </span>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+
+          <!-- value C2 -->
+          <ngx-datatable-column
+            name="Value C2"
+            prop="valueC2"
+            cellClass="d-flex align-items-center">
+            <ng-template
+              let-row="row"
+              let-value="value"
+              ngx-datatable-cell-template>
+              <!-- fieldType: val -->
+              <div
+                *ngIf="row.fieldType === 'val'"
+                class="table-item-label">
+                <span class="label-icon">
+                <div
+                    class="ok-indicator"
+                    *ngIf="row.devLvl === 'NONE'"><mat-icon>check_circle</mat-icon>
+                  </div>
+                <div
+                    class="minor-alert"
+                    *ngIf="row.devLvl === 'MINOR'"><mat-icon>error</mat-icon>
+                  </div>
+                <div
+                    class="major-alert"
+                    *ngIf="row.devLvl === 'MAJOR'"><mat-icon>error</mat-icon>
+                  </div>
+              </span>
+                {{ value }}
+              </div>
+
+              <!-- fieldType: trend -->
+              <div
+                *ngIf="row.fieldType === 'trend'"
+                class="table-item-label">
+                <span class="label-icon"></span>
+                <span
+                  *ngIf="row.trendSign === -1"
+                  class="negative-trend">
+                {{ value }}
+              </span>
+                <span
+                  *ngIf="row.trendSign !== -1"
+                  class="positive-trend">
+                {{ value }}
+              </span>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+
+          <!-- value C3 -->
+          <ngx-datatable-column
+            name="Value C3"
+            prop="valueC3"
+            cellClass="d-flex align-items-center">
+            <ng-template
+              let-row="row"
+              let-value="value"
+              ngx-datatable-cell-template>
+              <!-- fieldType: val -->
+              <div
+                *ngIf="row.fieldType === 'val'"
+                class="table-item-label">
+                <span class="label-icon">
+                <div
+                    class="ok-indicator"
+                    *ngIf="row.devLvl === 'NONE'"><mat-icon>check_circle</mat-icon>
+                  </div>
+                <div
+                    class="minor-alert"
+                    *ngIf="row.devLvl === 'MINOR'"><mat-icon>error</mat-icon>
+                  </div>
+                <div
+                    class="major-alert"
+                    *ngIf="row.devLvl === 'MAJOR'"><mat-icon>error</mat-icon>
+                  </div>
+              </span>
+                {{ value }}
+              </div>
+
+              <!-- fieldType: trend -->
+              <div
+                *ngIf="row.fieldType === 'trend'"
+                class="table-item-label">
+                <span class="label-icon"></span>
+                <span
+                  *ngIf="row.trendSign === -1"
+                  class="negative-trend">
+                {{ value }}
+              </span>
+                <span
+                  *ngIf="row.trendSign !== -1"
+                  class="positive-trend">
+                {{ value }}
+              </span>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+
+    </div>
+  </div>
+</pgcard>
