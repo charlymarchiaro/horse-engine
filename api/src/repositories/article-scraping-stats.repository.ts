@@ -168,15 +168,15 @@ export class ArticleScrapingStatsRepository extends DefaultTransactionalReposito
           PSDD_1W.c3 AS PSDDC3_1W
       FROM
           PSR_H
-          INNER JOIN PSR_1W
+          LEFT JOIN PSR_1W
             ON PSR_H.source_id = PSR_1W.source_id
-          INNER JOIN SSCD_H
+          LEFT JOIN SSCD_H
             ON PSR_H.source_id = SSCD_H.source_id
-          INNER JOIN SSCD_1W
+          LEFT JOIN SSCD_1W
             ON PSR_H.source_id = SSCD_1W.source_id
-          INNER JOIN PSDD_H
+          LEFT JOIN PSDD_H
             ON PSR_H.source_id = PSDD_H.source_id
-          INNER JOIN PSDD_1W
+          LEFT JOIN PSDD_1W
             ON PSR_H.source_id = PSDD_1W.source_id
       `,
       [CURRENT_DATE_STR]
@@ -336,15 +336,15 @@ export class ArticleScrapingStatsRepository extends DefaultTransactionalReposito
           PSDD_1W.c3 AS PSDDC3_1W
       FROM
           PSR_H
-          INNER JOIN PSR_1W
+          LEFT JOIN PSR_1W
             ON PSR_H.source_id = PSR_1W.source_id
-          INNER JOIN SSCD_H
+          LEFT JOIN SSCD_H
             ON PSR_H.source_id = SSCD_H.source_id
-          INNER JOIN SSCD_1W
+          LEFT JOIN SSCD_1W
             ON PSR_H.source_id = SSCD_1W.source_id
-          INNER JOIN PSDD_H
+          LEFT JOIN PSDD_H
             ON PSR_H.source_id = PSDD_H.source_id
-          INNER JOIN PSDD_1W
+          LEFT JOIN PSDD_1W
             ON PSR_H.source_id = PSDD_1W.source_id
       `,
       [CURRENT_DATE_STR]
