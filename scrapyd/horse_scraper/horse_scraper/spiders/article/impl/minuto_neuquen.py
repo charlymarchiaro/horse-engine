@@ -47,6 +47,24 @@ class Params(BaseArticleSpiderParams):
     def get_crawl_start_urls(self) -> List[str]:
         return [
             "https://www.minutoneuquen.com/",
+            "https://www.minutoneuquen.com/neuquen/",
+            "https://www.minutoneuquen.com/energia/",
+            "https://www.minutoneuquen.com/energia/petroleo/",
+            "https://www.minutoneuquen.com/energia/gas/",
+            "https://www.minutoneuquen.com/energia/politica-actualidad/",
+            "https://www.minutoneuquen.com/energia/internacionales/",
+            "https://www.minutoneuquen.com/regionales/",
+            "https://www.minutoneuquen.com/regionales/rio-negro/",
+            "https://www.minutoneuquen.com/regionales/chubut/",
+            "https://www.minutoneuquen.com/regionales/santa-cruz/",
+            "https://www.minutoneuquen.com/regionales/tierra-del-fuego/",
+            "https://www.minutoneuquen.com/nacionales/",
+            "https://www.minutoneuquen.com/mundo/",
+            "https://www.minutoneuquen.com/deportes/",
+            "https://www.minutoneuquen.com/entretenimiento/",
+            "https://www.minutoneuquen.com/celebrities/",
+            "https://www.minutoneuquen.com/espana/",
+            "https://www.minutoneuquen.com/con-estilo/",
         ]
 
     def get_url_filter(self) -> UrlFilter:
@@ -55,7 +73,10 @@ class Params(BaseArticleSpiderParams):
     # Sitemap params
 
     def get_sitemap_urls(self) -> List[str]:
-        return ["https://www.minutoneuquen.com/include/sitemaps/"]
+        return [
+            "https://www.minutoneuquen.com/include/sitemaps/",
+            "https://www.minutoneuquen.com/include/sitemaps/indexnews.asp",
+        ]
 
     def get_sitemap_follow(self) -> List[str]:
         return [".*"]
