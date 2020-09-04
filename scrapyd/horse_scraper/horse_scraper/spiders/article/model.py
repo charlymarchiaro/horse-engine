@@ -7,15 +7,14 @@ class ArticleSourceInfo:
     id: str
     name: str
     country: str
+    region: str
+    red_circle: str
     url: str
-    category: str
     tier: int
     reach: int
-    ad_value_base: int
     ad_value_500: int
-    ad_value_300: int
-    ad_value_180: int
-    ad_value_100: int
+    ad_value_150: int
+    parse_category: str
 
 
 class ArticleData:
