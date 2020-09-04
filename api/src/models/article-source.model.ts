@@ -46,6 +46,29 @@ export class ArticleSource extends Entity {
 
   @property({
     type: 'string',
+    required: false,
+    postgresql: {
+      columnName: 'region',
+      dataType: 'VARCHAR',
+      dataLength: 64,
+      nullable: 'YES',
+    }
+  })
+  region: string;
+
+  @property({
+    type: 'string',
+    required: false,
+    postgresql: {
+      columnName: 'red_circle',
+      dataType: 'BOOLEAN',
+      nullable: 'YES',
+    }
+  })
+  redCircle: boolean;
+
+  @property({
+    type: 'string',
     required: true,
     postgresql: {
       columnName: 'url',
@@ -55,18 +78,6 @@ export class ArticleSource extends Entity {
     }
   })
   url: string;
-
-  @property({
-    type: 'string',
-    required: true,
-    postgresql: {
-      columnName: 'category',
-      dataType: 'VARCHAR',
-      dataLength: 64,
-      nullable: 'NO',
-    }
-  })
-  category: string;
 
   @property({
     type: 'number',
@@ -94,17 +105,6 @@ export class ArticleSource extends Entity {
     type: 'number',
     required: true,
     postgresql: {
-      columnName: 'ad_value_base',
-      dataType: 'BIGINT',
-      nullable: 'NO',
-    }
-  })
-  adValueBase: number;
-
-  @property({
-    type: 'number',
-    required: true,
-    postgresql: {
       columnName: 'ad_value_500',
       dataType: 'BIGINT',
       nullable: 'NO',
@@ -114,36 +114,14 @@ export class ArticleSource extends Entity {
 
   @property({
     type: 'number',
-    required: true,
+    required: false,
     postgresql: {
-      columnName: 'ad_value_300',
+      columnName: 'ad_value_150',
       dataType: 'BIGINT',
-      nullable: 'NO',
+      nullable: 'YES',
     }
   })
-  adValue300: number;
-
-  @property({
-    type: 'number',
-    required: true,
-    postgresql: {
-      columnName: 'ad_value_180',
-      dataType: 'BIGINT',
-      nullable: 'NO',
-    }
-  })
-  adValue180: number;
-
-  @property({
-    type: 'number',
-    required: true,
-    postgresql: {
-      columnName: 'ad_value_100',
-      dataType: 'BIGINT',
-      nullable: 'NO',
-    }
-  })
-  adValue100: number;
+  adValue150: number;
 
   @property({
     type: 'string',

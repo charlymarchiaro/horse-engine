@@ -264,15 +264,13 @@ export class MainService {
         id: null,
         name: 'total',
         country: null,
+        region: null,
+        redCircle: null,
         url: null,
-        category: null,
         tier: null,
         reach: null,
-        adValueBase: null,
         adValue500: null,
-        adValue300: null,
-        adValue180: null,
-        adValue100: null,
+        adValue150: null,
         parseCategory: 'full',
       }
     };

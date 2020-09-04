@@ -283,15 +283,14 @@ class ArticleDbHandler(object):
                         source.id, 
                         source.name, 
                         source.country, 
+                        source.region, 
+                        source.red_circle, 
                         source.url, 
-                        source.category, 
                         source.tier, 
                         source.reach, 
-                        source.ad_value_base, 
                         source.ad_value_500, 
-                        source.ad_value_300, 
-                        source.ad_value_180, 
-                        source.ad_value_100
+                        source.ad_value_150,
+                        source.parse_category
                 FROM
                         scraper.article_spider AS spider
                         INNER JOIN scraper.article_source AS source
@@ -311,15 +310,14 @@ class ArticleDbHandler(object):
         info.id = data["id"]
         info.name = data["name"]
         info.country = data["country"]
+        info.region = data["region"]
+        info.red_circle = data["red_circle"]
         info.url = data["url"]
-        info.category = data["category"]
         info.tier = data["tier"]
         info.reach = data["reach"]
-        info.ad_value_base = data["ad_value_base"]
         info.ad_value_500 = data["ad_value_500"]
-        info.ad_value_300 = data["ad_value_300"]
-        info.ad_value_180 = data["ad_value_180"]
-        info.ad_value_100 = data["ad_value_100"]
+        info.ad_value_100 = data["ad_value_150"]
+        info.parse_category = data["parse_category"]
 
         return info
 

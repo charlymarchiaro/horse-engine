@@ -7,30 +7,26 @@ export class ArticleSource {
   id: string;
   name: string;
   country: string;
+  region: string;
+  redCircle: boolean;
   url: string;
-  category: string;
   tier: number;
   reach: number;
-  adValueBase: number;
   adValue500: number;
-  adValue300: number;
-  adValue180: number;
-  adValue100: number;
+  adValue150: number;
   parseCategory: string;
 
   constructor(r: ArticleSourceResponse) {
     this.id = r.id;
     this.name = r.name;
     this.country = r.country;
+    this.region = r.region;
+    this.redCircle = r.redCircle;
     this.url = r.url;
-    this.category = r.category;
     this.tier = parseInt(r.tier, 10);
     this.reach = parseInt(r.reach, 10);
-    this.adValueBase = parseInt(r.adValueBase, 10);
     this.adValue500 = parseInt(r.adValue500, 10);
-    this.adValue300 = parseInt(r.adValue300, 10);
-    this.adValue180 = parseInt(r.adValue180, 10);
-    this.adValue100 = parseInt(r.adValue100, 10);
+    this.adValue150 = parseInt(r.adValue150, 10);
     this.parseCategory = r.parseCategory || 'full';
   }
 }
@@ -40,15 +36,13 @@ export interface ArticleSourceResponse {
   id: string;
   name: string;
   country: string;
+  region: string;
+  redCircle: boolean;
   url: string;
-  category: string;
   tier: string;
   reach: string;
-  adValueBase: string;
   adValue500: string;
-  adValue300: string;
-  adValue180: string;
-  adValue100: string;
+  adValue150: string;
   parseCategory?: string;
 }
 
