@@ -121,52 +121,46 @@ export class ArticleListBrowserComponent implements OnInit, OnChanges {
       [
         'País',
         'Medio',
-        'Categoría',
         'Tier',
+        'Territorio',
+        'Círculo Rojo',
         'Fecha',
         'Título',
         'Nota Completa',
         'Link',
         'Reach',
-        'Ad Value - Base',
         'Ad Value - 5',
-        'Ad Value - 3',
-        'Ad Value - 1,8',
-        'Ad Value - 1',
+        'Ad Value - 1,5',
       ],
       ...this.articles.map(a => [
         a.articleSource.country,
         a.articleSource.name,
-        a.articleSource.category,
         a.articleSource.tier,
+        a.articleSource.region,
+        a.articleSource.redCircle ? 'SI' : 'NO',
         this.datePipe.transform(a.lastUpdated, 'dd/MM/yyyy HH:mm'),
         a.title,
         a.text,
-        'https://' + a.url,
+        a.articleSource.url.split(':')[0] + '://' + a.url,
         a.articleSource.reach,
-        a.articleSource.adValueBase,
         a.articleSource.adValue500,
-        a.articleSource.adValue300,
-        a.articleSource.adValue180,
-        a.articleSource.adValue100,
+        a.articleSource.adValue150,
       ])
     ];
 
     const colsConfig: ColConfig[] = [
       { colInfo: { width: 20 } }, // País
       { colInfo: { width: 12 } }, // Medio
-      { colInfo: { width: 12 } }, // Categoría
       { colInfo: { width: 8 } }, // Tier
+      { colInfo: { width: 15 } }, // Territorio
+      { colInfo: { width: 15 } }, // Círculo rojo
       { colInfo: { width: 20 } }, // Fecha
       { colInfo: { width: 64 }, textWrap: true }, // Título
       { colInfo: { width: 64 }, textWrap: true }, // Nota Completa
       { colInfo: { width: 64 }, textWrap: true, hyperlink: true }, // Link
       { colInfo: { width: 15 } }, // Reach
-      { colInfo: { width: 15 } }, // Ad Value - Base
       { colInfo: { width: 15 } }, // Ad Value - 5
-      { colInfo: { width: 15 } }, // Ad Value - 3
-      { colInfo: { width: 15 } }, // Ad Value - 1,8
-      { colInfo: { width: 15 } }, // Ad Value - 1
+      { colInfo: { width: 15 } }, // Ad Value - 1,5
     ];
 
     this.excelExport.export({
