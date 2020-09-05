@@ -3,8 +3,15 @@ import { BackendService } from '../../services/backend.service';
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { ArticleScrapingStatsFull, ArticleScrapingStats } from '../../model/article.model';
 import { LoadStateHandler } from '../../services/utils/load-status';
-import { PsrDataRow, SscdDataRow, PsddDataRow, GlobalDataRow, Consts, DeviationLevel, StatAggr, PsddCategory } from './model';
+import { PsrDataRow, SscdDataRow, PsddDataRow, GlobalDataRow, Consts, DeviationLevel, StatAggr, PsddCategory, TrendSign } from './model';
 import { isNullOrUndefined } from 'util';
+
+// Offset to avoid division by zero error
+const DIV_BY_ZERO_ERR_OFFSET = 0.000001;
+
+// If the absolute value of a trend is less than this threshold
+// consider it equal to zero.
+const TREND_ZERO_SIGN_THRESHOLD = 0.01;
 
 
 @Injectable({
@@ -103,24 +110,16 @@ export class MainService {
         parseCategory: s.articleSource.parseCategory,
 
         // H
-        valH: isNullOrUndefined(s.psr_h) ? '—' : s.psr_h.toFixed(1),
+        valH: this.getValString(s.psr_h),
         devLvlH,
 
         // 1W
-        val1w: isNullOrUndefined(s.psr_1w) ? '—' : s.psr_1w.toFixed(1),
+        val1w: this.getValString(s.psr_1w),
         devLvl1w,
 
         // Trend
-        valTrend: (
-          isNullOrUndefined(s.psr_h)
-          || isNullOrUndefined(s.psr_1w)
-        ) ? '—'
-          : (100 * (s.psr_1w - s.psr_h) / s.psr_h).toFixed(1),
-
-        trendSign: (
-          isNullOrUndefined(s.psr_h)
-          || isNullOrUndefined(s.psr_1w)
-        ) ? 0 : (s.psr_1w > s.psr_h) ? 1 : -1,
+        valTrend: this.calcTrendValue(s.psr_h, s.psr_1w),
+        trendSign: this.calcTrendSign(s.psr_h, s.psr_1w),
 
         // Degradation level
         valDL: this.calcDegradationLevel([devLvlH, devLvl1w], s),
@@ -146,24 +145,16 @@ export class MainService {
         parseCategory: s.articleSource.parseCategory,
 
         // H
-        valH: isNullOrUndefined(s.sscd_h) ? '—' : s.sscd_h.toFixed(1),
+        valH: this.getValString(s.sscd_h),
         devLvlH,
 
         // 1W
-        val1w: isNullOrUndefined(s.sscd_1w) ? '—' : s.sscd_1w.toFixed(1),
+        val1w: this.getValString(s.sscd_1w),
         devLvl1w,
 
         // Trend
-        valTrend: (
-          isNullOrUndefined(s.sscd_h)
-          || isNullOrUndefined(s.sscd_1w)
-        ) ? '—'
-          : (100 * (s.sscd_1w - s.sscd_h) / s.sscd_h).toFixed(1),
-
-        trendSign: (
-          isNullOrUndefined(s.sscd_h)
-          || isNullOrUndefined(s.sscd_1w)
-        ) ? 0 : (s.sscd_1w > s.sscd_h) ? 1 : -1,
+        valTrend: this.calcTrendValue(s.sscd_h, s.sscd_1w),
+        trendSign: this.calcTrendSign(s.sscd_h, s.sscd_1w),
 
         // Degradation level
         valDL: this.calcDegradationLevel([devLvlH, devLvl1w], s),
@@ -193,54 +184,28 @@ export class MainService {
         parseCategory: s.articleSource.parseCategory,
 
         // H
-        valHC1: isNullOrUndefined(s.psddc1_h) ? '—' : s.psddc1_h.toFixed(1),
-        valHC2: isNullOrUndefined(s.psddc2_h) ? '—' : s.psddc2_h.toFixed(1),
-        valHC3: isNullOrUndefined(s.psddc2_h) ? '—' : s.psddc3_h.toFixed(1),
+        valHC1: this.getValString(s.psddc1_h),
+        valHC2: this.getValString(s.psddc2_h),
+        valHC3: this.getValString(s.psddc2_h),
         devLvlHC1,
         devLvlHC2,
         devLvlHC3,
 
         // 1W
-        val1wC1: isNullOrUndefined(s.psddc1_1w) ? '—' : s.psddc1_1w.toFixed(1),
-        val1wC2: isNullOrUndefined(s.psddc2_1w) ? '—' : s.psddc2_1w.toFixed(1),
-        val1wC3: isNullOrUndefined(s.psddc3_1w) ? '—' : s.psddc3_1w.toFixed(1),
+        val1wC1: this.getValString(s.psddc1_1w),
+        val1wC2: this.getValString(s.psddc2_1w),
+        val1wC3: this.getValString(s.psddc3_1w),
         devLvl1wC1,
         devLvl1wC2,
         devLvl1wC3,
 
         // Trend
-        valTrendC1: (
-          isNullOrUndefined(s.psddc1_h)
-          || isNullOrUndefined(s.psddc1_1w)
-        ) ? '—'
-          : (100 * (s.psddc1_1w - s.psddc1_h) / s.psddc1_h).toFixed(1),
-
-        valTrendC2: (
-          isNullOrUndefined(s.psddc2_h)
-          || isNullOrUndefined(s.psddc2_1w)
-        ) ? '—'
-          : (100 * (s.psddc2_1w - s.psddc2_h) / s.psddc2_h).toFixed(1),
-
-        valTrendC3: (
-          isNullOrUndefined(s.psddc3_h)
-          || isNullOrUndefined(s.psddc3_1w)
-        ) ? '—'
-          : (100 * (s.psddc3_1w - s.psddc3_h) / s.psddc3_h).toFixed(1),
-
-        trendSignC1: (
-          isNullOrUndefined(s.psddc1_h)
-          || isNullOrUndefined(s.psddc1_1w)
-        ) ? 0 : (s.psddc1_1w > s.psddc1_h) ? 1 : -1,
-
-        trendSignC2: (
-          isNullOrUndefined(s.psddc2_h)
-          || isNullOrUndefined(s.psddc2_1w)
-        ) ? 0 : (s.psddc2_1w > s.psddc2_h) ? -1 : 1,
-
-        trendSignC3: (
-          isNullOrUndefined(s.psddc3_h)
-          || isNullOrUndefined(s.psddc3_1w)
-        ) ? 0 : (s.psddc3_1w > s.psddc3_h) ? -1 : 1,
+        valTrendC1: this.calcTrendValue(s.psddc1_h, s.psddc1_1w),
+        valTrendC2: this.calcTrendValue(s.psddc2_h, s.psddc2_1w),
+        valTrendC3: this.calcTrendValue(s.psddc3_h, s.psddc3_1w),
+        trendSignC1: this.calcTrendSign(s.psddc1_h, s.psddc1_1w),
+        trendSignC2: this.calcTrendSign(s.psddc2_h, s.psddc2_1w),
+        trendSignC3: this.calcTrendSign(s.psddc3_h, s.psddc3_1w),
 
         // Degradation level
         valDL: this.calcDegradationLevel(
@@ -514,5 +479,46 @@ export class MainService {
             : sum;
       }, 0
     );
+  }
+
+
+  private calcTrendValue(valH: number | undefined, val1w: number | undefined): string {
+    if (
+      isNullOrUndefined(valH)
+      || isNullOrUndefined(val1w)
+    ) {
+      return '—';
+    }
+
+    let valTrend = (100 * (val1w - valH) / (valH + DIV_BY_ZERO_ERR_OFFSET));
+
+    if (Math.abs(valTrend) < TREND_ZERO_SIGN_THRESHOLD) {
+      valTrend = 0;
+    }
+
+    return valTrend.toFixed(1);
+  }
+
+
+  private calcTrendSign(valH: number | undefined, val1w: number | undefined): TrendSign {
+    if (
+      isNullOrUndefined(valH)
+      || isNullOrUndefined(val1w)
+    ) {
+      return 0;
+    }
+
+    const valTrend = (100 * (val1w - valH) / (valH + DIV_BY_ZERO_ERR_OFFSET));
+
+    if (Math.abs(valTrend) < TREND_ZERO_SIGN_THRESHOLD) {
+      return 0;
+    }
+
+    return valTrend > 0 ? 1 : -1;
+  }
+
+
+  private getValString(val: number | undefined): string {
+    return isNullOrUndefined(val) ? '—' : val.toFixed(1);
   }
 }
