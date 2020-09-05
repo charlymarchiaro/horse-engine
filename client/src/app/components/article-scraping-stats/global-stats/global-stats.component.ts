@@ -83,13 +83,13 @@ export class GlobalStatsComponent implements OnInit, OnDestroy {
     // SSCD
     this.rowsSscd = [
       {
-        field: 'H %',
+        field: 'H',
         value: stats.sscd.valH,
         fieldType: 'val',
         devLvl: stats.sscd.devLvlH,
       },
       {
-        field: '1W %',
+        field: '1W',
         value: stats.sscd.val1w,
         fieldType: 'val',
         devLvl: stats.sscd.devLvl1w,
