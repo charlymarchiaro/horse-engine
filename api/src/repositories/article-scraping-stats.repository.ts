@@ -156,16 +156,16 @@ export class ArticleScrapingStatsRepository extends DefaultTransactionalReposito
       )
       SELECT
           PSR_H.source_id AS source_id,
-          PSR_H.val AS PSR_H,
-          PSR_1W.val AS PSR_1W,
-          SSCD_H.val AS SSCD_H,
-          SSCD_1W.val AS SSCD_1W,
-          PSDD_H.c1 AS PSDDC1_H,
-          PSDD_H.c2 AS PSDDC2_H,
-          PSDD_H.c3 AS PSDDC3_H,
-          PSDD_1W.c1 AS PSDDC1_1W,
-          PSDD_1W.c2 AS PSDDC2_1W,
-          PSDD_1W.c3 AS PSDDC3_1W
+          COALESCE(PSR_H.val, 0) AS PSR_H,
+          COALESCE(PSR_1W.val, 0) AS PSR_1W,
+          COALESCE(SSCD_H.val, 0) AS SSCD_H,
+          COALESCE(SSCD_1W.val, 0) AS SSCD_1W,
+          COALESCE(PSDD_H.c1, 0) AS PSDDC1_H,
+          COALESCE(PSDD_H.c2, 0) AS PSDDC2_H,
+          COALESCE(PSDD_H.c3, 0) AS PSDDC3_H,
+          COALESCE(PSDD_1W.c1, 0) AS PSDDC1_1W,
+          COALESCE(PSDD_1W.c2, 0) AS PSDDC2_1W,
+          COALESCE(PSDD_1W.c3, 0) AS PSDDC3_1W
       FROM
           PSR_H
           LEFT JOIN PSR_1W
@@ -324,16 +324,16 @@ export class ArticleScrapingStatsRepository extends DefaultTransactionalReposito
       )
       SELECT
           '0' AS source_id,
-          PSR_H.val AS PSR_H,
-          PSR_1W.val AS PSR_1W,
-          SSCD_H.val AS SSCD_H,
-          SSCD_1W.val AS SSCD_1W,
-          PSDD_H.c1 AS PSDDC1_H,
-          PSDD_H.c2 AS PSDDC2_H,
-          PSDD_H.c3 AS PSDDC3_H,
-          PSDD_1W.c1 AS PSDDC1_1W,
-          PSDD_1W.c2 AS PSDDC2_1W,
-          PSDD_1W.c3 AS PSDDC3_1W
+          COALESCE(PSR_H.val, 0) AS PSR_H,
+          COALESCE(PSR_1W.val, 0) AS PSR_1W,
+          COALESCE(SSCD_H.val, 0) AS SSCD_H,
+          COALESCE(SSCD_1W.val, 0) AS SSCD_1W,
+          COALESCE(PSDD_H.c1, 0) AS PSDDC1_H,
+          COALESCE(PSDD_H.c2, 0) AS PSDDC2_H,
+          COALESCE(PSDD_H.c3, 0) AS PSDDC3_H,
+          COALESCE(PSDD_1W.c1, 0) AS PSDDC1_1W,
+          COALESCE(PSDD_1W.c2, 0) AS PSDDC2_1W,
+          COALESCE(PSDD_1W.c3, 0) AS PSDDC3_1W
       FROM
           PSR_H
           LEFT JOIN PSR_1W
