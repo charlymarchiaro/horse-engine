@@ -186,7 +186,7 @@ export class MainService {
         // H
         valHC1: this.getValString(s.psddc1_h),
         valHC2: this.getValString(s.psddc2_h),
-        valHC3: this.getValString(s.psddc2_h),
+        valHC3: this.getValString(s.psddc3_h),
         devLvlHC1,
         devLvlHC2,
         devLvlHC3,
@@ -204,8 +204,8 @@ export class MainService {
         valTrendC2: this.calcTrendValue(s.psddc2_h, s.psddc2_1w),
         valTrendC3: this.calcTrendValue(s.psddc3_h, s.psddc3_1w),
         trendSignC1: this.calcTrendSign(s.psddc1_h, s.psddc1_1w),
-        trendSignC2: this.calcTrendSign(s.psddc2_h, s.psddc2_1w),
-        trendSignC3: this.calcTrendSign(s.psddc3_h, s.psddc3_1w),
+        trendSignC2: this.calcTrendSign(s.psddc2_h, s.psddc2_1w, { invert: false }),
+        trendSignC3: this.calcTrendSign(s.psddc3_h, s.psddc3_1w, { invert: false }),
 
         // Degradation level
         valDL: this.calcDegradationLevel(
@@ -500,7 +500,11 @@ export class MainService {
   }
 
 
-  private calcTrendSign(valH: number | undefined, val1w: number | undefined): TrendSign {
+  private calcTrendSign(
+    valH: number | undefined,
+    val1w: number | undefined,
+    options: { invert: boolean } = { invert: false }
+  ): TrendSign {
     if (
       isNullOrUndefined(valH)
       || isNullOrUndefined(val1w)
@@ -514,7 +518,9 @@ export class MainService {
       return 0;
     }
 
-    return valTrend > 0 ? 1 : -1;
+    return (options.invert === false)
+      ? valTrend > 0 ? 1 : -1
+      : valTrend > 0 ? -1 : 1;
   }
 
 
