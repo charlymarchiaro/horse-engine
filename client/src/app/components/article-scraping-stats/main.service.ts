@@ -204,8 +204,8 @@ export class MainService {
         valTrendC2: this.calcTrendValue(s.psddc2_h, s.psddc2_1w),
         valTrendC3: this.calcTrendValue(s.psddc3_h, s.psddc3_1w),
         trendSignC1: this.calcTrendSign(s.psddc1_h, s.psddc1_1w),
-        trendSignC2: this.calcTrendSign(s.psddc2_h, s.psddc2_1w, { invert: false }),
-        trendSignC3: this.calcTrendSign(s.psddc3_h, s.psddc3_1w, { invert: false }),
+        trendSignC2: this.calcTrendSign(s.psddc2_h, s.psddc2_1w, { invert: true }),
+        trendSignC3: this.calcTrendSign(s.psddc3_h, s.psddc3_1w, { invert: true }),
 
         // Degradation level
         valDL: this.calcDegradationLevel(
