@@ -70,7 +70,10 @@ class Params(BaseArticleSpiderParams):
     # Parser functions
 
     def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:
-        return [self.parser_1]
+        return [
+            self.parser_1,
+            self.parser_2,
+        ]
 
     def parser_1(self, response):
 
@@ -90,6 +93,22 @@ class Params(BaseArticleSpiderParams):
                 (AttributeType.NAME, "style"),
             ],
         )
+
+        return ArticleData(title, text, last_updated)
+
+    def parser_2(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        last_updated = article_data.last_updated
+
+        # title
+        title = extract_all_text(response, root_xpath="//h1", exclude_list=[],)
+
+        # text ----------
+        matches = response.xpath('//meta[@content = "Audiovisuales"]').extract()
+        if len(matches) > 0:
+            text = "Nota audiovisual"
 
         return ArticleData(title, text, last_updated)
 
