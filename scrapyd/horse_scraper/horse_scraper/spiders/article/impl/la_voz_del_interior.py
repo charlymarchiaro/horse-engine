@@ -71,6 +71,7 @@ class Params(BaseArticleSpiderParams):
                 ".*\/clublavoz\/.*",
                 ".*\/autor\/.*",
                 ".*\/lugares\/.*",
+                ".*\/organizaciones\/.*",
             ],
         )
 
