@@ -28,7 +28,7 @@ from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 class Params(BaseArticleSpiderParams):
     def _after_initialize(self) -> None:
-        # Override to stop redirects 
+        # Override to stop redirects
         self.dont_redirect = True
 
     # Common params
@@ -72,6 +72,7 @@ class Params(BaseArticleSpiderParams):
                 ".*\/autor\/.*",
                 ".*\/lugares\/.*",
                 ".*\/organizaciones\/.*",
+                ".*\/busqueda\/.*",
             ],
         )
 
@@ -99,6 +100,7 @@ class Params(BaseArticleSpiderParams):
             self.parser_1,
             self.parser_2,
             self.parser_3,
+            self.parser_4,
         ]
 
     def parser_1(self, response):
@@ -134,6 +136,31 @@ class Params(BaseArticleSpiderParams):
         text = extract_all_text(
             response,
             root_xpath='//div[contains(@class, "entry-content")]',
+            exclude_list=[
+                (AttributeType.NAME, "script"),
+                (AttributeType.NAME, "style"),
+            ],
+        )
+
+        return ArticleData(title, text, last_updated)
+
+    def parser_4(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+
+        # last_updated -----------
+        last_updated = dateparser.parse(
+            extract_all_text(
+                response, root_xpath='//p[@class="date"]', exclude_list=[],
+            )
+        )
+
+        # text ----------
+        text = extract_all_text(
+            response,
+            root_xpath='//div[contains(@class, "body-content")]',
             exclude_list=[
                 (AttributeType.NAME, "script"),
                 (AttributeType.NAME, "style"),
