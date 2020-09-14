@@ -63,6 +63,7 @@ class Params(BaseArticleSpiderParams):
             deny_re=[
                 ".*lavoz.com.ar\/.+\/.+\/.+",
                 ".*.html$",
+                ".*\/auth\/.*",
                 ".*\/files\/.*",
                 ".*\/beneficios\/.*",
                 ".*\/categoria\/.*",
