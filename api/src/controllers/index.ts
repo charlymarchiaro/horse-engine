@@ -13,3 +13,4 @@ export * from './article-spider.controller';
 export * from './article-scraping-details.controller';
 export * from './scrapyd.controller';
 export * from './article-scraping-stats.controller';
+export * from './article-search.controller';
