@@ -82,7 +82,27 @@ class Params(BaseArticleSpiderParams):
     # Parser functions
 
     def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:
-        return []
+        return [
+            self.parser_1,
+        ]
+
+    def parser_1(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+        text = article_data.text
+
+        # last_updated
+        last_updated = dateparser.parse(
+            extract_all_text(
+                response,
+                root_xpath='//p[contains(@class, "paragraph-date")]',
+                exclude_list=[],
+            ).split("-")[-1]
+        )
+
+        return ArticleData(title, text, last_updated)
 
 
 # Spider implementations
