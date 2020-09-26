@@ -35,22 +35,22 @@ class Params(BaseArticleSpiderParams):
         return "reuters_argentina"
 
     def get_allowed_domains(self) -> List[str]:
-        return ["ar.reuters.com"]
+        return ["lta.reuters.com"]
 
     # Crawl params
 
     def get_crawl_start_urls(self) -> List[str]:
         return [
-            "https://ar.reuters.com/",
+            "https://lta.reuters.com/noticias/argentina",
         ]
 
     def get_url_filter(self) -> UrlFilter:
-        return UrlFilter(allow_re=[".*article\/.+\/id.+"], deny_re=[])
+        return UrlFilter(allow_re=[".*articulo\/.+-id.+"], deny_re=[])
 
     # Sitemap params
 
     def get_sitemap_urls(self) -> List[str]:
-        return ["https://ar.reuters.com/sitemap_index.xml"]
+        return ["https://lta.reuters.com/sitemap_index.xml"]
 
     def get_sitemap_follow(self) -> List[str]:
         return [".*"]
