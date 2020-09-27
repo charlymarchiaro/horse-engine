@@ -316,7 +316,7 @@ class ArticleDbHandler(object):
         info.tier = data["tier"]
         info.reach = data["reach"]
         info.ad_value_500 = data["ad_value_500"]
-        info.ad_value_100 = data["ad_value_150"]
+        info.ad_value_150 = data["ad_value_150"]
         info.parse_category = data["parse_category"]
 
         return info
