@@ -40,9 +40,6 @@ from .base_article_spider_params import BaseArticleSpiderParams
 
 
 class BaseArticleCrawlSpider(BaseArticleSpider, CrawlSpider):
-
-    follow_current_article_links = True
-
     def __init__(self, *args, **kwargs):
 
         # Init date span
@@ -94,12 +91,35 @@ class BaseArticleCrawlSpider(BaseArticleSpider, CrawlSpider):
             meta=dict(rule=rule_index, link_text=link.text),
         )
 
-    def process_links(self, links):
+    def _requests_to_follow(self, response):
+        if not isinstance(response, HtmlResponse):
+            return
+
+        seen = set()
+        for rule_index, rule in enumerate(self._rules):
+            links = [
+                lnk
+                for lnk in rule.link_extractor.extract_links(response)
+                if lnk not in seen
+            ]
+            for link in rule.process_links(links, response.url):
+                seen.add(link)
+                request = self._build_request(rule_index, link)
+                yield rule._process_request(request, response)
+
+    def process_links(self, links, url):
 
         if self.get_current_run_time_hours() > CRAWL_MAX_RUN_TIME_HOURS:
             raise CloseSpider("Max run time exceeded")
 
-        if not self.follow_current_article_links:
+        # article date is outside the search period --> don't follow links
+        if (
+            hasattr(self.current_article_parse_result, "url")
+            and self.current_article_parse_result.url == url
+            and self.current_article_parse_result.could_parse_article_date
+            and not self.current_article_parse_result.is_article_date_inside_search_period
+        ):
+            logging.info("Not following links.")
             return []
 
         links_to_follow = []

@@ -21,12 +21,13 @@ import time
 from string import whitespace
 
 from horse_scraper.items import Article
-from horse_scraper.spiders.article.model import (
+from .model import (
     ArticleSourceInfo,
     ArticleData,
     SpiderType,
     SpiderScheduleArgs,
     DateSpan,
+    ParseResultInfo,
 )
 from horse_scraper.settings import (
     LOG_LEVEL,
@@ -46,6 +47,8 @@ class BaseArticleSpider:
     date_span = DateSpan()
 
     schedule_args = SpiderScheduleArgs()
+
+    current_article_parse_result = ParseResultInfo()
 
     # Default parser
     default_parser = DefaultArticleParser()
@@ -170,30 +173,48 @@ class BaseArticleSpider:
         logging.info("")
 
         article = Article()
+        self.current_article_parse_result = ParseResultInfo()
+        self.current_article_parse_result.url = response.url
 
         article_date, data, parse_function = self.call_parser_functions(
             response, self.params.get_parser_functions()
         )
 
-        # The article date is outside the search period --> skip
-        if article_date and not self.is_article_date_inside_search_period(article_date):
-            date_str = article_date.strftime("%d/%m/%Y")
-            logging.info(
-                "Article date ("
-                + date_str
-                + ") is outside the search period --> skipping."
+        if article_date:
+            self.current_article_parse_result.could_parse_article_date = True
+            self.current_article_parse_result.is_article_date_inside_search_period = self.is_article_date_inside_search_period(
+                article_date
             )
-            logging.info("")
-
-            return None
+        else:
+            self.current_article_parse_result.could_parse_article_date = False
+            self.current_article_parse_result.is_article_date_inside_search_period = (
+                False
+            )
 
         # Data is not valid
         if data is None:
+            self.current_article_parse_result.parsed_ok = False
+
+            # Parse failed, but the article is outside the search period --> skip
+            if (
+                article_date
+                and self.current_article_parse_result.could_parse_article_date
+                and not self.current_article_parse_result.is_article_date_inside_search_period
+            ):
+                date_str = article_date.strftime("%d/%m/%Y")
+                logging.info(
+                    "Article date ("
+                    + date_str
+                    + ") is outside the search period --> skipping."
+                )
+                logging.info("")
+                return None
+
             article["source_id"] = self.source_info.id
             article["url"] = response.url
             article["title"] = None
             article["text"] = None
-            article["last_updated"] = None
+            article["last_updated"] = article_date
             article["spider_name"] = self.name
             article["parse_function"] = None
             article["result"] = "error"
@@ -201,6 +222,7 @@ class BaseArticleSpider:
             article["error_details"] = ""
             return article
 
+        self.current_article_parse_result.parsed_ok = True
         article["source_id"] = self.source_info.id
         article["url"] = response.url
         article["title"] = data.title

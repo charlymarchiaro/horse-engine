@@ -40,3 +40,10 @@ class SpiderScheduleArgs:
 class DateSpan:
     from_date_incl: date
     to_date_incl: date
+
+
+class ParseResultInfo:
+    url: str
+    parsed_ok: bool
+    could_parse_article_date: bool
+    is_article_date_inside_search_period: bool
