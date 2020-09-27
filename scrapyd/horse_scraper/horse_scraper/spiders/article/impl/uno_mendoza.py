@@ -77,59 +77,7 @@ class Params(BaseArticleSpiderParams):
     # Parser functions
 
     def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:
-        return [
-            self.parser_1,
-            self.parser_2,
-        ]
-
-    def parser_1(self, response):
-
-        # title
-        title = extract_all_text(response, root_xpath="//h1", exclude_list=[],)
-
-        # text ----------
-        text = extract_all_text(
-            response,
-            root_xpath='//div[contains(@class, "article-body")]',
-            exclude_list=[
-                (AttributeType.NAME, "script"),
-                (AttributeType.NAME, "style"),
-                (AttributeType.CLASS, "social"),
-            ],
-        )
-
-        # last_updated
-        match = re.search(f".*-({self.date_allow_str})\_.+", response.url)
-        if match:
-            match = re.search(
-                "(?P<month>\d{2})(?P<day>\d{2})(?P<year>\d{4})", match.group(1)
-            )
-            if match:
-                last_updated = dateparser.parse(
-                    f"{match.group('year')}-{match.group('month')}-{match.group('day')}"
-                )
-
-        return ArticleData(title, text, last_updated)
-
-    def parser_2(self, response):
-
-        article_data = self.get_default_parser_results(response)
-
-        title = article_data.title
-        text = article_data.text
-
-        # last_updated
-        match = re.search(f".*-({self.date_allow_str})\_.+", response.url)
-        if match:
-            match = re.search(
-                "(?P<month>\d{2})(?P<day>\d{2})(?P<year>\d{4})", match.group(1)
-            )
-            if match:
-                last_updated = dateparser.parse(
-                    f"{match.group('year')}-{match.group('month')}-{match.group('day')}"
-                )
-
-        return ArticleData(title, text, last_updated)
+        return []
 
 
 # Spider implementations
