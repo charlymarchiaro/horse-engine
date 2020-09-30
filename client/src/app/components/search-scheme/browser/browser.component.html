@@ -1,0 +1,150 @@
+<pgcard
+  (onRefresh)="onRefresh()"
+  [Loading]="loadState.status === LoadStatus.loading"
+  [ShowMessage]="isError"
+  [Message]="errorMessage"
+  [Close]="false"
+  [Maximize]="false">
+  <ng-template #CardTitle>Search scheme browser</ng-template>
+  <div class="row nowrap">
+    <div class="button-panel">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Search"
+        (keyup)="updateFilter($event)"
+        [(ngModel)]="searchKeyword">
+
+      <button
+        class="btn btn-default"
+        type="button"
+        (click)="onNewButtonClick()">
+        New
+      </button>
+
+      <button
+        class="btn btn-default"
+        type="button"
+        (click)="onMakeCopyButtonClick()"
+        [disabled]="selected.length === 0">
+        Make a copy
+      </button>
+
+      <button
+        class="btn btn-default"
+        type="button"
+        (click)="onDeleteButtonClick()"
+        [disabled]="selected.length === 0">
+        Delete
+      </button>
+    </div>
+
+    <div class="col-lg-10">
+      <ngx-datatable
+        class="table table-hover"
+        [rows]="visibleRows"
+        [columnMode]="'standard'"
+        [headerHeight]="30"
+        [footerHeight]="50"
+        [rowHeight]="26"
+        [limit]="5"
+        [selectionType]="'single'"
+        [selected]="selected"
+        [sorts]="sorts"
+        [scrollbarH]="true">
+
+        <!-- name -->
+        <ngx-datatable-column
+          name="Name"
+          prop="name"
+          [width]="250"
+          [resizeable]="false"
+          cellClass="align-items-center">
+          <ng-template
+            let-row="row"
+            let-value="value"
+            ngx-datatable-cell-template>
+            <div class="table-item-label">{{ value }}</div>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- description -->
+        <ngx-datatable-column
+          name="Description"
+          prop="description"
+          [width]="450"
+          [resizeable]="false"
+          cellClass="align-items-center">
+          <ng-template
+            let-row="row"
+            let-value="value"
+            ngx-datatable-cell-template>
+            <div class="table-item-label">{{ value }}</div>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- kind -->
+        <ngx-datatable-column
+          name="Kind"
+          prop="kind"
+          [width]="100"
+          [resizeable]="false"
+          cellClass="align-items-center">
+          <ng-template
+            let-row="row"
+            let-value="value"
+            ngx-datatable-cell-template>
+            <div class="table-item-label">{{ value }}</div>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- version -->
+        <ngx-datatable-column
+          name="Ver"
+          prop="version"
+          [width]="80"
+          [resizeable]="false"
+          cellClass="align-items-center">
+          <ng-template
+            let-row="row"
+            let-value="value"
+            ngx-datatable-cell-template>
+            <div class="table-item-label">{{ value }}</div>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- createdAt -->
+        <ngx-datatable-column
+          name="Created"
+          prop="createdAt"
+          [width]="150"
+          [resizeable]="false"
+          cellClass="align-items-center">
+          <ng-template
+            let-row="row"
+            let-value="value"
+            ngx-datatable-cell-template>
+            <div class="table-item-label">{{ value | date: 'd/M/yyyy, H:mm:ss' }}</div>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- updatedAt -->
+        <ngx-datatable-column
+          name="Updated"
+          prop="updatedAt"
+          [width]="150"
+          [resizeable]="false"
+          cellClass="align-items-center">
+          <ng-template
+            let-row="row"
+            let-value="value"
+            ngx-datatable-cell-template>
+            <div class="table-item-label">
+              {{ value | date: 'd/M/yyyy, H:mm:ss'  }}
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  </div>
+</pgcard>

@@ -61,8 +61,8 @@
         }
       }
       &.selected td {
-        background: $color-warning-lighter;
-        color: text-contrast($color-warning-lighter);
+        background: $color-select-lighter;
+        color: text-contrast($color-select-lighter);
       }
     }
   }
@@ -74,8 +74,8 @@
           color: text-contrast($color-complete-lighter);
         }
         &.selected:hover td {
-          background: $color-warning-lighter !important;
-          color: text-contrast($color-warning-lighter);
+          background: $color-select-lighter !important;
+          color: text-contrast($color-select-lighter);
         }
       }
     }
@@ -134,7 +134,7 @@
       & > tbody > tr {
         &.shown {
           & > td {
-            background: $color-warning-lighter;
+            background: $color-select-lighter;
             &:first-child:before {
               @include rotate(90deg);
             }

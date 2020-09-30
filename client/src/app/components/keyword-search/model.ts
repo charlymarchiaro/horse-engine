@@ -11,7 +11,7 @@ export enum MatchCondition {
   notContains = 'notContains',
 }
 
-export interface ArticleFilteringCondition {
+export interface ArticleMatchCondition {
   part: ArticlePart;
   matchCondition: MatchCondition;
   textToMatch: string;
@@ -31,7 +31,7 @@ export interface DateSpan {
  * [ [ c1 ] ]
  */
 export interface ArticleFilteringScheme {
-  conditions: ArticleFilteringCondition[][];
+  conditions: ArticleMatchCondition[][];
 }
 
 
@@ -60,7 +60,7 @@ export function getArticleFilteringSchemeWhereCondition(
 
 
 export function getArticleFilteringConditionWhereOperator(
-  condition: ArticleFilteringCondition
+  condition: ArticleMatchCondition
 ): string {
 
   switch (condition.matchCondition) {

@@ -1,0 +1,42 @@
+.nowrap {
+    flex-wrap: nowrap;
+}
+
+.button-panel {
+    width: 175px;
+    padding: 38px 5px 10px 15px;
+    margin-left: 20px;
+    margin-right: 20px;
+
+    input {
+        min-height: 30px;
+        height: 30px;
+        font-size: 12px;
+    }
+
+    button {
+        width: 100%;
+        margin-top: 10px;
+        font-size: 12px;
+    }
+}
+
+.table-item-label {
+    display: inline-flex;
+    align-items: center;
+    line-height: 26px;
+    height: 26px;
+    font-size: 11px;
+}
+
+:host ::ng-deep .datatable-body-cell {
+    padding: 0 20px !important;
+}
+
+:host ::ng-deep .datatable-header-cell {
+    padding: 5px 1.75em !important;
+}
+
+:host ::ng-deep .datatable-body {
+    height: 155px !important;
+}

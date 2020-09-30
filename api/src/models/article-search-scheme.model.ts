@@ -1,4 +1,4 @@
-import {Entity, model, property} from '@loopback/repository';
+import { Entity, model, property } from '@loopback/repository';
 
 @model({
   settings: {
@@ -76,7 +76,7 @@ export class ArticleSearchScheme extends Entity {
   updatedAt: Date;
 
   @property({
-    type: 'string',
+    type: 'object',
     required: true,
     postgresql: {
       columnName: 'scheme',
@@ -84,7 +84,7 @@ export class ArticleSearchScheme extends Entity {
       nullable: 'NO',
     }
   })
-  scheme: string;
+  scheme: object;
 
 
   constructor(data?: Partial<ArticleSearchScheme>) {

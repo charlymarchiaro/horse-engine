@@ -5,6 +5,7 @@ import { ArticleFilteringScheme, DateSpan, getArticleFilteringSchemeWhereConditi
 
 import { ArticleScrapingDetails, ArticleScrapingDetailsResponse, ArticleSpiderResponse, ArticleSpider, ArticleScrapingStatsResponse, ArticleScrapingStatsFullResponse, ArticleScrapingStats, ArticleScrapingStatsFull } from '../model/article.model';
 import { ArticleResponse, Article } from '../model/article.model';
+import { SearchScheme, SearchSchemeKind, SearchSchemePayload } from '../model/search-scheme.model';
 
 
 @Injectable({
@@ -189,6 +190,37 @@ export class BackendService {
     return this.http.get<ArticleScrapingStatsFullResponse>(
       '/api/article-stats/full-stats', { params }
     ).map(r => new ArticleScrapingStatsFull(r));
+  }
+
+
+  // Search scheme
+  public getArticleSearchSchemes() {
+    const params = {};
+
+    return this.http.get<SearchSchemePayload[]>(
+      '/api/article-search-schemes', { params }
+    ).map(r => r.map(ssp => new SearchScheme(ssp, SearchSchemeKind.article)));
+  }
+
+  public postArticleSearchScheme(scheme: SearchSchemePayload) {
+
+    return this.http.post<SearchSchemePayload>(
+      '/api/article-search-schemes', scheme
+    ).map(ssr => new SearchScheme(ssr, SearchSchemeKind.article));
+  }
+
+  public deleteArticleSearchScheme(id: string) {
+
+    return this.http.delete(
+      '/api/article-search-schemes/' + id
+    );
+  }
+
+  public patchArticleSearchScheme(scheme: SearchSchemePayload) {
+
+    return this.http.patch(
+      '/api/article-search-schemes/' + scheme.id, scheme
+    );
   }
 }
 
