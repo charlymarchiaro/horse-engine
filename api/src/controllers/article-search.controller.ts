@@ -4,10 +4,12 @@ import { get, post, requestBody, api, HttpErrors } from '@loopback/rest';
 import { model, property } from '@loopback/repository';
 import { ArticleSearchRepository } from '../repositories/article-search.repository';
 import { ArticleBooleanQuery } from '../models';
+import { SearchDateSpan } from '../models/search-date-span.model';
 
 
 @model()
 export class ArticleSearchResponse {
+  @property(SearchDateSpan) dateSpan: SearchDateSpan;
   @property.array(String) articleIds: string[];
 }
 
@@ -42,7 +44,8 @@ export class ArticleSearchController {
     body: ArticleBooleanQuery,
   ): Promise<ArticleSearchResponse> {
 
-    const articleIds = await this.searchResultInfoRepository.executeBooleanQuery(body);
-    return { articleIds };
+    const response = await this.searchResultInfoRepository.executeBooleanQuery(body);
+
+    return response;
   }
 }

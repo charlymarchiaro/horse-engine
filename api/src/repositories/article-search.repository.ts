@@ -4,6 +4,9 @@ import { DbDataSource } from '../datasources';
 import { inject } from '@loopback/core';
 import { ArticleMatchCondition, ArticlePart, MatchCondition } from '../models/article-match-condition.model';
 import { ArticleSecondaryMatchCondition, Condition } from '../models/article-secondary-match-condition.model';
+import { getYYYYMMDD, getDateDiffDays, addDays } from '../utils';
+import { ArticleSearchResponse } from '../controllers/article-search.controller';
+import { SearchDateSpan } from '../models/search-date-span.model';
 
 export class ArticleSearchRepository extends DefaultTransactionalRepository<
   ArticleSearchResultInfo,
@@ -17,27 +20,58 @@ export class ArticleSearchRepository extends DefaultTransactionalRepository<
   }
 
 
-  async executeBooleanQuery(query: ArticleBooleanQuery): Promise<string[]> {
+  async executeBooleanQuery(query: ArticleBooleanQuery): Promise<ArticleSearchResponse> {
+
+    // Dates
+    const fromDate = getYYYYMMDD(new Date(query.dateSpan.fromDateIncl));
+    const toDate = getYYYYMMDD(new Date(query.dateSpan.toDateIncl));
+
+
+    const conditions: string[] = [];
+
+    // Secondary match conditions
+    const areThereSecondaryMatchConditions =
+      query.secondaryMatchConditions.length > 0;
+
+    if (areThereSecondaryMatchConditions) {
+      conditions.push(
+        query.secondaryMatchConditions.map(
+          condition => this.parseSecondaryMatchCondition(condition)
+        ).join(' AND ')
+      );
+    }
+
+    // Primary match conditions
+    const areTherePrimaryMatchConditions =
+      query.matchConditions.or.length > 0
+      && query.matchConditions.or[0].and.length > 0
 
     const params: string[] = [];
 
-    const matchConditionSql = query.matchConditions.or.map(andGroup => {
+    if (areTherePrimaryMatchConditions) {
+      conditions.push(
+        '(' + query.matchConditions.or.map(andGroup => {
 
-      const andGroupSql = andGroup.and.map(
-        matchCondition => {
-          params.push(`%${matchCondition.textToMatch}%`);
-          return this.parseMatchCondition(matchCondition);
-        }
-      ).join(' AND ');
+          const andGroupSql = andGroup.and.map(
+            matchCondition => {
+              params.push(`%${matchCondition.textToMatch}%`);
+              return this.parseMatchCondition(matchCondition);
+            }
+          ).join(' AND ');
 
-      return `(${andGroupSql})`;
-    }).join(' OR ');
+          return `(${andGroupSql})`;
+        }).join(' OR ') + ')'
+      );
+    }
 
+    // Conditions SQL
+    const areThereConditions = conditions.length > 0;
 
-    const secondaryMatchCondition = query.secondaryMatchConditions.map(
-      condition => this.parseSecondaryMatchCondition(condition)
-    ).join(' AND ')
+    const coditionsSql = areThereConditions
+      ? ' AND ' + conditions.join(' AND ')
+      : '';
 
+    // SQL query
     const sql =
       `
       SELECT
@@ -51,17 +85,25 @@ export class ArticleSearchRepository extends DefaultTransactionalRepository<
           INNER JOIN scraper.article_spider AS spider
             ON details.article_spider_id = spider.id
       WHERE
-          article.last_updated >= '${query.dateSpan.fromDateIncl}'
-          AND article.last_updated < '${query.dateSpan.toDateIncl}'
-          AND ${secondaryMatchCondition}
-          AND (${matchConditionSql})
+          article.date >= '${fromDate}'
+          AND article.date <= '${toDate}'
+          ${coditionsSql}
+
       ORDER BY
           article.last_updated
       `;
 
+    console.log(sql)
+
     const result = await this.execute(sql, []) as { article_id: string }[];
 
-    return result.map(i => i.article_id);
+    return {
+      dateSpan: new SearchDateSpan({
+        fromDateIncl: fromDate,
+        toDateIncl: toDate,
+      }),
+      articleIds: result.map(i => i.article_id)
+    };
   }
 
 
@@ -86,10 +128,10 @@ export class ArticleSearchRepository extends DefaultTransactionalRepository<
       condition.matchCondition === MatchCondition.contains
 
         // Contains
-        ? condition.caseSensitive ? 'ILIKE' : 'LIKE'
+        ? condition.caseSensitive ? 'LIKE' : 'ILIKE'
 
         // Not contains
-        : condition.caseSensitive ? 'NOT ILIKE' : 'NOT LIKE'
+        : condition.caseSensitive ? 'NOT LIKE' : 'NOT ILIKE'
     );
 
     return `${part} ${operator} '%${condition.textToMatch}%'`;
@@ -111,12 +153,12 @@ export class ArticleSearchRepository extends DefaultTransactionalRepository<
     switch (condition.condition) {
       case Condition.equals: return `${field} = '${param0}'`;
       case Condition.notEquals: return `${field} != '${param0}' `;
-      case Condition.contains: return `${field} LIKE '%${param0}%'`;
-      case Condition.notContains: return `${field} NOT LIKE '%${param0}%'`;
-      case Condition.startsWith: return `${field} LIKE '${param0}%'`;
-      case Condition.notStartsWith: return `${field} NOT LIKE '${param0}%'`;
-      case Condition.endsWith: return `${field} LIKE '%${param0}'`;
-      case Condition.notEndsWith: return `${field} NOT LIKE '%${param0}'`;
+      case Condition.contains: return `${field} ILIKE '%${param0}%'`;
+      case Condition.notContains: return `${field} NOT ILIKE '%${param0}%'`;
+      case Condition.startsWith: return `${field} ILIKE '${param0}%'`;
+      case Condition.notStartsWith: return `${field} NOT ILIKE '${param0}%'`;
+      case Condition.endsWith: return `${field} ILIKE '%${param0}'`;
+      case Condition.notEndsWith: return `${field} NOT ILIKE '%${param0}'`;
       case Condition.greaterThan: return `${field} > '${param0}'`;
       case Condition.greaterOrEqual: return `${field} >= '${param0}'`;
       case Condition.lessThan: return `${field} < '${param0}'`;

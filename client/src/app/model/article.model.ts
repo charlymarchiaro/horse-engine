@@ -58,6 +58,7 @@ export class Article {
   title?: string;
   text?: string;
   lastUpdated?: Date;
+  date?: Date;
   articleSourceId: string;
   articleSource?: ArticleSource;
   articleScrapingDetails?: ArticleScrapingDetails;
@@ -68,6 +69,7 @@ export class Article {
     this.title = r.title;
     this.text = r.text;
     this.lastUpdated = r.lastUpdated ? new Date(r.lastUpdated) : null;
+    this.date = r.date ? new Date(r.date) : null;
     this.articleSourceId = r.articleSourceId;
     this.articleSource = r.articleSource ? new ArticleSource(r.articleSource) : null;
     this.articleScrapingDetails = r.articleScrapingDetails ? new ArticleScrapingDetails(r.articleScrapingDetails) : null;
@@ -81,6 +83,7 @@ export interface ArticleResponse {
   title?: string;
   text?: string;
   lastUpdated?: string;
+  date?: string;
   articleSourceId: string;
   articleSource?: ArticleSourceResponse;
   articleScrapingDetails?: ArticleScrapingDetailsResponse;

@@ -61,8 +61,16 @@ class ArticleDbHandler(object):
                 )
                 + "'"
             )
+            date = (
+                "'"
+                + self.sanitize_value(
+                    item["last_updated"].strftime("%Y/%m/%d")
+                )
+                + "'"
+            )
         else:
             last_updated = "NULL"
+            date = "NULL"
 
         scraped_at = (
             "'"
@@ -123,6 +131,7 @@ class ArticleDbHandler(object):
                             title, 
                             text, 
                             last_updated, 
+                            date, 
                             article_source_id
                         )
                         VALUES (
@@ -130,6 +139,7 @@ class ArticleDbHandler(object):
                             {title},
                             {text},
                             {last_updated},
+                            {date},
                             {article_source_id}
                         )
                         RETURNING id
