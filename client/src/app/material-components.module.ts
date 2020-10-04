@@ -28,6 +28,7 @@ import {
   MatButtonToggleModule,
   MatRadioModule,
   MatPaginatorModule,
+  MatChipsModule
 } from '@angular/material';
 
 import {
@@ -69,6 +70,7 @@ import {
     MatRadioModule,
     MatPaginatorModule,
     MatMomentDateModule,
+    MatChipsModule,
   ]
 })
 export class MaterialComponentsModule { }

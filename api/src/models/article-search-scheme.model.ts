@@ -86,6 +86,18 @@ export class ArticleSearchScheme extends Entity {
   })
   scheme: object;
 
+  @property({
+    type: 'boolean',
+    required: true,
+    default: false,
+    postgresql: {
+      columnName: 'enabled',
+      dataType: 'boolean',
+      nullable: 'NO',
+    }
+  })
+  enabled: boolean;
+
 
   constructor(data?: Partial<ArticleSearchScheme>) {
     super(data);

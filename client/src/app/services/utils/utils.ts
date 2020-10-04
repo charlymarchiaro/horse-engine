@@ -25,6 +25,20 @@ export function clone(object: any): any {
   return JSON.parse(JSON.stringify(object));
 }
 
+
+export function normalizeString(str: string): string {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+// Filter to get distinct array elements
+// Usage: var unique = a.filter(onlyUnique);
+// https://stackoverflow.com/questions/1960473/get-all-unique-values-in-a-javascript-array-remove-duplicates?answertab=votes#tab-top
+export function onlyUnique(value, index, self) {
+  return self.indexOf(value) === index;
+}
+
+
+
 // XLSX
 export function getXLSXCellObject(
   ws: XLSX.WorkSheet,

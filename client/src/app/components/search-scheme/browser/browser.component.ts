@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild, Output, OnDestroy, EventEmitter } from '@angular/core';
 import { SearchScheme, SearchSchemeKind } from '../../../model/search-scheme.model';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
-import { Subscription } from 'rxjs';
+import { Subscription, BehaviorSubject } from 'rxjs';
 import { SearchSchemeService } from '../search-scheme.service';
 import { LoadState, LoadStatus } from '../../../services/utils/load-status';
 import { MatSnackBar } from '@angular/material';
+import { normalizeString } from '../../../services/utils/utils';
 
 @Component({
   selector: 'app-search-scheme-browser',
@@ -26,6 +27,7 @@ export class BrowserComponent implements OnInit, OnDestroy {
 
   public searchKeyword: string;
 
+
   private subscription = new Subscription();
 
 
@@ -33,6 +35,11 @@ export class BrowserComponent implements OnInit, OnDestroy {
 
 
   @Output() selectionChange = new EventEmitter<SearchScheme>();
+
+  // Edition active
+  private isEditionActiveSubject = new BehaviorSubject<boolean>(false);
+  public isEditionActive = this.isEditionActiveSubject.getValue();
+  @Output() isEditionActive$ = this.isEditionActiveSubject.asObservable();
 
 
   constructor(
@@ -58,15 +65,33 @@ export class BrowserComponent implements OnInit, OnDestroy {
     );
 
     this.updateSchemesList();
+
+    // todo: delete
+    setTimeout(() => {
+      this.setEditionActive(true);
+      this.selected = [this.schemes[0]];
+      this.emitSelectionChange();
+    }, 1000);
   }
 
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    this.snackBar.ngOnDestroy();
   }
 
 
-  onRefresh() {
+  public setEditionActive(value: boolean) {
+    if (this.isEditionActiveSubject.getValue() === value) {
+      return;
+    }
+
+    this.isEditionActiveSubject.next(value);
+    this.isEditionActive = value;
+  }
+
+
+  public refresh() {
     this.updateSchemesList();
   }
 
@@ -76,7 +101,8 @@ export class BrowserComponent implements OnInit, OnDestroy {
     this.isError = false;
 
     this.searchSchemeService.getAllSchemes().then(
-      result => { },
+      result => {
+      },
       error => {
         this.errorMessage = error.message;
         this.isError = true;
@@ -86,10 +112,18 @@ export class BrowserComponent implements OnInit, OnDestroy {
 
 
   private onSchemesListChange(schemes: SearchScheme[]) {
+
     this.schemes = schemes;
 
     if (!schemes) {
       return;
+    }
+
+    // Update selected scheme, keeping the same id
+    if (this.selected && this.selected.length > 0 && this.selected[0]) {
+      this.selected = [schemes.find(s => s.id === this.selected[0].id)];
+    } else {
+      this.selected = [];
     }
 
     // Show a copy of the entire array
@@ -100,13 +134,15 @@ export class BrowserComponent implements OnInit, OnDestroy {
 
 
   updateFilter(event) {
-    const val = event.target.value.toLowerCase();
+    const val = normalizeString(event.target.value.toLowerCase());
 
     // Filter our data
     const temp = this.schemes.filter(function (s) {
-      // Change the column name here
-      // example d.places
-      return s.name.toLowerCase().indexOf(val) !== -1 || !val;
+      return (
+        normalizeString(s.name).toLowerCase().indexOf(val) !== -1
+        || normalizeString(s.description).toLowerCase().indexOf(val) !== -1
+        || !val
+      );
     });
 
     // Update the visible rows
@@ -128,6 +164,7 @@ export class BrowserComponent implements OnInit, OnDestroy {
         ];
         this.selected = [this.schemes.find(s => s.id === result.id)];
         this.emitSelectionChange();
+        this.setEditionActive(true);
 
         this.snackBar.open(
           `Search scheme created`,
@@ -156,6 +193,7 @@ export class BrowserComponent implements OnInit, OnDestroy {
         ];
         this.selected = [this.schemes.find(s => s.id === result.id)];
         this.emitSelectionChange();
+        this.setEditionActive(true);
 
         this.snackBar.open(
           `Search scheme copy created`,

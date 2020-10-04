@@ -1,12 +1,17 @@
 <div id="container">
   <div id="content">
-    <app-search-scheme-browser (selectionChange)="onSelectedSchemeChange($event)"></app-search-scheme-browser>
+    <app-search-scheme-browser
+      #schemeBrowser
+      (selectionChange)="onSelectedSchemeChange($event)"
+      (isEditionActive$)="onSchemeEditionActiveChange($event)"></app-search-scheme-browser>
+
+    <app-search-scheme-editor
+      #schemeEditor
+      *ngIf="selectedScheme && isEditionActive"
+      [selectedSchemeId]="selectedScheme ? selectedScheme.id : null"
+      [selectedSchemeKind]="selectedScheme ? selectedScheme.kind : null"
+      (change)="onSchemeEditorChange($event)"
+      (close)="onSchemeEditorClose()"></app-search-scheme-editor>
+
   </div>
-</div>
-
-<div *ngIf="selectedScheme">
-  <h2>{{selectedScheme.name}}</h2>
-  <br>
-  <p>{{selectedScheme.description}}</p>
-
 </div>

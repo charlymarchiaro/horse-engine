@@ -93,8 +93,6 @@ export class ArticleSearchRepository extends DefaultTransactionalRepository<
           article.last_updated
       `;
 
-    console.log(sql)
-
     const result = await this.execute(sql, []) as { article_id: string }[];
 
     return {
@@ -144,7 +142,10 @@ export class ArticleSearchRepository extends DefaultTransactionalRepository<
     const param0 = condition.params[0]
     let parsedParamsArray = '';
 
-    if (condition.params.length > 1) {
+    if (
+      condition.condition === Condition.in
+      || condition.condition === Condition.notIn
+    ) {
       parsedParamsArray = condition.params.map(
         p => `'${p}'`
       ).join(',')

@@ -1,10 +1,11 @@
 <pgcard
-  (onRefresh)="onRefresh()"
+  (onRefresh)="refresh()"
   [Loading]="loadState.status === LoadStatus.loading"
   [ShowMessage]="isError"
   [Message]="errorMessage"
   [Close]="false"
-  [Maximize]="false">
+  [Maximize]="false"
+  [Toggle]="false">
   <ng-template #CardTitle>Search scheme browser</ng-template>
   <div class="row nowrap">
     <div class="button-panel">
@@ -37,6 +38,15 @@
         [disabled]="selected.length === 0">
         Delete
       </button>
+
+      <div class="form-check form-check-inline switch switch-lg warning">
+        <input
+          type="checkbox"
+          id="editionSwitch"
+          [checked]="isEditionActive"
+          (change)="setEditionActive(!isEditionActive)">
+        <label for="editionSwitch">Scheme edition</label>
+      </div>
     </div>
 
     <div class="col-lg-10">
@@ -45,7 +55,7 @@
         [rows]="visibleRows"
         [columnMode]="'standard'"
         [headerHeight]="30"
-        [footerHeight]="50"
+        [footerHeight]="32"
         [rowHeight]="26"
         [limit]="5"
         [selectionType]="'single'"
@@ -64,7 +74,10 @@
             let-row="row"
             let-value="value"
             ngx-datatable-cell-template>
-            <div class="table-item-label">{{ value }}</div>
+            <div class="table-item-label">
+              <span *ngIf="!row.enabled">* </span>
+              {{ value }}
+            </div>
           </ng-template>
         </ngx-datatable-column>
 

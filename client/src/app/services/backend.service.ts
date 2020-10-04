@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { JobsListInfo, JobScheduleInfo, SpidersListInfo } from '../model/scrapyd.model';
 import { ArticleFilteringScheme, DateSpan, getArticleFilteringSchemeWhereCondition } from '../components/keyword-search/model';
 
-import { ArticleScrapingDetails, ArticleScrapingDetailsResponse, ArticleSpiderResponse, ArticleSpider, ArticleScrapingStatsResponse, ArticleScrapingStatsFullResponse, ArticleScrapingStats, ArticleScrapingStatsFull } from '../model/article.model';
+import { ArticleScrapingDetails, ArticleScrapingDetailsResponse, ArticleSpiderResponse, ArticleSpider, ArticleScrapingStatsResponse, ArticleScrapingStatsFullResponse, ArticleScrapingStats, ArticleScrapingStatsFull, ArticleSourceResponse, ArticleSource } from '../model/article.model';
 import { ArticleResponse, Article } from '../model/article.model';
 import { SearchScheme, SearchSchemeKind, SearchSchemePayload } from '../model/search-scheme.model';
 
@@ -180,6 +180,16 @@ export class BackendService {
     return this.http.get<ArticleResponse[]>(
       '/api/articles', { params },
     ).map(r => r.map(i => new Article(i)));
+  }
+
+
+  // Article source
+  public getArticleSources() {
+    const params = {};
+
+    return this.http.get<ArticleSourceResponse[]>(
+      '/api/article-sources', { params }
+    ).map(r => r.map(i => new ArticleSource(i)));
   }
 
 

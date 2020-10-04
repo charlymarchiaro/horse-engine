@@ -164,7 +164,7 @@ export class ArticleListBrowserComponent implements OnInit, OnChanges {
     ];
 
     this.excelExport.export({
-      moduleLabel: 'Keyword Search',
+      moduleLabel: 'Search',
       fileName,
       data: [{
         name: 'Results',

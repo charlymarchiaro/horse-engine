@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { SearchSchemeKind, SearchScheme, ArticleSearchSchemeImpl, ArticlePart, MatchCondition, Field, Condition, SearchSchemePayload } from '../../model/search-scheme.model';
+import { SearchSchemeKind, SearchScheme, ArticleSearchSchemeImpl, ArticlePart, MatchCondition, SecondaryConditionField, SecondaryCondition, SearchSchemePayload } from '../../model/search-scheme.model';
 import { BackendService } from '../../services/backend.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { LoadStateHandler } from '../../services/utils/load-status';
+import { ArticleSource } from '../../model/article.model';
 
 
 const DEFAULT_SCHEME_VERSION = '1';
@@ -23,9 +24,22 @@ export class SearchSchemeService {
   public loadState$ = this.loadState.state$;
 
 
+  private articleSourcesSubject = new BehaviorSubject<ArticleSource[]>([]);
+  public articleSources = this.articleSourcesSubject.asObservable();
+
+
   constructor(
     private backendService: BackendService,
-  ) { }
+  ) {
+    this.refreshArticleSourcesList();
+  }
+
+
+  public refreshArticleSourcesList() {
+    this.backendService.getArticleSources().subscribe(
+      response => this.articleSourcesSubject.next(response)
+    );
+  }
 
 
   public async getAllSchemes(): Promise<SearchScheme[]> {
@@ -44,6 +58,7 @@ export class SearchSchemeService {
 
     } catch (error) {
       this.loadState.loadError(error.message);
+      throw error;
     }
   }
 
@@ -55,7 +70,7 @@ export class SearchSchemeService {
     switch (kind) {
       case SearchSchemeKind.article: {
         const scheme: ArticleSearchSchemeImpl = {
-          matchConditions: { or: [] },
+          matchConditions: { or: [{ and: [] }] },
           secondaryMatchConditions: [],
           titleMatchKeywords: [],
         };
@@ -64,7 +79,9 @@ export class SearchSchemeService {
           name: this.getNewSchemeName(NEW_SCHEME_NAME, kind),
           description: '',
           version: DEFAULT_SCHEME_VERSION,
-          scheme
+          scheme,
+          // Disabled by default
+          enabled: false,
         };
 
         newScheme = await this.backendService.postArticleSearchScheme(searchSchemepayload).toPromise();
@@ -90,6 +107,7 @@ export class SearchSchemeService {
           description: scheme.description,
           version: scheme.version,
           scheme: scheme.scheme,
+          enabled: scheme.enabled,
         };
 
         newScheme = await this.backendService.postArticleSearchScheme(searchSchemepayload).toPromise();
@@ -122,7 +140,8 @@ export class SearchSchemeService {
           name: scheme.name,
           description: scheme.description,
           version: scheme.version,
-          scheme: scheme.scheme
+          scheme: scheme.scheme,
+          enabled: scheme.enabled,
         };
 
         await this.backendService.patchArticleSearchScheme(searchSchemepayload).toPromise();

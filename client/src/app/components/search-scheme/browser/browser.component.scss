@@ -19,6 +19,17 @@
         margin-top: 10px;
         font-size: 12px;
     }
+
+    .switch {
+        margin-top: 10px;
+        margin-bottom: 0;
+        justify-content: center;
+        width: 100%;
+    }
+
+    label {
+        font-size: 12px;
+    }
 }
 
 .table-item-label {
@@ -39,4 +50,8 @@
 
 :host ::ng-deep .datatable-body {
     height: 155px !important;
+}
+
+:host ::ng-deep .datatable-footer {
+    overflow: hidden !important;
 }
