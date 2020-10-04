@@ -9,10 +9,13 @@
 
     .row {
         display: flex;
-        flex-wrap: nowrap;
         margin-right: 0;
         margin-left: 0;
         align-items: center;
+    }
+
+    .nowrap {
+        flex-wrap: nowrap;
     }
 
     #field-name {
@@ -87,6 +90,21 @@
 
         &-add-button {
             font-size: 12px;
+        }
+    }
+
+    #field-title-match-keywords {
+        width: 100%;
+    }
+
+    #bottom-panel {
+        display: flex;
+        width: 100%;
+        justify-content: flex-end;
+
+        button {
+            width: 170px;
+            margin-left: 10px;
         }
     }
 }

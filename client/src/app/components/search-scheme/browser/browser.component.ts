@@ -65,13 +65,6 @@ export class BrowserComponent implements OnInit, OnDestroy {
     );
 
     this.updateSchemesList();
-
-    // todo: delete
-    setTimeout(() => {
-      this.setEditionActive(true);
-      this.selected = [this.schemes[0]];
-      this.emitSelectionChange();
-    }, 1000);
   }
 
 

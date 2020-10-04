@@ -13,7 +13,7 @@
     <form
       [formGroup]="form"
       (submit)="submitForm()">
-      <div class="row">
+      <div class="row nowrap">
         <!-- name -->
         <mat-form-field
           id="field-name"
@@ -286,13 +286,57 @@
 
       <br>
 
-      <button
-        [disabled]="!form.valid"
-        mat-flat-button
-        color="primary"
-        type="submit">
-        Save scheme
-      </button>
+      <!-- titleMatchKeywords -->
+      <h5>Title match keywords</h5>
+
+      <div class="row">
+
+        <!-- title match keywords list -->
+        <mat-form-field id="field-title-match-keywords">
+          <mat-label>List</mat-label>
+          <mat-error>Please enter valid items</mat-error>
+          <mat-chip-list #titleMatchKeywordsListRef>
+            <mat-chip
+              *ngFor="let item of titleMatchKeywordsList; let itemIndex = index"
+              removable="true"
+              (removed)="onRemoveTitleMatchKeyword(itemIndex)">
+              {{item}}
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+            <input
+              placeholder="Add elements"
+              [formControl]="titleMatchKeywords"
+              [matChipInputFor]="titleMatchKeywordsListRef"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              (matChipInputTokenEnd)="onAddTitleMatchKeyword($event)">
+          </mat-chip-list>
+        </mat-form-field>
+
+      </div>
+
+      <br>
+
+      <!-- Bottom panel -->
+      <div id="bottom-panel">
+
+        <!-- Cancel -->
+        <button
+          mat-button
+          type="button"
+          (click)="onCancelClick()">
+          Cancel
+        </button>
+
+        <!-- Save -->
+        <button
+          [disabled]="!form.valid"
+          mat-flat-button
+          color="primary"
+          type="submit">
+          Save scheme
+        </button>
+
+      </div>
     </form>
 
   </div>

@@ -25,7 +25,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
   public sources: ArticleSource[] = [];
 
   public isSchemeSelected: boolean;
-
+  public currentScheme: SearchScheme;
 
   private subscription = new Subscription();
 
@@ -43,6 +43,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
 
   public secCondParamOptions: { [field in SecondaryConditionField]?: any[] };
 
+  public titleMatchKeywordsList: string[] = [];
 
   public articlePartInfo = Object.values(ArticlePartInfo);
   public matchCondInfo = Object.values(MatchConditionInfo);
@@ -56,6 +57,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
   get description() { return this.form.get('description') as FormControl; }
   get matchConditions() { return this.form.get('matchConditions') as FormGroup; }
   get secondaryMatchConditions() { return this.form.get('secondaryMatchConditions') as FormArray; }
+  get titleMatchKeywords() { return this.form.get('titleMatchKeywords') as FormControl; }
 
   public asFormArray(val): FormArray { return (val as FormArray); }
 
@@ -185,6 +187,30 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
     this.updateVisibleSecCondParamsOptions(conditionIndex);
   }
 
+  onAddTitleMatchKeyword(event: MatChipInputEvent) {
+    const input = event.input;
+    const value = event.value;
+
+    // Add item
+    if ((value || '').trim()) {
+      this.addTitleMatchKeywordItem(value);
+    }
+
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+
+    this.titleMatchKeywords.setValue(null);
+  }
+
+  onRemoveTitleMatchKeyword(itemIndex: number) {
+    this.removeTitleMatchKeywordItem(itemIndex);
+  }
+
+  onCancelClick() {
+    this.cancel();
+  }
 
   // ---------------------------------------------------------------------------
 
@@ -215,25 +241,32 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
         or: this.fb.array([])
       }),
       // secondaryMatchConditions
-      secondaryMatchConditions: this.fb.array([])
+      secondaryMatchConditions: this.fb.array([]),
+      // titleMatchKeywords
+      titleMatchKeywords: ['', {
+        validators: [],
+        updateOn: 'change'
+      }]
     });
 
     this.secCondParams = [];
     this.visibleSecCondParamOptions = [];
+
+    this.titleMatchKeywordsList = [];
   }
 
 
   private initForm() {
     this.isSchemeSelected = false;
 
-    const currentScheme = this.schemes
+    this.currentScheme = this.schemes
       ? this.schemes.find(s =>
         s.id === this.selectedSchemeId
         && s.kind === this.selectedSchemeKind
       )
       : null;
 
-    if (!currentScheme) {
+    if (!this.currentScheme) {
       return;
     }
 
@@ -243,22 +276,22 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
     this.resetForm();
 
     // name
-    this.name.setValue(currentScheme.name);
+    this.name.setValue(this.currentScheme.name);
 
     // description
-    this.description.setValue(currentScheme.description);
+    this.description.setValue(this.currentScheme.description);
 
     // matchConditions
     if (
-      currentScheme.scheme.matchConditions.or.length === 0
-      || currentScheme.scheme.matchConditions.or[0].and.length === 0
+      this.currentScheme.scheme.matchConditions.or.length === 0
+      || this.currentScheme.scheme.matchConditions.or[0].and.length === 0
     ) {
       // No conditions defined --> add a default one
       this.addMatchCondAndGroup();
 
     } else {
       // There are conditions defined --> init form
-      currentScheme.scheme.matchConditions.or.forEach(
+      this.currentScheme.scheme.matchConditions.or.forEach(
         (andGroup, andGroupIndex) => {
           this.addMatchCondAndGroup({ empty: true });
 
@@ -272,9 +305,12 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     // secondaryMatchConditions
-    currentScheme.scheme.secondaryMatchConditions.forEach(
+    this.currentScheme.scheme.secondaryMatchConditions.forEach(
       condition => this.addSecCond(condition)
     );
+
+    // titleMatchKeywords
+    this.titleMatchKeywordsList = this.currentScheme.scheme.titleMatchKeywords || [];
   }
 
 
@@ -292,7 +328,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
             condition: v.condition,
             params: this.secCondParams[i],
           })),
-      titleMatchKeywords: [],
+      titleMatchKeywords: this.titleMatchKeywordsList,
     };
 
     this.searchSchemeService.updateScheme(
@@ -320,10 +356,20 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
         this.isError = true;
       }
     );
-
-    console.log(scheme)
   }
 
+
+  private cancel() {
+    if (!this.currentScheme) {
+      return;
+    }
+
+    if (this.currentScheme.enabled) {
+      this.searchSchemeService.getAllSchemes();
+    } else {
+      this.searchSchemeService.deleteScheme(this.currentScheme);
+    }
+  }
 
   // ---------------------------------------------------------------------------
 
@@ -454,8 +500,6 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
       'details.result': ['success', 'error'],
       'spider.kind': ['crawl', 'sitemap']
     };
-
-    console.log(this.secCondParamOptions)
   }
 
 
@@ -490,6 +534,17 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
     );
   }
 
+  public addTitleMatchKeywordItem(item: string) {
+    this.titleMatchKeywordsList.push(item);
+  }
+
+
+  public removeTitleMatchKeywordItem(itemIndex: number) {
+    this.titleMatchKeywordsList = (
+      this.titleMatchKeywordsList
+        .filter((p, i) => i !== itemIndex)
+    );
+  }
 
   public uniqueNameValidator(editor: EditorComponent):
     (control: AbstractControl) => ValidationErrors | null {
