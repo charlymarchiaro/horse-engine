@@ -57,7 +57,7 @@ export class BrowserComponent implements OnInit, OnDestroy {
     );
 
     this.sorts = [
-      { prop: 'createdAt', dir: 'desc' },
+      { prop: 'updatedAt', dir: 'desc' },
     ];
 
     this.table.select.subscribe(
@@ -114,15 +114,26 @@ export class BrowserComponent implements OnInit, OnDestroy {
 
     // Update selected scheme, keeping the same id
     if (this.selected && this.selected.length > 0 && this.selected[0]) {
-      this.selected = [schemes.find(s => s.id === this.selected[0].id)];
+      const match = schemes.find(s => s.id === this.selected[0].id);
+      this.selected = match ? [match] : [];
+
     } else {
-      this.selected = [];
+      // None selected, select the newset if there are any
+      this.selected = schemes.length > 0
+        ? [
+          schemes.sort((a, b) =>
+            a.updatedAt.getTime() < b.updatedAt.getTime() ? 1 : -1
+          )[0]
+        ]
+        : [];
     }
 
     // Show a copy of the entire array
     this.visibleRows = [...this.schemes];
 
     this.searchKeyword = null;
+
+    this.emitSelectionChange();
   }
 
 
@@ -153,7 +164,7 @@ export class BrowserComponent implements OnInit, OnDestroy {
       result => {
         // Sort by creation time so that the new scheme appears on top
         this.sorts = [
-          { prop: 'createdAt', dir: 'desc' },
+          { prop: 'updatedAt', dir: 'desc' },
         ];
         this.selected = [this.schemes.find(s => s.id === result.id)];
         this.emitSelectionChange();
@@ -182,7 +193,7 @@ export class BrowserComponent implements OnInit, OnDestroy {
       result => {
         // Sort by creation time so that the new scheme appears on top
         this.sorts = [
-          { prop: 'createdAt', dir: 'desc' },
+          { prop: 'updatedAt', dir: 'desc' },
         ];
         this.selected = [this.schemes.find(s => s.id === result.id)];
         this.emitSelectionChange();
