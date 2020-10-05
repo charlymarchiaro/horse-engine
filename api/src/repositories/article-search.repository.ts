@@ -74,6 +74,7 @@ export class ArticleSearchRepository extends DefaultTransactionalRepository<
     // SQL query
     const sql =
       `
+      WITH pid_tag (pid_tag) AS (values (${query.pidTag}))
       SELECT
           article.id AS article_id
       FROM
@@ -96,6 +97,7 @@ export class ArticleSearchRepository extends DefaultTransactionalRepository<
     const result = await this.execute(sql, []) as { article_id: string }[];
 
     return {
+      pidTag: query.pidTag,
       dateSpan: new SearchDateSpan({
         fromDateIncl: fromDate,
         toDateIncl: toDate,

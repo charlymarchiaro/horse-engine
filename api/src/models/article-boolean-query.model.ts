@@ -23,6 +23,9 @@ export class ArticleBooleanQuery extends Model {
     super(data);
   }
 
+  @property(String)
+  pidTag: string;
+
   @property(ArticleMatchConditionSet)
   matchConditions: ArticleMatchConditionSet;
 
