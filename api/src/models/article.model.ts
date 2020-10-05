@@ -71,6 +71,7 @@ export class Article extends Entity {
 
   @property({
     type: 'date',
+    index: true,
     postgresql: {
       columnName: 'date',
       dataType: 'DATE',
