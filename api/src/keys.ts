@@ -1,3 +1,6 @@
+export namespace AppConstants {
+  export const RESPONSE_TIMEOUT_SECS = 180;
+}
 
 export namespace PostgresConstants {
   export const PG_HOST = process.env.PG_HOST;
