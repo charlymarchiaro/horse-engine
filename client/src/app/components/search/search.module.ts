@@ -1,24 +1,29 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MainComponent } from './main.component';
-import { MainService } from './main.service';
+import { SearchService } from './search.service';
 import { SearchSchemeModule } from '../search-scheme/search-scheme.module';
-import { pgCollapseModule } from '../../@pages/components/collapse/collapse.module';
+import { LauncherComponent } from './launcher/launcher.component';
+import { pgCardModule } from '../../@pages/components/card/card.module';
+import { MaterialComponentsModule } from '../../material-components.module';
+import { FormsModule } from '@angular/forms';
 
 
 
 @NgModule({
-  declarations: [MainComponent],
+  declarations: [MainComponent, LauncherComponent],
   imports: [
     CommonModule,
-    pgCollapseModule,
+    FormsModule,
+    MaterialComponentsModule,
+    pgCardModule,
     SearchSchemeModule
   ],
   exports: [
     MainComponent,
   ],
   providers: [
-    MainService
+    SearchService
   ]
 })
 export class SearchModule { }

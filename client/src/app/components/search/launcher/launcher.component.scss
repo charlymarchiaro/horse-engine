@@ -1,0 +1,65 @@
+#content {
+    display: flex;
+    flex-direction: column;
+    padding: 0 10px;
+
+    hr {
+        margin: 10px 0;
+    }
+
+    .row {
+        display: flex;
+        margin-right: 0;
+        margin-left: 0;
+        align-items: center;
+    }
+
+    #top-row {
+        min-height: 85px;
+        justify-content: flex-end;
+
+        #scheme-info {
+            flex-grow: 1;
+            min-width: 300px;
+
+            #name {
+            }
+            #description {
+                font-size: 13px;
+                margin-left: 2px;
+            }
+        }
+
+        #date-span-panel {
+            display: flex;
+            justify-content: center;
+            flex-basis: auto;
+            align-items: center;
+            flex-flow: wrap;
+            padding: 0 10px;
+            border-left: #ededed 1px solid;
+            border-right: #ededed 1px solid;
+
+            .datepicker {
+                margin: 0 8px;
+                width: 140px;
+            }
+        }
+
+        #submit-panel {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            min-width: 300px;
+            min-height: 60px;
+
+            button {
+                width: 180px;
+            }
+        }
+    }
+
+    #progress-bar {
+        margin-top: 10px;
+    }
+}

@@ -6,6 +6,8 @@ import { SearchSchemeService } from '../search-scheme.service';
 import { LoadState, LoadStatus } from '../../../services/utils/load-status';
 import { MatSnackBar } from '@angular/material';
 import { normalizeString } from '../../../services/utils/utils';
+import { SearchService } from '../../search/search.service';
+import { SearchState } from '../../../model/search.model';
 
 @Component({
   selector: 'app-search-scheme-browser',
@@ -27,6 +29,9 @@ export class BrowserComponent implements OnInit, OnDestroy {
 
   public searchKeyword: string;
 
+  public searchState: SearchState;
+  public isDisabled = false;
+
 
   private subscription = new Subscription();
 
@@ -44,6 +49,7 @@ export class BrowserComponent implements OnInit, OnDestroy {
 
   constructor(
     private searchSchemeService: SearchSchemeService,
+    private searchService: SearchService,
     private snackBar: MatSnackBar,
   ) { }
 
@@ -54,6 +60,12 @@ export class BrowserComponent implements OnInit, OnDestroy {
     );
     this.subscription.add(
       this.searchSchemeService.schemes$.subscribe(s => this.onSchemesListChange(s))
+    );
+    this.subscription.add(
+      this.searchService.searchState$.subscribe(s => {
+        this.searchState = s;
+        this.updateIsDisabled();
+      })
     );
 
     this.sorts = [
@@ -86,6 +98,11 @@ export class BrowserComponent implements OnInit, OnDestroy {
 
   public refresh() {
     this.updateSchemesList();
+  }
+
+
+  private updateIsDisabled() {
+    this.isDisabled = this.searchState !== SearchState.idle;
   }
 
 

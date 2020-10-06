@@ -9,6 +9,8 @@ import { startWith, map, filter } from 'rxjs/operators';
 import { normalizeString, onlyUnique } from '../../../services/utils/utils';
 import { ArticleSource } from '../../../model/article.model';
 import { isArray, isNullOrUndefined } from 'util';
+import { SearchState } from '../../../model/search.model';
+import { SearchService } from '../../search/search.service';
 
 
 @Component({
@@ -26,6 +28,9 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
 
   public isSchemeSelected: boolean;
   public currentScheme: SearchScheme;
+
+  public searchState: SearchState;
+  public isDisabled = false;
 
   private subscription = new Subscription();
 
@@ -66,6 +71,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
 
   constructor(
     private searchSchemeService: SearchSchemeService,
+    private searchService: SearchService,
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
   ) {
@@ -80,6 +86,12 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
   ngOnInit() {
     this.subscription.add(
       this.searchSchemeService.schemes$.subscribe(s => this.onSchemesListChange(s))
+    );
+    this.subscription.add(
+      this.searchService.searchState$.subscribe(s => {
+        this.searchState = s;
+        this.updateIsDisabled();
+      })
     );
   }
 
@@ -99,6 +111,12 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
     this.sources = sources;
     this.updateSecCondParamOptions();
   }
+
+
+  private updateIsDisabled() {
+    this.isDisabled = this.searchState !== SearchState.idle;
+  }
+
 
   /**
    * Template event handlers -----------------------------------------------------

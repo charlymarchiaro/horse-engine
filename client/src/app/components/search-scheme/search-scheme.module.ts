@@ -21,7 +21,7 @@ import { MaterialComponentsModule } from '../../material-components.module';
     MaterialComponentsModule,
   ],
   providers: [
-    SearchSchemeService
+    SearchSchemeService,
   ],
   exports: [
     EditorComponent,

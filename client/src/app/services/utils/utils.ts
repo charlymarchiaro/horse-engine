@@ -21,6 +21,26 @@ export function getDateDiffMilisec(date1: Date, date2: Date): number {
 }
 
 
+export function getDateDiffDays(date1: Date, date2: Date) {
+  const d1 = new Date(getYYYYMMDD(date1));
+  const d2 = new Date(getYYYYMMDD(date2));
+
+  return Math.round((d2.getTime() - d1.getTime()) / (1000 * 3600 * 24));
+}
+
+
+export function getYYYYMMDD(date: Date) {
+  return new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000)
+    .toISOString().split('T')[0];
+}
+
+
+// Pid Tag
+export function generatePidTag(): string {
+  return `${new Date().getTime()}-${Math.floor(100000 + Math.random() * 900000)}`;
+}
+
+
 export function clone(object: any): any {
   return JSON.parse(JSON.stringify(object));
 }

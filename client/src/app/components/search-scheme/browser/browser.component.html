@@ -7,6 +7,12 @@
   [Maximize]="false"
   [Toggle]="false">
   <ng-template #CardTitle>Search scheme browser</ng-template>
+
+  <!-- Disable mask -->
+  <div
+    class="disable-mask"
+    *ngIf="isDisabled"></div>
+
   <div class="row nowrap">
     <div class="button-panel">
       <input

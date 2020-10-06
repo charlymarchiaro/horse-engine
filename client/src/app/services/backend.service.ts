@@ -6,6 +6,7 @@ import { ArticleFilteringScheme, DateSpan, getArticleFilteringSchemeWhereConditi
 import { ArticleScrapingDetails, ArticleScrapingDetailsResponse, ArticleSpiderResponse, ArticleSpider, ArticleScrapingStatsResponse, ArticleScrapingStatsFullResponse, ArticleScrapingStats, ArticleScrapingStatsFull, ArticleSourceResponse, ArticleSource } from '../model/article.model';
 import { ArticleResponse, Article } from '../model/article.model';
 import { SearchScheme, SearchSchemeKind, SearchSchemePayload } from '../model/search-scheme.model';
+import { ArticleSearchBooleanQueryPayload, ArticleSearchBooleanQueryResponse, ArticleSearchBooleanQueryResult } from '../model/search.model';
 
 
 @Injectable({
@@ -231,6 +232,20 @@ export class BackendService {
     return this.http.patch(
       '/api/article-search-schemes/' + scheme.id, scheme
     );
+  }
+
+
+  // Search
+  public articleSearchBooleanQuery(payload: ArticleSearchBooleanQueryPayload) {
+
+    return this.http.post<ArticleSearchBooleanQueryResponse>(
+      '/api/article-search/boolean-query', payload
+    ).map(r => new ArticleSearchBooleanQueryResult(r));
+  }
+
+
+  public cancelArticleSearch(pidTag: string) {
+
   }
 }
 
