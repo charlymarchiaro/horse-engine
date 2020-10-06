@@ -43,10 +43,7 @@ export class PartSeqSearchHandler {
 
         // Has been cancelled --> stop execution
         if (this.isCancelled) {
-          this.searchFinished.emit({
-            status: ResultStatus.cancelled,
-            message: 'Cancelled by user',
-          });
+          this.emitUserCancellationEvent();
           return;
         }
 
@@ -73,16 +70,19 @@ export class PartSeqSearchHandler {
 
         } catch (e) {
 
+          // Search is cancelled. An error at this point is most likely due to the
+          // database process termination, and should be ignored.
+          if (this.isCancelled) {
+            this.emitUserCancellationEvent();
+            return;
+          }
+
           if (tryIndex === PART_SEARCH_NUMBER_OF_TRIES - 1) {
             // Max retries reached --> Abort search (error)
             console.error(`Search failed ${PART_SEARCH_NUMBER_OF_TRIES} times for part id:${tryIndex} --> aborting.`);
             await this.abortPartSearch(pidTag);
 
-            this.searchFinished.emit({
-              status: ResultStatus.error,
-              message: e.message,
-            });
-
+            this.emitErrorEvent(e.message);
             return;
 
           } else {
@@ -94,9 +94,7 @@ export class PartSeqSearchHandler {
       }
     }
 
-    this.searchFinished.emit({
-      status: ResultStatus.success,
-    });
+    this.emitSuccessEvent();
   }
 
 
@@ -112,9 +110,29 @@ export class PartSeqSearchHandler {
 
   private async abortPartSearch(pidTag: string) {
 
-    const result = await this.backendService.cancelArticleSearch(pidTag);
-    console.log(`Part search canceled, pidTag: ${pidTag}, result: ${result}`);
+    const result = await this.backendService.cancelArticleSearch(pidTag).toPromise();
+    console.log(`Part search canceled, pidTag: ${pidTag}, result: ${JSON.stringify(result)}`);
   }
 
+
+  private emitSuccessEvent() {
+    this.searchFinished.emit({
+      status: ResultStatus.success,
+    });
+  }
+
+  private emitErrorEvent(message: string) {
+    this.searchFinished.emit({
+      status: ResultStatus.error,
+      message,
+    });
+  }
+
+  private emitUserCancellationEvent() {
+    this.searchFinished.emit({
+      status: ResultStatus.cancelled,
+      message: 'Cancelled by user',
+    });
+  }
 }
 

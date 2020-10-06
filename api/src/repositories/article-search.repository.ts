@@ -5,7 +5,7 @@ import { inject } from '@loopback/core';
 import { ArticleMatchCondition, ArticlePart, MatchCondition } from '../models/article-match-condition.model';
 import { ArticleSecondaryMatchCondition, Condition } from '../models/article-secondary-match-condition.model';
 import { getYYYYMMDD, getDateDiffDays, addDays } from '../utils';
-import { ArticleSearchResponse } from '../controllers/article-search.controller';
+import { ArticleSearchResponse, CancelSearchRequest, CancelSearchResponse } from '../controllers/article-search.controller';
 import { SearchDateSpan } from '../models/search-date-span.model';
 
 export class ArticleSearchRepository extends DefaultTransactionalRepository<
@@ -107,7 +107,51 @@ export class ArticleSearchRepository extends DefaultTransactionalRepository<
   }
 
 
-  parseMatchCondition(condition: ArticleMatchCondition): string {
+  async cancelSearch(request: CancelSearchRequest): Promise<CancelSearchResponse> {
+    const pidTag = request.pidTag;
+
+    // pidTag splitted to avoid matching the current SQL query pid
+    const pidTagPart1 = pidTag.substr(0, 4);
+    const pidTagPart2 = pidTag.substr(4);
+
+    let sql;
+    let result;
+
+    // SQL query
+    sql =
+      `
+      SELECT 
+          pid
+      FROM 
+          pg_stat_activity 
+      WHERE 
+          state = 'active' 
+          AND query LIKE '%${pidTagPart1}' || '${pidTagPart2}%';
+      `;
+
+    result = await this.execute(sql, []) as { pid: number; query: string }[];
+    const pids = result.map(r => r.pid);
+
+    const pidTerminated: number[] = [];
+    const pidNotTerminated: number[] = [];
+
+    for (const pid of pids) {
+      sql = `SELECT pg_cancel_backend(${pid})`;
+
+      result = await this.execute(sql, []) as { pg_cancel_backend: string }[];
+      const terminated = `${result[0].pg_cancel_backend}` === 'true';
+
+      (terminated ? pidTerminated : pidNotTerminated).push(pid);
+    }
+
+    return ({
+      pidTerminated,
+      pidNotTerminated
+    })
+  }
+
+
+  private parseMatchCondition(condition: ArticleMatchCondition): string {
 
     const partMap: { [part in ArticlePart]: string } = {
       url: 'article.url',
@@ -138,7 +182,7 @@ export class ArticleSearchRepository extends DefaultTransactionalRepository<
   }
 
 
-  parseSecondaryMatchCondition(condition: ArticleSecondaryMatchCondition): string {
+  private parseSecondaryMatchCondition(condition: ArticleSecondaryMatchCondition): string {
 
     const field = condition.field;
     const param0 = condition.params[0]

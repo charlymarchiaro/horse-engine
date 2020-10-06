@@ -6,6 +6,7 @@ import { ArticleSearchRepository } from '../repositories/article-search.reposito
 import { ArticleBooleanQuery } from '../models';
 import { SearchDateSpan } from '../models/search-date-span.model';
 import { AppConstants } from '../keys';
+import { SimpleApiResponse } from '../globals';
 
 
 @model()
@@ -16,11 +17,24 @@ export class ArticleSearchResponse {
 }
 
 
+@model()
+export class CancelSearchRequest {
+  @property(String) pidTag: string;
+}
+
+
+@model()
+export class CancelSearchResponse {
+  @property({ type: 'array', itemType: 'number' }) pidTerminated: number[];
+  @property({ type: 'array', itemType: 'number' }) pidNotTerminated: number[];
+}
+
+
 @api({ basePath: 'article-search' })
 export class ArticleSearchController {
   constructor(
     @repository(ArticleSearchRepository)
-    public searchResultInfoRepository: ArticleSearchRepository,
+    public articleSearchRepository: ArticleSearchRepository,
     @inject(RestBindings.Http.RESPONSE) private response: Response,
   ) {
     // Extending timeout from the default 120s
@@ -51,7 +65,35 @@ export class ArticleSearchController {
     body: ArticleBooleanQuery,
   ): Promise<ArticleSearchResponse> {
 
-    const response = await this.searchResultInfoRepository.executeBooleanQuery(body);
+    const response = await this.articleSearchRepository.executeBooleanQuery(body);
+
+    return response;
+  }
+
+
+  @post('/cancel-search', {
+    responses: {
+      '200': {
+        content: {
+          'application/json': {
+            schema: { 'x-ts-type': CancelSearchResponse },
+          },
+        },
+      },
+    },
+  })
+  async cancelSearch(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: { 'x-ts-type': CancelSearchRequest },
+        }
+      },
+    })
+    body: CancelSearchRequest,
+  ): Promise<CancelSearchResponse> {
+
+    const response = await this.articleSearchRepository.cancelSearch(body);
 
     return response;
   }

@@ -40,6 +40,17 @@ export class ArticleSearchBooleanQueryResult {
 }
 
 
+export interface CancelSearchRequest {
+  pidTag: string;
+}
+
+
+export interface CancelSearchResponse {
+  pidTerminated: number[];
+  pidNotTerminated: number[];
+}
+
+
 export enum SearchState {
   idle = 'idle',
   searching = 'searching',

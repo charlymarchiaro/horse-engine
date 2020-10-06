@@ -6,7 +6,7 @@ import { SearchService } from '../search.service';
 import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
 import { AppDateAdapter, APP_DATE_FORMATS } from '../../../services/utils/format-datepicker/format-datepicker';
 import { Subscription } from 'rxjs';
-import { SearchState } from '../../../model/search.model';
+import { SearchState, ResultInfo, ResultStatus } from '../../../model/search.model';
 
 @Component({
   selector: 'app-search-launcher',
@@ -54,7 +54,16 @@ export class LauncherComponent implements OnInit, OnDestroy, OnChanges {
     );
     this.subscription.add(
       searchService.searchFinished.subscribe(
-        sf => console.log(sf)
+        (sf: ResultInfo) => {
+          console.log(sf)
+          if (sf.status === ResultStatus.error) {
+            this.isError = true;
+            this.errorMessage = sf.message;
+          } else {
+            this.isError = false;
+            this.errorMessage = null;
+          }
+        }
       )
     );
     this.subscription.add(
@@ -87,6 +96,9 @@ export class LauncherComponent implements OnInit, OnDestroy, OnChanges {
   onSubmit() {
 
     this.articleIds = [];
+
+    this.isError = false;
+    this.errorMessage = null;
 
     this.searchService.submitSearch(this.searchScheme, this.dateSpan);
   }

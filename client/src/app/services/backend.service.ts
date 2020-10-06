@@ -6,7 +6,8 @@ import { ArticleFilteringScheme, DateSpan, getArticleFilteringSchemeWhereConditi
 import { ArticleScrapingDetails, ArticleScrapingDetailsResponse, ArticleSpiderResponse, ArticleSpider, ArticleScrapingStatsResponse, ArticleScrapingStatsFullResponse, ArticleScrapingStats, ArticleScrapingStatsFull, ArticleSourceResponse, ArticleSource } from '../model/article.model';
 import { ArticleResponse, Article } from '../model/article.model';
 import { SearchScheme, SearchSchemeKind, SearchSchemePayload } from '../model/search-scheme.model';
-import { ArticleSearchBooleanQueryPayload, ArticleSearchBooleanQueryResponse, ArticleSearchBooleanQueryResult } from '../model/search.model';
+import { ArticleSearchBooleanQueryPayload, ArticleSearchBooleanQueryResponse, ArticleSearchBooleanQueryResult, CancelSearchResponse } from '../model/search.model';
+import { SimpleApiResponse } from '../model/backend.model';
 
 
 @Injectable({
@@ -245,7 +246,13 @@ export class BackendService {
 
 
   public cancelArticleSearch(pidTag: string) {
+    const params = {
+      pidTag
+    };
 
+    return this.http.post<CancelSearchResponse>(
+      '/api/article-search/cancel-search', params
+    );
   }
 }
 

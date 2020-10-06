@@ -24,9 +24,8 @@ export class SearchService {
   public searchFinished = new EventEmitter<ResultInfo>();
 
 
-  private partSeqSearchHandler: PartSeqSearchHandler;
-  private partRetrievedSubscription = new Subscription();
-  private searchFinishedSubscription = new Subscription();
+  private handler: PartSeqSearchHandler;
+  private handlerSubscription = new Subscription();
 
 
 
@@ -53,40 +52,41 @@ export class SearchService {
     );
 
     // Setup handler
-    this.partRetrievedSubscription.unsubscribe();
-    this.searchFinishedSubscription.unsubscribe();
+    this.handlerSubscription.unsubscribe();
+    this.handlerSubscription = new Subscription();
 
-    this.partSeqSearchHandler = new PartSeqSearchHandler(
+    this.handler = new PartSeqSearchHandler(
       scheme,
       partDateSpans,
       this.backendService,
     );
 
-    this.partRetrievedSubscription = this.partSeqSearchHandler.partRetrieved.subscribe(
-      (part: SearchResultsPart) => this.searchResults.addPart(part.dateSpan, part.itemIds)
+    this.handlerSubscription.add(
+      this.handler.partRetrieved.subscribe(
+        (part: SearchResultsPart) => this.searchResults.addPart(part.dateSpan, part.itemIds)
+      )
     );
 
-    this.searchFinishedSubscription = this.partSeqSearchHandler.searchFinished.subscribe(
-      (result: ResultInfo) => {
-        if (result.status === ResultStatus.success) {
-          this.searchStateSubject.next(SearchState.idle);
-        }
-        if (result.status === ResultStatus.cancelled) {
-          this.searchResults.reset();
-          this.searchStateSubject.next(SearchState.idle);
-        }
-        if (result.status === ResultStatus.error) {
-          this.searchResults.reset();
-          this.searchStateSubject.next(SearchState.idle);
-        }
+    this.handlerSubscription.add(
+      this.handler.searchFinished.subscribe(
 
-        this.partSeqSearchHandler = null;
+        (result: ResultInfo) => {
 
-        this.searchFinished.emit(result);
-      }
+          if (result.status === ResultStatus.success) { }
+          if (result.status === ResultStatus.cancelled) {
+            this.searchResults.reset();
+          }
+          if (result.status === ResultStatus.error) {
+            this.searchResults.reset();
+          }
+
+          this.searchStateSubject.next(SearchState.idle);
+          this.searchFinished.emit(result);
+        }
+      )
     );
 
-    this.partSeqSearchHandler.execute();
+    this.handler.execute();
   }
 
 
@@ -94,8 +94,8 @@ export class SearchService {
 
     this.searchStateSubject.next(SearchState.cancelling);
 
-    if (this.partSeqSearchHandler) {
-      await this.partSeqSearchHandler.cancel();
+    if (this.handler) {
+      await this.handler.cancel();
     }
   }
 
