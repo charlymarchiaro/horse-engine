@@ -45,17 +45,9 @@ export class LauncherComponent implements OnInit, OnDestroy, OnChanges {
     private searchService: SearchService,
   ) {
     this.subscription.add(
-      searchService.searchResults.part$.subscribe(
-        p => { } //console.log(p)
-      )
-    );
-    this.subscription.add(
       searchService.searchResults.totalItemsCount$.subscribe(
         c => {
           this.totalItemsCount = c;
-          console.log('----------------')
-          console.log(c)
-          console.log(this.searchService.searchResults.getPaginatedItemIds(20, 0))
         }
       )
     );
@@ -66,9 +58,8 @@ export class LauncherComponent implements OnInit, OnDestroy, OnChanges {
     );
     this.subscription.add(
       searchService.searchFinished.subscribe(
-        (sf: ResultInfo) => {
 
-          console.log(sf)
+        (sf: ResultInfo) => {
 
           if (sf.status === ResultStatus.error) {
             this.isError = true;
