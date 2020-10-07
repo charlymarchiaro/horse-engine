@@ -2,9 +2,9 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { BackendService } from '../../services/backend.service';
 import { DateSpan } from '../keyword-search/model';
 import { SearchScheme } from '../../model/search-scheme.model';
-import { SearchState, SearchResults, DEFAULT_DAYS_PER_PART, SearchResultsPart, ResultInfo, ResultStatus } from '../../model/search.model';
+import { SearchState, SearchResults, DEFAULT_DAYS_PER_PART, SearchResultsPart, ResultInfo, ResultStatus, TimeElapsedInfo } from '../../model/search.model';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { getDateDiffDays, addDays } from '../../services/utils/utils';
+import { getDateDiffDays, addDays, secondsToHMS } from '../../services/utils/utils';
 import { PartSeqSearchHandler } from './part-seq-search-handler';
 
 
@@ -23,6 +23,11 @@ export class SearchService {
 
   public searchFinished = new EventEmitter<ResultInfo>();
 
+  private timeElapsedInfoSubject = new BehaviorSubject<TimeElapsedInfo>(null);
+  public timeElapsedInfo$ = this.timeElapsedInfoSubject.asObservable();
+
+  private startTime: Date;
+  private timeElapsedTimer;
 
   private handler: PartSeqSearchHandler;
   private handlerSubscription = new Subscription();
@@ -41,8 +46,22 @@ export class SearchService {
   ) {
 
     this.searchStateSubject.next(SearchState.searching);
+    this.searchResults.reset();
 
+    // Setup time elapsed handler
+    this.startTime = new Date();
 
+    this.timeElapsedInfoSubject.next({
+      startTime: null,
+      timeElapsedSecs: 0,
+      timeElapsedLabel: null,
+    });
+
+    this.timeElapsedTimer = setInterval(
+      () => this.updateTimeElapsed(), 1000
+    );
+
+    // Create date spans for the parts
     const partDateSpans = this.getPartsDateSpans(dateSpan, daysPerPart);
 
     this.searchResults.init(
@@ -82,6 +101,10 @@ export class SearchService {
 
           this.searchStateSubject.next(SearchState.idle);
           this.searchFinished.emit(result);
+
+          // Stop time elapsed timer
+          this.updateTimeElapsed();
+          clearTimeout(this.timeElapsedTimer);
         }
       )
     );
@@ -133,4 +156,17 @@ export class SearchService {
 
     return result;
   }
+
+
+  private updateTimeElapsed() {
+    const now = new Date();
+    const timeElapsedSecs = (now.getTime() - this.startTime.getTime()) / 1000;
+
+    this.timeElapsedInfoSubject.next({
+      startTime: this.startTime,
+      timeElapsedSecs,
+      timeElapsedLabel: secondsToHMS(timeElapsedSecs),
+    });
+  }
+
 }

@@ -6,7 +6,7 @@ import { SearchService } from '../search.service';
 import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
 import { AppDateAdapter, APP_DATE_FORMATS } from '../../../services/utils/format-datepicker/format-datepicker';
 import { Subscription } from 'rxjs';
-import { SearchState, ResultInfo, ResultStatus } from '../../../model/search.model';
+import { SearchState, ResultInfo, ResultStatus, TimeElapsedInfo } from '../../../model/search.model';
 
 @Component({
   selector: 'app-search-launcher',
@@ -26,6 +26,8 @@ export class LauncherComponent implements OnInit, OnDestroy, OnChanges {
 
 
   public searchState: SearchState;
+  public totalItemsCount: number;
+  public timeElapsedInfo: TimeElapsedInfo;
 
 
   @Input() searchScheme: SearchScheme;
@@ -44,7 +46,17 @@ export class LauncherComponent implements OnInit, OnDestroy, OnChanges {
   ) {
     this.subscription.add(
       searchService.searchResults.part$.subscribe(
-        p => console.log(p)
+        p => { } //console.log(p)
+      )
+    );
+    this.subscription.add(
+      searchService.searchResults.totalItemsCount$.subscribe(
+        c => {
+          this.totalItemsCount = c;
+          console.log('----------------')
+          console.log(c)
+          console.log(this.searchService.searchResults.getPaginatedItemIds(20, 0))
+        }
       )
     );
     this.subscription.add(
@@ -55,7 +67,9 @@ export class LauncherComponent implements OnInit, OnDestroy, OnChanges {
     this.subscription.add(
       searchService.searchFinished.subscribe(
         (sf: ResultInfo) => {
+
           console.log(sf)
+
           if (sf.status === ResultStatus.error) {
             this.isError = true;
             this.errorMessage = sf.message;
@@ -69,6 +83,11 @@ export class LauncherComponent implements OnInit, OnDestroy, OnChanges {
     this.subscription.add(
       searchService.searchState$.subscribe(
         ss => this.searchState = ss
+      )
+    );
+    this.subscription.add(
+      searchService.timeElapsedInfo$.subscribe(
+        te => this.timeElapsedInfo = te
       )
     );
   }

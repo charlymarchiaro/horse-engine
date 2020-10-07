@@ -54,6 +54,23 @@
         </mat-form-field>
       </div>
 
+      <!-- Results info panel -->
+      <div id="results-info-panel">
+        <div id="labels">
+          <div id="time-elapsed">
+            Time elapsed:
+            <span *ngIf="!timeElapsedInfo"> — </span>
+            <span *ngIf="timeElapsedInfo">{{timeElapsedInfo.timeElapsedLabel}}</span>
+          </div>
+          <div id="results-found">Results found: {{totalItemsCount}}</div>
+        </div>
+        <div id="spinner">
+          <mat-spinner
+            *ngIf="searchState === 'searching'"
+            [diameter]="30"></mat-spinner>
+        </div>
+      </div>
+
       <!-- Submit panel -->
       <div id="submit-panel">
 
@@ -85,4 +102,3 @@
     </div>
   </div>
 </pgcard>
-Articles found: {{articleIds.length}}

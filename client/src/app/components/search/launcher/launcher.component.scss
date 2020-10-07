@@ -37,8 +37,6 @@
             align-items: center;
             flex-flow: wrap;
             padding: 0 10px;
-            border-left: #ededed 1px solid;
-            border-right: #ededed 1px solid;
 
             .datepicker {
                 margin: 0 8px;
@@ -46,11 +44,42 @@
             }
         }
 
+        #results-info-panel {
+            display: flex;
+            justify-content: flex-end;
+            flex-basis: auto;
+            align-items: center;
+            flex-flow: wrap;
+            padding: 0 16px;
+            width: 250px;
+
+            #labels {
+                display: flex;
+                flex-direction: column;
+                
+                font-size: 11px;
+                width: 145px;
+
+                #time-elapsed{
+
+                }
+
+                #results-found {
+
+                }
+            }
+
+            #spinner {
+                justify-content: flex-end;
+                display: flex;
+                width: 50px;
+            }
+        }
+
         #submit-panel {
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            min-width: 300px;
             min-height: 60px;
 
             button {

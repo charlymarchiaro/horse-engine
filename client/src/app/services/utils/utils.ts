@@ -35,6 +35,20 @@ export function getYYYYMMDD(date: Date) {
 }
 
 
+
+export function secondsToHMS(secs: number) {
+  const hours = Math.floor(secs / 3600);
+  secs %= 3600;
+  const minutes = Math.floor(secs / 60);
+  const seconds = Math.floor(secs % 60);
+
+  const hoursStr = String(hours).padStart(1, '0');
+  const minutesStr = String(minutes).padStart(2, '0');
+  const secondsStr = String(seconds).padStart(2, '0');
+  return hoursStr + ':' + minutesStr + ':' + secondsStr;
+}
+
+
 // Pid Tag
 export function generatePidTag(): string {
   return `${new Date().getTime()}-${Math.floor(100000 + Math.random() * 900000)}`;
