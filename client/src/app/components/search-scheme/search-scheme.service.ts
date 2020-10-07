@@ -28,6 +28,10 @@ export class SearchSchemeService {
   public articleSources = this.articleSourcesSubject.asObservable();
 
 
+  private keepEditorOpenSubject = new BehaviorSubject<boolean>(false);
+  public keepEditorOpen$ = this.keepEditorOpenSubject.asObservable();
+
+
   constructor(
     private backendService: BackendService,
   ) {
@@ -168,5 +172,10 @@ export class SearchSchemeService {
     }
 
     throw new Error('Could not generate a new search scheme name.');
+  }
+
+
+  public setKeepEditorOpen(value: boolean) {
+    this.keepEditorOpenSubject.next(value);
   }
 }

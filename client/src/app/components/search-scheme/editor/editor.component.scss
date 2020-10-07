@@ -116,5 +116,15 @@
             width: 170px;
             margin-left: 10px;
         }
+
+        .keep-open {
+            display: flex;
+            align-items: center;
+
+            ::ng-deep label {
+                font-size: 12px;
+                margin: 0 0 0 10px;
+            }
+        }
     }
 }

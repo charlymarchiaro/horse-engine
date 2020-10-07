@@ -326,7 +326,7 @@
 
         <!-- Cancel -->
         <button
-          mat-button
+          mat-stroked-button
           type="button"
           (click)="onCancelClick()">
           Cancel
@@ -334,13 +334,23 @@
 
         <!-- Save -->
         <button
-          [disabled]="!form.valid"
+          [disabled]="!form.valid || !form.dirty"
           mat-flat-button
           color="primary"
-          type="submit">
+          type="submit"
+          (click)="onSaveClick()">
           Save scheme
         </button>
 
+        <!-- Keep open -->
+        <mat-checkbox
+          class="keep-open"
+          color="primary"
+          type="checkbox"
+          [checked]="keepOpen"
+          (change)="onKeepOpenChange($event.checked)">
+          Keep open
+        </mat-checkbox>
       </div>
     </form>
 

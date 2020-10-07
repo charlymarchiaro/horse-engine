@@ -42,6 +42,8 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
 
   public form: FormGroup;
 
+  public keepOpen: boolean;
+
   // Aux array to store each secondary condition params list
   public secCondParams: string[][] = [];
   public visibleSecCondParamOptions: string[][] = [];
@@ -88,6 +90,9 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
       this.searchSchemeService.schemes$.subscribe(s => this.onSchemesListChange(s))
     );
     this.subscription.add(
+      this.searchSchemeService.keepEditorOpen$.subscribe(v => this.keepOpen = v)
+    );
+    this.subscription.add(
       this.searchService.searchState$.subscribe(s => {
         this.searchState = s;
         this.updateIsDisabled();
@@ -122,35 +127,37 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
    * Template event handlers -----------------------------------------------------
    */
 
-  onMenuClose() {
-    this.emitCloseEvent();
-    console.log('close')
-  }
-
 
   onRemovePrimaryConditionClick(andGroupIndex: number, conditionIndex: number) {
     this.removeMatchCond(andGroupIndex, conditionIndex);
+    this.form.markAsDirty();
   }
 
   onAddPrimaryConditionClick(andGroupIndex: number) {
     this.addMatchCond(andGroupIndex);
+    this.form.markAsDirty();
   }
 
   onAddPrimaryConditionAndGroupClick() {
     this.addMatchCondAndGroup();
+    this.form.markAsDirty();
   }
 
   onAddSecondaryConditionClick() {
     this.addSecCond();
+    this.form.markAsDirty();
+
   }
 
   onRemoveSecondaryConditionClick(conditionIndex: number) {
     this.removeSecCond(conditionIndex);
+    this.form.markAsDirty();
   }
 
   onSecondaryConditionChange(conditionIndex) {
     this.resetSecCondParams(conditionIndex);
     this.updateVisibleSecCondParamsOptions(conditionIndex);
+    this.form.markAsDirty();
   }
 
   onAddSecondaryConditionParam(conditionIndex: number, event: MatChipInputEvent) {
@@ -171,6 +178,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
       .get('params').setValue(null);
 
     this.updateVisibleSecCondParamsOptions(conditionIndex);
+    this.form.markAsDirty();
   }
 
   onSelectSecondaryConditionParamAuto(
@@ -189,20 +197,24 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
       .get('params').setValue(null);
 
     this.updateVisibleSecCondParamsOptions(conditionIndex);
+    this.form.markAsDirty();
   }
 
 
   onSingleSecondaryConditionParamChange(conditionIndex: number, value: string) {
     this.secCondParams[conditionIndex] = [value];
+    this.form.markAsDirty();
   }
 
 
   onRemoveSecondaryConditionParam(conditionIndex: number, itemIndex: number) {
     this.removeSecCondParam(conditionIndex, itemIndex);
+    this.form.markAsDirty();
   }
 
   onParamsInputChange(conditionIndex: number, $event) {
     this.updateVisibleSecCondParamsOptions(conditionIndex);
+    this.form.markAsDirty();
   }
 
   onAddTitleMatchKeyword(event: MatChipInputEvent) {
@@ -220,14 +232,30 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     this.titleMatchKeywords.setValue(null);
+    this.form.markAsDirty();
   }
 
   onRemoveTitleMatchKeyword(itemIndex: number) {
     this.removeTitleMatchKeywordItem(itemIndex);
+    this.form.markAsDirty();
   }
 
   onCancelClick() {
     this.cancel();
+
+    if (!this.keepOpen) {
+      this.emitCloseEvent();
+    }
+  }
+
+  onSaveClick() {
+    if (!this.keepOpen) {
+      this.emitCloseEvent();
+    }
+  }
+
+  onKeepOpenChange(value: boolean) {
+    this.searchSchemeService.setKeepEditorOpen(value);
   }
 
   // ---------------------------------------------------------------------------
@@ -392,7 +420,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
   // ---------------------------------------------------------------------------
 
 
-  public addMatchCond(andGroupIndex: number, condition?: ArticleMatchCondition) {
+  private addMatchCond(andGroupIndex: number, condition?: ArticleMatchCondition) {
     const part = condition ? condition.part : '';
     const matchCondition = condition ? condition.matchCondition : '';
     const textToMatch = condition ? condition.textToMatch : '';
@@ -412,7 +440,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
 
-  public removeMatchCond(andGroupIndex: number, conditionIndex: number) {
+  private removeMatchCond(andGroupIndex: number, conditionIndex: number) {
     const or = (this.matchConditions.get('or') as FormArray);
     const and = (or.at(andGroupIndex).get('and') as FormArray);
 
@@ -425,7 +453,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
 
-  public addMatchCondAndGroup(
+  private addMatchCondAndGroup(
     options: { empty: boolean } = {
       empty: false
     }
@@ -445,7 +473,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
 
-  public removeMatchCondAndGroup(andGroupIndex: number) {
+  private removeMatchCondAndGroup(andGroupIndex: number) {
     const or = (this.matchConditions.get('or') as FormArray);
     or.removeAt(andGroupIndex);
 
@@ -456,7 +484,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
 
-  public addSecCond(condition?: ArticleSecondaryMatchCondition) {
+  private addSecCond(condition?: ArticleSecondaryMatchCondition) {
     const field = condition ? condition.field : '';
     const secCondition = condition ? condition.condition : '';
 
@@ -482,7 +510,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
 
-  public removeSecCond(conditionIndex: number) {
+  private removeSecCond(conditionIndex: number) {
     this.secondaryMatchConditions.removeAt(conditionIndex);
 
     this.secCondParams = (
@@ -492,14 +520,14 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
 
-  public resetSecCondParams(conditionIndex: number) {
+  private resetSecCondParams(conditionIndex: number) {
     this.secCondParams[conditionIndex] = [];
     this.secondaryMatchConditions.at(conditionIndex)
       .get('params').setValue('');
   }
 
 
-  public updateSecCondParamOptions() {
+  private updateSecCondParamOptions() {
     const extractOptions = (a: any[], key: string) => {
       return a.map(e => e[key])
         .filter(e => !isNullOrUndefined(e))
@@ -521,7 +549,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
 
-  public updateVisibleSecCondParamsOptions(conditionIndex: number) {
+  private updateVisibleSecCondParamsOptions(conditionIndex: number) {
 
     const field = this.secondaryMatchConditions.at(conditionIndex)
       .get('field').value as SecondaryConditionField;
@@ -540,31 +568,31 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
 
-  public addSecCondParam(conditionIndex: number, item: string) {
+  private addSecCondParam(conditionIndex: number, item: string) {
     this.secCondParams[conditionIndex].push(item);
   }
 
 
-  public removeSecCondParam(conditionIndex: number, itemIndex: number) {
+  private removeSecCondParam(conditionIndex: number, itemIndex: number) {
     this.secCondParams[conditionIndex] = (
       this.secCondParams[conditionIndex]
         .filter((p, i) => i !== itemIndex)
     );
   }
 
-  public addTitleMatchKeywordItem(item: string) {
+  private addTitleMatchKeywordItem(item: string) {
     this.titleMatchKeywordsList.push(item);
   }
 
 
-  public removeTitleMatchKeywordItem(itemIndex: number) {
+  private removeTitleMatchKeywordItem(itemIndex: number) {
     this.titleMatchKeywordsList = (
       this.titleMatchKeywordsList
         .filter((p, i) => i !== itemIndex)
     );
   }
 
-  public uniqueNameValidator(editor: EditorComponent):
+  private uniqueNameValidator(editor: EditorComponent):
     (control: AbstractControl) => ValidationErrors | null {
 
     return (control: AbstractControl): ValidationErrors | null => {
@@ -579,7 +607,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
 
-  public articlePartValidator(control: AbstractControl): ValidationErrors | null {
+  private articlePartValidator(control: AbstractControl): ValidationErrors | null {
     if (Object.values(ArticlePart).find(v => v === control.value)) {
       return null;
     }
@@ -587,7 +615,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
 
-  public matchCondValidator(control: AbstractControl): ValidationErrors | null {
+  private matchCondValidator(control: AbstractControl): ValidationErrors | null {
     if (Object.values(MatchCondition).find(v => v === control.value)) {
       return null;
     }
