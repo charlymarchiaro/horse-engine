@@ -1,19 +1,21 @@
 <pgcard
+  #card
   (onRefresh)="refresh()"
   [Loading]="loadState.status === LoadStatus.loading"
   [ShowMessage]="isError"
   [Message]="errorMessage"
   [Close]="false"
   [Maximize]="false"
-  [Toggle]="false">
+  [Toggle]="true">
   <ng-template #CardTitle>Search scheme browser</ng-template>
 
   <!-- Disable mask -->
   <div
     class="disable-mask"
-    *ngIf="isDisabled"></div>
+    *ngIf="isDisabled || card._isCollapsed"></div>
 
   <div class="row nowrap">
+
     <div class="button-panel">
       <input
         type="text"
