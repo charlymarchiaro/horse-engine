@@ -249,6 +249,8 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   onSaveClick() {
+    this.submitForm();
+
     if (!this.keepOpen) {
       this.emitCloseEvent();
     }
