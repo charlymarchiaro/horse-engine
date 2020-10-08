@@ -1,0 +1,71 @@
+<div id="container">
+
+  <h4>Results</h4>
+
+  <div id="list">
+
+    <div
+      id="table"
+      trapScroll
+      trapKeyScroll>
+      <!-- Placeholder -->
+      <div
+        id="placeholder"
+        *ngIf="!currentPageArticles || currentPageArticles.length === 0">
+        Nothing found.
+      </div>
+
+      <!-- Table -->
+      <table *ngIf="currentPageArticles && currentPageArticles.length > 0">
+        <thead>
+          <th>Source</th>
+          <th [width]="90">Date</th>
+          <th>Title</th>
+          <th [width]="80">Link</th>
+        </thead>
+
+        <tbody>
+          <tr
+            *ngFor="let article of currentPageArticles"
+            [ngClass]="{'selected': article.article.id === selectedArticleId}"
+            (click)="onArticleSelect(article)">
+            <td class="no-wrap">{{article.article.articleSource.name}}</td>
+            <td class="no-wrap">{{article.article.lastUpdated | date}}</td>
+            <td [innerHTML]="article.markedTitleHtml"></td>
+            <td
+              class="no-wrap link"
+              (click)="window.open(article.article.articleSource.url.split(':')[0] + '://' + article.article.url, '_blank')">
+              <span>
+                Source
+                <mat-icon>open_in_new</mat-icon>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="footer">
+      <!-- Export to Excel -->
+      <div id="export-to-excel-button">
+        <button
+          mat-icon-button
+          (click)="onExportToExcelButtonClick()"
+          [disabled]="totalItemsCount === 0">
+          <mat-icon matTooltip="Export to Excel">library_books</mat-icon>
+        </button>
+      </div>
+
+      <div class="separator"></div>
+
+      <!-- Paginator -->
+      <mat-paginator-goto
+        [length]="totalItemsCount"
+        [pageIndex]="pageIndex"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        (page)="onPageEvent($event)">
+      </mat-paginator-goto>
+    </div>
+  </div>
+</div>

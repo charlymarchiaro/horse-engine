@@ -185,6 +185,35 @@ export class BackendService {
   }
 
 
+  // Articles by id
+  public getArticles(ids: string[]) {
+
+    const params = {
+      filter: JSON.stringify({
+        order: [
+          'lastUpdated'
+        ],
+        where: {
+          id: { inq: ids },
+        },
+        include: [
+          {
+            relation: 'articleScrapingDetails',
+            scope: {
+              include: [{ relation: 'articleSpider' }]
+            }
+          },
+          { relation: 'articleSource' }
+        ]
+      })
+    };
+
+    return this.http.get<ArticleResponse[]>(
+      '/api/articles', { params },
+    ).map(r => r.map(i => new Article(i)));
+  }
+
+
   // Article source
   public getArticleSources() {
     const params = {};

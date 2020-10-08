@@ -1,0 +1,29 @@
+#content {
+    display: flex;
+    padding: 0 0 0 10px;
+
+    ::ng-deep mark {
+        background-color: #ffe55a;
+    }
+
+    hr {
+        margin: 10px 0;
+    }
+
+    .row {
+        display: flex;
+        margin-right: 0;
+        margin-left: 0;
+        align-items: center;
+    }
+
+    #results-list {
+        min-width: 65%;
+        max-width: 65%;
+    }
+
+    #document-preview {
+        min-width: 35%;
+        max-width: 35%;
+    }
+}

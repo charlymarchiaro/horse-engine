@@ -1,0 +1,96 @@
+#container {
+    width: 100%;
+
+    ::ng-deep mark {
+        background-color: #ffe55a;
+    }
+
+    .no-wrap {
+        white-space: nowrap;
+    }
+
+    #list {
+        font-size: 11px;
+        border: 1px solid #cccccc;
+
+        #placeholder {
+            padding: 5px;
+            font-size: 13px;
+        }
+
+        #table {
+            height: 460px;
+            border: 2px white solid;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            user-select: none;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        tr {
+            align-items: center;
+            cursor: pointer;
+        }
+
+        th {
+            top: 0;
+            height: 16px;
+            position: sticky;
+            border-bottom: 1px solid #ccc;
+            background-color: #eee;
+            z-index: 100;
+        }
+
+        th,
+        td {
+            padding: 3px 3px;
+            text-align: left;
+        }
+
+        tr:hover {
+            background-color: #deeff8;
+        }
+
+        .selected {
+            background-color: #4b4b4b18;
+        }
+
+        .link {
+            color: #2100db;
+            font-weight: bolder;
+        }
+
+        .mat-icon {
+            font-size: 15px;
+            position: relative;
+            top: 3px;
+        }
+    }
+
+    #footer {
+        display: flex;
+        align-items: center;
+        padding: 0 18px 0 0;
+        border-top: 1px solid #ccc;
+        background-color: #eee;
+
+        #export-to-excel-button {
+            margin-left: 8px;
+
+            .mat-icon {
+                font-size: 22px;
+            }
+        }
+
+        .separator {
+            flex-grow: 1;
+        }
+
+        ::ng-deep .mat-paginator {
+            background-color: #eee;
+        }
+    }
+}

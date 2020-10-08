@@ -6,7 +6,8 @@ import { SearchService } from '../search.service';
 import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
 import { AppDateAdapter, APP_DATE_FORMATS } from '../../../services/utils/format-datepicker/format-datepicker';
 import { Subscription } from 'rxjs';
-import { SearchState, ResultInfo, ResultStatus, TimeElapsedInfo } from '../../../model/search.model';
+import { SearchState, ResultInfo, ResultStatus, TimeElapsedInfo, SearchParams } from '../../../model/search.model';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-search-launcher',
@@ -24,7 +25,7 @@ export class LauncherComponent implements OnInit, OnDestroy, OnChanges {
 
   public dateSpan: DateSpan;
 
-
+  public searchParams: SearchParams;
   public searchState: SearchState;
   public totalItemsCount: number;
   public timeElapsedInfo: TimeElapsedInfo;
@@ -44,6 +45,22 @@ export class LauncherComponent implements OnInit, OnDestroy, OnChanges {
   constructor(
     private searchService: SearchService,
   ) {
+    this.dateSpan = {
+      fromDateIncl: getDatePart(addDays(new Date(), -30)),
+      toDateIncl: getDatePart(new Date())
+    };
+
+    this.onDateSpanChange();
+
+
+    this.subscription.add(
+      searchService.searchParams$.pipe(filter(p => !!p)).subscribe(
+        p => {
+          this.dateSpan = p.dateSpan;
+          this.onDateSpanChange();
+        }
+      )
+    );
     this.subscription.add(
       searchService.searchResults.totalItemsCount$.subscribe(
         c => {
@@ -85,12 +102,6 @@ export class LauncherComponent implements OnInit, OnDestroy, OnChanges {
 
 
   ngOnInit() {
-    this.dateSpan = {
-      fromDateIncl: getDatePart(addDays(new Date(), -30)),
-      toDateIncl: getDatePart(new Date())
-    };
-
-    this.onDateSpanChange();
   }
 
 

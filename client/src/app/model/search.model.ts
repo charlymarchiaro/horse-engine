@@ -1,7 +1,9 @@
-import { ArticleMatchConditionSet, ArticleSecondaryMatchCondition, SearchSchemeKind } from './search-scheme.model';
+import { ArticleMatchConditionSet, ArticleSecondaryMatchCondition, SearchSchemeKind, SearchScheme, ArticleSearchSchemeImpl } from './search-scheme.model';
 import { DateSpan } from '../components/keyword-search/model';
 import { BehaviorSubject } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
+import { Article } from './article.model';
+import { replaceAll } from '../services/utils/utils';
 
 
 export const DEFAULT_DAYS_PER_PART = 7;
@@ -41,6 +43,30 @@ export class ArticleSearchBooleanQueryResult {
 }
 
 
+export class HighlightedArticle {
+  public markedTitleHtml: string;
+  public markedTextHtml: string;
+
+  constructor(public article: Article, scheme: ArticleSearchSchemeImpl) {
+
+    const mapObj = scheme.titleMatchKeywords.reduce(
+      (map, keyword) => {
+        map[keyword] = `<mark>${keyword}</mark>`;
+        return map;
+      }, {}
+    );
+
+    this.markedTitleHtml = article.title
+      ? replaceAll(article.title, mapObj)
+      : null;
+
+    this.markedTextHtml = article.text
+      ? replaceAll(article.text, mapObj)
+      : null;
+  }
+}
+
+
 export interface CancelSearchRequest {
   pidTag: string;
 }
@@ -56,6 +82,12 @@ export enum SearchState {
   idle = 'idle',
   searching = 'searching',
   cancelling = 'cancelling',
+}
+
+
+export interface SearchParams {
+  scheme: SearchScheme;
+  dateSpan: DateSpan;
 }
 
 

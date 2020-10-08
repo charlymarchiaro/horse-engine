@@ -72,6 +72,37 @@ export function onlyUnique(value, index, self) {
 }
 
 
+export function arrayEquals(
+  a1: (string | number | boolean)[],
+  a2: (string | number | boolean)[]
+): boolean {
+  if (!a1 || !a2) {
+    return false;
+  }
+
+  if (a1.length !== a2.length) {
+    return false;
+  }
+
+  for (let i = 0; i < a1.length; i++) {
+    if (a1[i] !== a2[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+
+// Replace multiple strings with multiple other strings
+// https://stackoverflow.com/questions/15604140/replace-multiple-strings-with-multiple-other-strings
+export function replaceAll(str: string, mapObj: { [value: string]: string }): string {
+  const re = new RegExp(Object.keys(mapObj).join('|'), 'gi');
+
+  return str.replace(re, function (matched) {
+    return mapObj[matched];
+  });
+}
+
 
 // XLSX
 export function getXLSXCellObject(

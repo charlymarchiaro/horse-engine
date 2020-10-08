@@ -57,6 +57,7 @@ import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 
 // App modules
 import { AppServicesModule } from './services/app-services.module';
+import { DirectivesModule } from './directives/directives.module';
 import { MaterialComponentsModule } from './material-components.module';
 import { SharedModule as AppSharedModule } from './components/shared/shared.module';
 import { ScrapingMonitorModule } from './components/scraping-monitor/scraping-monitor.module';
@@ -116,6 +117,7 @@ export class AppHammerConfig extends HammerGestureConfig {
 
     // App modules
     AppServicesModule,
+    DirectivesModule,
     AppSharedModule,
     ScrapingMonitorModule,
     KeywordSearchModule,

@@ -2,7 +2,7 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { BackendService } from '../../services/backend.service';
 import { DateSpan } from '../keyword-search/model';
 import { SearchScheme } from '../../model/search-scheme.model';
-import { SearchState, SearchResults, DEFAULT_DAYS_PER_PART, SearchResultsPart, ResultInfo, ResultStatus, TimeElapsedInfo } from '../../model/search.model';
+import { SearchState, SearchResults, DEFAULT_DAYS_PER_PART, SearchResultsPart, ResultInfo, ResultStatus, TimeElapsedInfo, SearchParams } from '../../model/search.model';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { getDateDiffDays, addDays, secondsToHMS } from '../../services/utils/utils';
 import { PartSeqSearchHandler } from './part-seq-search-handler';
@@ -18,6 +18,9 @@ export class SearchService {
 
   private searchStateSubject = new BehaviorSubject<SearchState>(SearchState.idle);
   public searchState$ = this.searchStateSubject.asObservable();
+
+  private searchParamsSubject = new BehaviorSubject<SearchParams>(null);
+  public searchParams$ = this.searchParamsSubject.asObservable();
 
   public searchResults = new SearchResults();
 
@@ -47,6 +50,7 @@ export class SearchService {
 
     this.searchStateSubject.next(SearchState.searching);
     this.searchResults.reset();
+    this.searchParamsSubject.next({ scheme, dateSpan });
 
     // Setup time elapsed handler
     this.startTime = new Date();
@@ -92,9 +96,7 @@ export class SearchService {
         (result: ResultInfo) => {
 
           if (result.status === ResultStatus.success) { }
-          if (result.status === ResultStatus.cancelled) {
-            this.searchResults.reset();
-          }
+          if (result.status === ResultStatus.cancelled) { }
           if (result.status === ResultStatus.error) {
             this.searchResults.reset();
           }
