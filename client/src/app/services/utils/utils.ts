@@ -96,6 +96,11 @@ export function arrayEquals(
 // Replace multiple strings with multiple other strings
 // https://stackoverflow.com/questions/15604140/replace-multiple-strings-with-multiple-other-strings
 export function replaceAll(str: string, mapObj: { [value: string]: string }): string {
+
+  if (!mapObj || Object.keys(mapObj).length === 0) {
+    return str;
+  }
+
   const re = new RegExp(Object.keys(mapObj).join('|'), 'gi');
 
   return str.replace(re, function (matched) {
