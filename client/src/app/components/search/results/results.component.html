@@ -1,0 +1,23 @@
+<pgcard
+  [Loading]="this.loadState.status === LoadStatus.loading"
+  [disabled]="this.loadState.status === LoadStatus.loading"
+  [DisableMaskTransparent]="true"
+  [ShowMessage]="this.loadState.status === LoadStatus.error"
+  [Message]="this.loadState.errorMessage"
+  [Close]="false"
+  [Maximize]="false"
+  [Refresh]="false"
+  [Toggle]="false">
+  <ng-template #CardTitle>Search results</ng-template>
+  <div id="content">
+
+    <app-search-results-list
+      id="results-list"
+      (loadState)="this.loadState = $event"
+      (select)="this.selectedArticle = $event.article"></app-search-results-list>
+
+    <app-search-document-preview
+      id="document-preview"
+      [article]="selectedArticle"></app-search-document-preview>
+  </div>
+</pgcard>

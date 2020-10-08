@@ -2,9 +2,9 @@ import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChange
 import { Article } from '../../../model/article.model';
 import { PageEvent } from '@angular/material';
 import { DatePipe } from '@angular/common';
-import { ExcelExportService, ColConfig } from '../excel-export.service';
 import { ArticleFilteringScheme, DateSpan } from '../model';
 import { ColInfo } from 'xlsx/types';
+import { ExcelExportService, ColConfig } from '../../../services/utils/excel-export.service';
 
 
 
@@ -164,7 +164,7 @@ export class ArticleListBrowserComponent implements OnInit, OnChanges {
     ];
 
     this.excelExport.export({
-      moduleLabel: 'Keyword Search',
+      moduleLabel: 'Search',
       fileName,
       data: [{
         name: 'Results',

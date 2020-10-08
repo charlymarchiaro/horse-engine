@@ -22,8 +22,8 @@ export class CondensedComponent extends RootLayout implements OnInit {
       iconName: 'card'
     },
     {
-      label: 'Keyword Search',
-      routerLink: '/keyword-search',
+      label: 'Search',
+      routerLink: '/search',
       iconType: 'pg',
       iconName: 'search'
     },

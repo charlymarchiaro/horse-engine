@@ -1,0 +1,51 @@
+#container {
+    padding: 0 10px;
+
+    #content {
+        width: 100%;
+        font-size: 11px;
+        border: 1px solid #cccccc;
+
+        .align-left {
+            text-align: left;
+        }
+        .align-right {
+            text-align: right;
+        }
+
+        #placeholder {
+            padding: 5px;
+            font-size: 13px;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        tr {
+            align-items: center;
+            cursor: pointer;
+        }
+
+        th {
+            top: 0;
+            height: 16px;
+            position: sticky;
+            border-bottom: 1px solid #ccc;
+            background-color: #eee;
+            z-index: 100;
+        }
+
+        th,
+        td {
+            padding: 5px 10px;
+            text-align: center;
+        }
+
+        ::ng-deep button {
+            font-size: 12px;
+            height: 25px;
+            line-height: 25px;
+        }
+    }
+}

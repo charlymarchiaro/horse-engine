@@ -1,0 +1,94 @@
+#content {
+    display: flex;
+    flex-direction: column;
+    padding: 0 10px;
+
+    hr {
+        margin: 10px 0;
+    }
+
+    .row {
+        display: flex;
+        margin-right: 0;
+        margin-left: 0;
+        align-items: center;
+    }
+
+    #top-row {
+        min-height: 85px;
+        justify-content: flex-end;
+
+        #scheme-info {
+            flex-grow: 1;
+            min-width: 300px;
+
+            #name {
+            }
+            #description {
+                font-size: 13px;
+                margin-left: 2px;
+            }
+        }
+
+        #date-span-panel {
+            display: flex;
+            justify-content: center;
+            flex-basis: auto;
+            align-items: center;
+            flex-flow: wrap;
+            padding: 0 10px;
+
+            .datepicker {
+                margin: 0 8px;
+                width: 140px;
+            }
+        }
+
+        #results-info-panel {
+            display: flex;
+            justify-content: flex-end;
+            flex-basis: auto;
+            align-items: center;
+            flex-flow: wrap;
+            padding: 0 16px;
+            width: 250px;
+
+            #labels {
+                display: flex;
+                flex-direction: column;
+                
+                font-size: 11px;
+                width: 145px;
+
+                #time-elapsed{
+
+                }
+
+                #results-found {
+
+                }
+            }
+
+            #spinner {
+                justify-content: flex-end;
+                display: flex;
+                width: 50px;
+            }
+        }
+
+        #submit-panel {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            min-height: 60px;
+
+            button {
+                width: 180px;
+            }
+        }
+    }
+
+    #progress-bar {
+        margin-top: 10px;
+    }
+}

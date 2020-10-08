@@ -7,13 +7,14 @@ $base-img-url: "../img";
 $assets-url: "../../assets";
 
 // ================ COLOR PALETTE ====================
-$color-primary: #7252D3;
-$color-complete: #0072EC;
-$color-success: #19AD79;
-$color-warning: #FFd945;
-$color-danger: #D83C31;
-$color-info: #3B4752;
+$color-primary: #7252d3;
+$color-complete: #0072ec;
+$color-success: #19ad79;
+$color-warning: #a3a3a3;
+$color-danger: #d83c31;
+$color-info: #3b4752;
 $color-menu: #2b303b;
+$color-select: #a3a3a3;
 
 //Neutral color shades
 $color-contrast-lowest: #fff;
@@ -34,10 +35,10 @@ $mix-percentage-darker: 60;
 $mix-percentage-dark: 81;
 
 //Neutral color contrast scale
-$mix-percentage-contrast-lower: 5;   //Background
-$mix-percentage-contrast-low: 14;	  //Borders
+$mix-percentage-contrast-lower: 5; //Background
+$mix-percentage-contrast-low: 14; //Borders
 $mix-percentage-contrast-medium: 62; //Hinted text
-$mix-percentage-contrast-high: 81;	  //Body text
+$mix-percentage-contrast-high: 81; //Body text
 
 // ================ COLOR FACTORY ====================
 //color shades and variable generation
@@ -62,6 +63,11 @@ $color-warning-lighter: make-shade($color-warning, $mix-percentage-lighter, $sat
 $color-warning-light: make-shade($color-warning, $mix-percentage-light, $saturation-shift, $hue-shift, -1);
 $color-warning-dark: make-shade($color-warning, $mix-percentage-dark, $saturation-shift, $hue-shift, 1);
 $color-warning-darker: make-shade($color-warning, $mix-percentage-darker, $saturation-shift, $hue-shift, 2);
+//select-shade
+$color-select-lighter: make-shade($color-select, $mix-percentage-lighter, $saturation-shift, $hue-shift, -2);
+$color-select-light: make-shade($color-select, $mix-percentage-light, $saturation-shift, $hue-shift, -1);
+$color-select-dark: make-shade($color-select, $mix-percentage-dark, $saturation-shift, $hue-shift, 1);
+$color-select-darker: make-shade($color-select, $mix-percentage-darker, $saturation-shift, $hue-shift, 2);
 //danger-shade
 $color-danger-lighter: make-shade($color-danger, $mix-percentage-lighter, $saturation-shift, $hue-shift, -2);
 $color-danger-light: make-shade($color-danger, $mix-percentage-light, $saturation-shift, $hue-shift, -1);
@@ -88,39 +94,43 @@ $color-menu-dark: mix($color-menu, #000, 77%);
 $color-menu-darker: mix($color-menu, #000, 90%);
 //Generating Menu font color
 $menu-mix-temp: mix($color-menu, #fff, 86%);
-$menu: blend-hardlight($menu-mix-temp,#fff);
+$menu: blend-hardlight($menu-mix-temp, #fff);
 $color-menu-light: $menu;
 $color-menu-link-hover: #fff;
 
 //Secondary menu
 $_sidebar-background-color: blend-screen($color-menu, $color-menu);
-$sidebar-background-color: mix($_sidebar-background-color , #000, 48%);
+$sidebar-background-color: mix($_sidebar-background-color, #000, 48%);
 
 // ================ COLOR ASSIGN ====================
 $dashboard-background: $color-contrast-lower; //Dashboard background color
-$body-background: $color-contrast-lower ; // Default Background color
-$body-color: $color-contrast-high ; // Default font color
+$body-background: $color-contrast-lower; // Default Background color
+$body-color: $color-contrast-high; // Default font color
 
 $color-border-a: $color-contrast-low-a; //rgba value of $color-contrast-low for borders
 $color-hinted-a: $color-contrast-medium-a; //rgba value of $color-contrast-medium for hinted text
 $panel-border-color: transparent; //panel border color
 
 // ==================== FONTS ========================
-$base-font-family: "Inter UI", -apple-system, BlinkMacSystemFont,  "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell","Fira Sans", "Droid Sans", "Helvetica Neue",sans-serif;
-$interface-font-family: "Inter UI", -apple-system, BlinkMacSystemFont,  "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell","Fira Sans", "Droid Sans", "Helvetica Neue",sans-serif;
-$secondary-font-family: "Montserrat", -apple-system, BlinkMacSystemFont,  "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell","Fira Sans", "Droid Sans", "Helvetica Neue",sans-serif;
-$force-mac-font-family: -apple-system, BlinkMacSystemFont,"Inter UI",  "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell","Fira Sans", "Droid Sans", "Helvetica Neue",sans-serif;
+$base-font-family: "Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
+    "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+$interface-font-family: "Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+$secondary-font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+$force-mac-font-family: -apple-system, BlinkMacSystemFont, "Inter UI", "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
 
-$body-font-family: $base-font-family ;
-$body-font-size: 13px ;
+$body-font-family: $base-font-family;
+$body-font-size: 13px;
 
 // ================ PAGES MENU ====================
 //Menu Vertical (sidebar)
-$menu-bezier: .05, .74, .27, .99;
+$menu-bezier: 0.05, 0.74, 0.27, 0.99;
 $menu-icon-size: 40px;
 
 //secondary menu (sidebar)
-$secondary-sidebar-width : 250px;
+$secondary-sidebar-width: 250px;
 
 //menu horizontal
 $navbar-width: 45px;
@@ -130,28 +140,28 @@ $header-md-height: 51px;
 $header-sm-height: 50px;
 
 // ================ FORMS ====================
-$form-group-height: 54px ;
+$form-group-height: 54px;
 
 // ================ LAYOUTS ====================
-$layout-header-height: 60px ;
-$layout-mobile-header-height: 48px ;
-$layout-mobile-logo-scale: 0.8 ;
-$layout-sidepanel-width-collapsed : 70px ;
-$layout-sidepanel-width: 280px ;
-$layout-sidepanel-pin-width: 250px ;
-$layout-right-quickview-width: 285px ;
-$layout-user-profile-margin: 25px ;
-$layout-container-fixed-lg: 1700px ;
-$layout-gutter-sm: 5px ;
+$layout-header-height: 60px;
+$layout-mobile-header-height: 48px;
+$layout-mobile-logo-scale: 0.8;
+$layout-sidepanel-width-collapsed: 70px;
+$layout-sidepanel-width: 280px;
+$layout-sidepanel-pin-width: 250px;
+$layout-right-quickview-width: 285px;
+$layout-user-profile-margin: 25px;
+$layout-container-fixed-lg: 1700px;
+$layout-gutter-sm: 5px;
 
 // Panels
-$panel-padding: 20px ;
-$panel-heading-padding: 16px 16px 7px $panel-padding ;
-$panel-heading-min-height: 48px ;
-$panel-condensed-heading-padding: 9px 13px 0 13px ;
-$panel-condensed-body-padding: 13px ;
+$panel-padding: 20px;
+$panel-heading-padding: 16px 16px 7px $panel-padding;
+$panel-heading-min-height: 48px;
+$panel-condensed-heading-padding: 9px 13px 0 13px;
+$panel-condensed-body-padding: 13px;
 $panel-border-size: 0px;
-$panel-condensed-heading-min-height: 48px ;
+$panel-condensed-heading-min-height: 48px;
 
 // ================ MISC ====================
 //padding scale
@@ -162,15 +172,15 @@ $padding-xs-vertical: 5px;
 $padding-xs-horizontal: 5px;
 
 // z-index scale
-$zIndex-1:   100;
-$zIndex-2:   200;
-$zIndex-3:   300;
-$zIndex-4:   400;
-$zIndex-5:   500;
-$zIndex-6:   600;
-$zIndex-7:   700;
-$zIndex-8:   800;
-$zIndex-9:   900;
+$zIndex-1: 100;
+$zIndex-2: 200;
+$zIndex-3: 300;
+$zIndex-4: 400;
+$zIndex-5: 500;
+$zIndex-6: 600;
+$zIndex-7: 700;
+$zIndex-8: 800;
+$zIndex-9: 900;
 $zIndex-10: 1000;
 
 // z-index applications
@@ -184,12 +194,11 @@ $zIndex-dropdown: $zIndex-7;
 $zIndex-dropdownMask: $zIndex-6;
 $zIndex-portlet: $zIndex-6;
 
-
 // ============ ACCESSIBILITY ================
 //element focus only when using tab
-$color-focus: #78c8fe; 
+$color-focus: #78c8fe;
 $focus-width: 2px;
 
-//Legibility - auto detect font color for background 
+//Legibility - auto detect font color for background
 $f-color-light: $color-contrast-lowest; //font color for dark background
 $f-color-dark: $color-contrast-high; //font color for light background

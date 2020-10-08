@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, Input } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ArticleFilteringScheme, ArticlePart, MatchCondition, ArticleFilteringCondition } from '../model';
+import { ArticleFilteringScheme, ArticlePart, MatchCondition, ArticleMatchCondition } from '../model';
 import { isNullOrUndefined } from 'util';
 import { clone } from '../../../services/utils/utils';
 
@@ -103,7 +103,7 @@ export class ArticleFilteringSchemeEditorComponent implements OnInit {
   }
 
 
-  private getEmptyCondition(): ArticleFilteringCondition {
+  private getEmptyCondition(): ArticleMatchCondition {
     return {
       part: null,
       matchCondition: null,

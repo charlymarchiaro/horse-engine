@@ -1,0 +1,355 @@
+<pgcard
+  [ShowMessage]="isError"
+  [Message]="errorMessage"
+  [Close]="false"
+  [Maximize]="false"
+  [Toggle]="false"
+  [Refresh]="false"
+  [disabled]="isDisabled">
+  <ng-template #CardTitle>Search scheme editor</ng-template>
+
+  <div
+    id="content"
+    *ngIf="isSchemeSelected">
+    <form
+      [formGroup]="form"
+      (submit)="submitForm()">
+      <div class="row nowrap">
+        <!-- name -->
+        <mat-form-field
+          id="field-name"
+          appearance="outline">
+          <mat-label>Name</mat-label>
+          <mat-error>Please enter a unique name</mat-error>
+          <input
+            matInput
+            type="text"
+            autocomplete="off"
+            formControlName="name">
+        </mat-form-field>
+
+        <!-- description -->
+        <mat-form-field
+          id="field-description"
+          appearance="outline">
+          <mat-label>Description</mat-label>
+          <input
+            matInput
+            type="text"
+            autocomplete="off"
+            formControlName="description">
+        </mat-form-field>
+      </div>
+
+      <!-- matchConditions -->
+      <h5>Primary match conditions</h5>
+      <div *ngFor="let orGroup of asFormArray(matchConditions.get('or')).controls; 
+                   let andGroupIndex = index; 
+                   let andGroupsCount = count">
+
+        <div *ngIf="andGroupIndex !== 0">
+          <hr>
+          <div class="field-match-condition-separator-label">OR...</div>
+        </div>
+
+        <div
+          class="row"
+          *ngFor="let condition of asFormArray(orGroup.get('and')).controls; 
+                  let conditionIndex = index">
+
+          <!-- part -->
+          <mat-form-field
+            class="field-match-condition-part"
+            appearance="fill">
+            <mat-label>Article part</mat-label>
+            <mat-error>Please enter a valid part</mat-error>
+            <mat-select [formControl]="condition.get('part')">
+              <mat-option
+                *ngFor="let item of articlePartInfo"
+                [value]="item.value">
+                {{item.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- matchCondition -->
+          <mat-form-field
+            class="field-match-condition-match-condition"
+            appearance="fill">
+            <mat-label>Match condition</mat-label>
+            <mat-error>Please enter a valid condition</mat-error>
+            <mat-select [formControl]="condition.get('matchCondition')">
+              <mat-option
+                *ngFor="let item of matchCondInfo"
+                [value]="item.value">
+                {{item.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- textToMatch -->
+          <mat-form-field
+            class="field-match-condition-text-to-match"
+            appearance="outline">
+            <mat-label>Text to match</mat-label>
+            <mat-error>Please enter a valid text</mat-error>
+            <input
+              matInput
+              type="text"
+              autocomplete="off"
+              [formControl]="condition.get('textToMatch')">
+          </mat-form-field>
+
+          <!-- caseSensitive -->
+          <mat-checkbox
+            class="field-match-condition-case-sensitive"
+            color="primary"
+            type="checkbox"
+            [formControl]="condition.get('caseSensitive')">
+            Case sensitive
+          </mat-checkbox>
+
+          <button
+            class="btn btn-default field-match-condition-remove-button"
+            type="button"
+            matTooltip="Remove condition"
+            (click)="onRemovePrimaryConditionClick(andGroupIndex, conditionIndex)">
+            <mat-icon>clear</mat-icon>
+          </button>
+        </div>
+
+        <button
+          class="btn btn-default field-match-condition-add-button"
+          type="button"
+          (click)="onAddPrimaryConditionClick(andGroupIndex)">
+          + AND
+        </button>
+
+        <button
+          *ngIf="andGroupIndex === andGroupsCount-1"
+          class="btn btn-default field-match-condition-add-button"
+          type="button"
+          (click)="onAddPrimaryConditionAndGroupClick()">
+          + OR
+        </button>
+
+      </div>
+
+      <br>
+
+      <!-- secondaryMatchConditions -->
+      <h5>Secondary match conditions</h5>
+
+      <div
+        class="row"
+        *ngFor="let condition of secondaryMatchConditions.controls; 
+              let conditionIndex = index">
+
+        <!-- field -->
+        <mat-form-field
+          class="field-match-condition-field"
+          appearance="fill">
+          <mat-label>Field</mat-label>
+          <mat-error>Please enter a valid field</mat-error>
+          <mat-select
+            [formControl]="condition.get('field')"
+            (selectionChange)="onSecondaryConditionChange(conditionIndex)">
+            <mat-option
+              *ngFor="let item of secCondFieldInfo"
+              [value]="item.value">
+              {{item.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- condition -->
+        <mat-form-field
+          class="field-match-condition-condition"
+          appearance="fill">
+          <mat-label>Condition</mat-label>
+          <mat-error>Please enter a valid condition</mat-error>
+          <mat-select
+            [formControl]="condition.get('condition')"
+            (selectionChange)="onSecondaryConditionChange(conditionIndex)">
+            <mat-option
+              *ngFor="let item of secCondInfo"
+              [value]="item.value">
+              {{item.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- params - list -->
+        <mat-form-field
+          class="field-match-condition-params-list"
+          *ngIf="condition.get('condition').value
+                 && secCondInfoDict[
+                   condition.get('condition').value
+                 ].options.numberOfParams === 'unlimited'">
+          <mat-label>List</mat-label>
+          <mat-error>Please enter valid items</mat-error>
+          <mat-chip-list #paramsList>
+            <mat-chip
+              *ngFor="let item of secCondParams[conditionIndex]; let itemIndex = index"
+              removable="true"
+              (removed)="onRemoveSecondaryConditionParam(conditionIndex, itemIndex)">
+              {{item}}
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+            <input
+              #paramsInput
+              placeholder="Add elements"
+              [formControl]="condition.get('params')"
+              [matAutocomplete]="auto"
+              [matChipInputFor]="paramsList"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              (matChipInputTokenEnd)="onAddSecondaryConditionParam(conditionIndex, $event)"
+              (input)="onParamsInputChange(conditionIndex, $event)">
+          </mat-chip-list>
+          <mat-autocomplete
+            #auto="matAutocomplete"
+            (optionSelected)="onSelectSecondaryConditionParamAuto(conditionIndex, $event, paramsInput)">
+            <mat-option
+              *ngFor="let item of visibleSecCondParamOptions[conditionIndex]"
+              [value]="item">
+              {{item}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <!-- params - single param with options -->
+        <mat-form-field
+          class="field-match-condition-params-single-with-options"
+          appearance="fill"
+          *ngIf="(
+                   condition.get('condition').value === 'equals'
+                   || condition.get('condition').value === 'notEquals'
+                 )
+                 && condition.get('field').value
+                 && secCondInfoDict[
+                   condition.get('condition').value
+                 ].options.numberOfParams === 1
+                 && secCondParamOptions[
+                   condition.get('field').value
+                 ]">
+          <mat-label>Option</mat-label>
+          <mat-error>Please enter a valid option</mat-error>
+          <mat-select
+            [formControl]="condition.get('params')"
+            (selectionChange)="onSingleSecondaryConditionParamChange(conditionIndex, $event.value)">
+            <mat-option
+              *ngFor="let item of secCondParamOptions[condition.get('field').value]"
+              [value]="item">
+              {{item}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- params - single param without options -->
+        <mat-form-field
+          class="field-match-condition-params-single-without-options"
+          appearance="outline"
+          *ngIf="(
+                   condition.get('condition').value
+                   && condition.get('condition').value !== 'equals'
+                   && condition.get('condition').value !== 'notEquals'
+                 )                 
+                 && secCondInfoDict[
+                   condition.get('condition').value
+                 ].options.numberOfParams === 1">
+          <mat-label>Value</mat-label>
+          <mat-error>Please enter a valid value</mat-error>
+          <input
+            matInput
+            type="text"
+            autocomplete="off"
+            [formControl]="condition.get('params')"
+            (input)="onSingleSecondaryConditionParamChange(conditionIndex, $event.target.value)">
+        </mat-form-field>
+
+        <!-- remove button -->
+        <button
+          class="btn btn-default field-match-condition-remove-button"
+          type="button"
+          matTooltip="Remove condition"
+          (click)="onRemoveSecondaryConditionClick(conditionIndex)">
+          <mat-icon>clear</mat-icon>
+        </button>
+      </div>
+
+      <button
+        class="btn btn-default field-match-condition-add-button"
+        type="button"
+        (click)="onAddSecondaryConditionClick()">
+        Add condition
+      </button>
+      <br>
+
+      <br>
+
+      <!-- titleMatchKeywords -->
+      <h5>Title match keywords</h5>
+
+      <div class="row">
+
+        <!-- title match keywords list -->
+        <mat-form-field id="field-title-match-keywords">
+          <mat-label>List</mat-label>
+          <mat-error>Please enter valid items</mat-error>
+          <mat-chip-list #titleMatchKeywordsListRef>
+            <mat-chip
+              *ngFor="let item of titleMatchKeywordsList; let itemIndex = index"
+              removable="true"
+              (removed)="onRemoveTitleMatchKeyword(itemIndex)">
+              {{item}}
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+            <input
+              placeholder="Add elements"
+              [formControl]="titleMatchKeywords"
+              [matChipInputFor]="titleMatchKeywordsListRef"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              (matChipInputTokenEnd)="onAddTitleMatchKeyword($event)">
+          </mat-chip-list>
+        </mat-form-field>
+
+      </div>
+
+      <br>
+
+      <!-- Bottom panel -->
+      <div id="bottom-panel">
+
+        <!-- Cancel -->
+        <button
+          mat-stroked-button
+          type="button"
+          (click)="onCancelClick()">
+          Cancel
+        </button>
+
+        <!-- Save -->
+        <button
+          [disabled]="!form.valid || !form.dirty"
+          mat-flat-button
+          color="primary"
+          type="button"
+          (click)="onSaveClick()">
+          Save scheme
+        </button>
+
+        <!-- Keep open -->
+        <mat-checkbox
+          class="keep-open"
+          color="primary"
+          type="checkbox"
+          [checked]="keepOpen"
+          (change)="onKeepOpenChange($event.checked)">
+          Keep open
+        </mat-checkbox>
+      </div>
+    </form>
+
+  </div>
+
+</pgcard>

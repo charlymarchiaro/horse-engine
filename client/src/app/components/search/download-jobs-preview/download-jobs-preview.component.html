@@ -1,0 +1,58 @@
+<pgcard
+  [Close]="false"
+  [Maximize]="false"
+  [Refresh]="false"
+  [Toggle]="false">
+  <ng-template #CardTitle>Download jobs</ng-template>
+
+  <div id="container">
+    <div id="content">
+      <div
+        id="placeholder"
+        *ngIf="downloadJobHandlers.length === 0">
+        There are no jobs.
+      </div>
+
+      <table *ngIf="downloadJobHandlers.length > 0">
+        <thead>
+          <th
+            [width]="120"
+            class="align-left">
+            Search scheme
+          </th>
+          <th [width]="90">Date span</th>
+          <th [width]="80">Status</th>
+          <th [width]="80">Progress</th>
+          <th [width]="1">Cancel job</th>
+        </thead>
+
+        <tbody>
+          <tr
+            class="no-wrap"
+            *ngFor="let h of downloadJobHandlers">
+            <td class="no-wrap align-left">
+              {{jobsData[h.pid] ? jobsData[h.pid].schemeName : ''}}
+            </td>
+            <td class="no-wrap">
+              {{jobsData[h.pid] ? jobsData[h.pid].dateSpan : ''}}
+            </td>
+            <td class="no-wrap">
+              {{jobsData[h.pid] ? jobsData[h.pid].status: ''}}
+            </td>
+            <td class="no-wrap">
+              <mat-progress-bar [value]="jobsData[h.pid] ? jobsData[h.pid].progressPercent : 0"></mat-progress-bar>
+            </td>
+            <td class="no-wrap">
+              <button
+                mat-stroked-button
+                (click)="onCancelClick(h.pid)">
+                Cancel
+              </button>
+            </td>
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+</pgcard>

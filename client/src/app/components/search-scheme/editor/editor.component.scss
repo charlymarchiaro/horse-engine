@@ -1,0 +1,120 @@
+:host ::ng-deep .card-body {
+    padding: 24px 90px 45px !important;
+}
+
+#content {
+    hr {
+        margin: 10px 0;
+    }
+
+    .row {
+        display: flex;
+        margin-right: 0;
+        margin-left: 0;
+        align-items: center;
+    }
+
+    .nowrap {
+        flex-wrap: nowrap;
+    }
+
+    #field-name {
+        width: 300px;
+        margin-right: 15px;
+    }
+
+    #field-description {
+        width: 100%;
+    }
+
+    .field-match-condition {
+        &-separator-label {
+            font-weight: bold;
+            height: 25px;
+            font-size: 13px;
+            width: 50px;
+            padding: 0 8px;
+            background-color: #eee;
+            margin-bottom: 4px;
+            border-radius: 22px;
+            line-height: 24px;
+        }
+
+        &-part {
+            margin-right: 15px;
+        }
+
+        &-match-condition {
+            margin-right: 15px;
+        }
+
+        &-text-to-match {
+            margin-right: 15px;
+            width: 350px;
+        }
+
+        &-case-sensitive {
+            margin-right: 30px;
+            margin-bottom: 7px;
+        }
+
+        &-field {
+            margin-right: 15px;
+        }
+
+        &-condition {
+            margin-right: 15px;
+        }
+
+        &-params {
+            &-list {
+                margin-right: 15px;
+                width: 600px;
+            }
+
+            &-single-with-options {
+                margin-right: 15px;
+            }
+
+            &-single-without-options {
+                margin-right: 15px;
+            }
+        }
+
+        &-remove-button {
+            margin-bottom: 15px;
+            height: 32px;
+            padding: 4px;
+            font-size: 12px;
+        }
+
+        &-add-button {
+            font-size: 12px;
+        }
+    }
+
+    #field-title-match-keywords {
+        width: 100%;
+    }
+
+    #bottom-panel {
+        display: flex;
+        width: 100%;
+        justify-content: flex-end;
+
+        button {
+            width: 170px;
+            margin-left: 10px;
+        }
+
+        .keep-open {
+            display: flex;
+            align-items: center;
+
+            ::ng-deep label {
+                font-size: 12px;
+                margin: 0 0 0 10px;
+            }
+        }
+    }
+}

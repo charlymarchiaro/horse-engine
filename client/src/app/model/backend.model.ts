@@ -8,3 +8,8 @@ export interface ApiRequestState {
   error: string;
 }
 
+
+export interface SimpleApiResponse {
+  status: ResponseStatus;
+  error?: string;
+}

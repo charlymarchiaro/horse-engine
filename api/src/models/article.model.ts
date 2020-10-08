@@ -69,6 +69,17 @@ export class Article extends Entity {
   })
   lastUpdated?: string;
 
+  @property({
+    type: 'date',
+    index: true,
+    postgresql: {
+      columnName: 'date',
+      dataType: 'DATE',
+      nullable: 'YES',
+    }
+  })
+  date?: string;
+
   @belongsTo(() => ArticleSource, {}, {
     postgresql: {
       columnName: 'article_source_id',

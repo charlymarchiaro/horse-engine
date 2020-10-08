@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { ArticleFilteringCondition, ArticlePart, MatchCondition } from '../../model';
+import { ArticleMatchCondition, ArticlePart, MatchCondition } from '../../model';
 
 
 export interface ChangeEventArgs {
-  condition: ArticleFilteringCondition;
+  condition: ArticleMatchCondition;
   isValid: boolean;
 }
 
@@ -40,7 +40,7 @@ export class ArticleFilteringConditionComponent implements OnInit, OnChanges {
   public isValid: boolean;
 
 
-  @Input() public condition: ArticleFilteringCondition;
+  @Input() public condition: ArticleMatchCondition;
   @Input() public enableRemove: boolean = true;
   @Output() public remove = new EventEmitter();
   @Output() public change = new EventEmitter<ChangeEventArgs>();

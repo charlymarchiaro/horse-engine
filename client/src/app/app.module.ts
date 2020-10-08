@@ -13,7 +13,7 @@ import { AppRoutes } from './app.routing';
 import { AppComponent } from './app.component';
 
 // Layouts
-import { CondensedComponent, BlankComponent, RootLayout, CorporateLayout, SimplyWhiteLayout, ExecutiveLayout, CasualLayout } from './@pages/layouts';
+import { CondensedComponent } from './@pages/layouts';
 // Layout Service - Required
 import { pagesToggleService } from './@pages/services/toggler.service';
 
@@ -55,18 +55,15 @@ import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 
 
-// Sample Blank Pages - Optional
-import { BlankCorporateComponent } from './@pages/layouts/blank-corporate/blank-corporate.component';
-import { BlankSimplywhiteComponent } from './@pages/layouts/blank-simplywhite/blank-simplywhite.component';
-import { BlankCasualComponent } from './@pages/layouts/blank-casual/blank-casual.component';
-
-
 // App modules
 import { AppServicesModule } from './services/app-services.module';
+import { DirectivesModule } from './directives/directives.module';
 import { MaterialComponentsModule } from './material-components.module';
 import { SharedModule as AppSharedModule } from './components/shared/shared.module';
 import { ScrapingMonitorModule } from './components/scraping-monitor/scraping-monitor.module';
 import { KeywordSearchModule } from './components/keyword-search/keyword-search.module';
+import { SearchModule } from './components/search/search.module';
+import { SearchSchemeModule } from './components/search-scheme/search-scheme.module';
 import { DashboardModule } from './components/dashboard/dashboard.module';
 import { ArticleScrapingStatsModule } from './components/article-scraping-stats/article-scraping-stats.module';
 
@@ -87,16 +84,7 @@ export class AppHammerConfig extends HammerGestureConfig {
   declarations: [
     AppComponent,
     CondensedComponent,
-    CorporateLayout,
-    SimplyWhiteLayout,
-    ExecutiveLayout,
-    CasualLayout,
     SidebarComponent, QuickviewComponent, SearchOverlayComponent, HeaderComponent, HorizontalMenuComponent,
-    BlankComponent,
-    RootLayout,
-    BlankCorporateComponent,
-    BlankSimplywhiteComponent,
-    BlankCasualComponent,
   ],
   imports: [
     BrowserModule,
@@ -129,9 +117,12 @@ export class AppHammerConfig extends HammerGestureConfig {
 
     // App modules
     AppServicesModule,
+    DirectivesModule,
     AppSharedModule,
     ScrapingMonitorModule,
     KeywordSearchModule,
+    SearchModule,
+    SearchSchemeModule,
     DashboardModule,
     ArticleScrapingStatsModule,
   ],

@@ -3,8 +3,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { JobsListInfo, JobScheduleInfo, SpidersListInfo } from '../model/scrapyd.model';
 import { ArticleFilteringScheme, DateSpan, getArticleFilteringSchemeWhereCondition } from '../components/keyword-search/model';
 
-import { ArticleScrapingDetails, ArticleScrapingDetailsResponse, ArticleSpiderResponse, ArticleSpider, ArticleScrapingStatsResponse, ArticleScrapingStatsFullResponse, ArticleScrapingStats, ArticleScrapingStatsFull } from '../model/article.model';
+import { ArticleScrapingDetails, ArticleScrapingDetailsResponse, ArticleSpiderResponse, ArticleSpider, ArticleScrapingStatsResponse, ArticleScrapingStatsFullResponse, ArticleScrapingStats, ArticleScrapingStatsFull, ArticleSourceResponse, ArticleSource } from '../model/article.model';
 import { ArticleResponse, Article } from '../model/article.model';
+import { SearchScheme, SearchSchemeKind, SearchSchemePayload } from '../model/search-scheme.model';
+import { ArticleSearchBooleanQueryPayload, ArticleSearchBooleanQueryResponse, ArticleSearchBooleanQueryResult, CancelSearchResponse } from '../model/search.model';
+import { SimpleApiResponse } from '../model/backend.model';
 
 
 @Injectable({
@@ -182,6 +185,45 @@ export class BackendService {
   }
 
 
+  // Articles by id
+  public getArticles(ids: string[]) {
+
+    const params = {
+      filter: JSON.stringify({
+        order: [
+          'lastUpdated'
+        ],
+        where: {
+          id: { inq: ids },
+        },
+        include: [
+          {
+            relation: 'articleScrapingDetails',
+            scope: {
+              include: [{ relation: 'articleSpider' }]
+            }
+          },
+          { relation: 'articleSource' }
+        ]
+      })
+    };
+
+    return this.http.get<ArticleResponse[]>(
+      '/api/articles', { params },
+    ).map(r => r.map(i => new Article(i)));
+  }
+
+
+  // Article source
+  public getArticleSources() {
+    const params = {};
+
+    return this.http.get<ArticleSourceResponse[]>(
+      '/api/article-sources', { params }
+    ).map(r => r.map(i => new ArticleSource(i)));
+  }
+
+
   // Article stats
   public getArticleStatsFull() {
     const params = {};
@@ -189,6 +231,57 @@ export class BackendService {
     return this.http.get<ArticleScrapingStatsFullResponse>(
       '/api/article-stats/full-stats', { params }
     ).map(r => new ArticleScrapingStatsFull(r));
+  }
+
+
+  // Search scheme
+  public getArticleSearchSchemes() {
+    const params = {};
+
+    return this.http.get<SearchSchemePayload[]>(
+      '/api/article-search-schemes', { params }
+    ).map(r => r.map(ssp => new SearchScheme(ssp, SearchSchemeKind.article)));
+  }
+
+  public postArticleSearchScheme(scheme: SearchSchemePayload) {
+
+    return this.http.post<SearchSchemePayload>(
+      '/api/article-search-schemes', scheme
+    ).map(ssr => new SearchScheme(ssr, SearchSchemeKind.article));
+  }
+
+  public deleteArticleSearchScheme(id: string) {
+
+    return this.http.delete(
+      '/api/article-search-schemes/' + id
+    );
+  }
+
+  public patchArticleSearchScheme(scheme: SearchSchemePayload) {
+
+    return this.http.patch(
+      '/api/article-search-schemes/' + scheme.id, scheme
+    );
+  }
+
+
+  // Search
+  public articleSearchBooleanQuery(payload: ArticleSearchBooleanQueryPayload) {
+
+    return this.http.post<ArticleSearchBooleanQueryResponse>(
+      '/api/article-search/boolean-query', payload
+    ).map(r => new ArticleSearchBooleanQueryResult(r));
+  }
+
+
+  public cancelArticleSearch(pidTag: string) {
+    const params = {
+      pidTag
+    };
+
+    return this.http.post<CancelSearchResponse>(
+      '/api/article-search/cancel-search', params
+    );
   }
 }
 

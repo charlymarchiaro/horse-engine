@@ -1,0 +1,24 @@
+<div id="container">
+  <div id="content">
+    <app-search-scheme-browser
+      #schemeBrowser
+      (selectionChange)="onSelectedSchemeChange($event)"
+      (isEditionActive$)="onSchemeEditionActiveChange($event)"></app-search-scheme-browser>
+
+    <app-search-scheme-editor
+      #schemeEditor
+      *ngIf="selectedScheme && isEditionActive"
+      [selectedSchemeId]="selectedScheme ? selectedScheme.id : null"
+      [selectedSchemeKind]="selectedScheme ? selectedScheme.kind : null"
+      (change)="onSchemeEditorChange($event)"
+      (close)="onSchemeEditorClose()"></app-search-scheme-editor>
+
+    <app-search-launcher
+      *ngIf="selectedScheme"
+      [searchScheme]="selectedScheme"></app-search-launcher>
+
+    <app-search-results></app-search-results>
+
+    <app-search-download-jobs-preview></app-search-download-jobs-preview>
+  </div>
+</div>

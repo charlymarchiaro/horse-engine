@@ -10,7 +10,7 @@ import { MaterialComponentsModule } from '../../material-components.module';
 import { FilteringSchemePreviewComponent } from './filtering-scheme-preview/filtering-scheme-preview.component';
 import { ArticlePreviewComponent } from './article-preview/article-preview.component';
 import { ArticleListBrowserComponent } from './article-list-browser/article-list-browser.component';
-import { ExcelExportService } from './excel-export.service';
+
 
 
 
@@ -25,9 +25,6 @@ import { ExcelExportService } from './excel-export.service';
   ],
   exports: [
     MainComponent,
-  ],
-  providers: [
-    ExcelExportService,
   ],
   entryComponents: [
     ArticleFilteringSchemeEditorComponent,

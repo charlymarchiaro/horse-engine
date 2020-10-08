@@ -1,0 +1,48 @@
+<div id="container">
+
+  <h4 id="card-title">Selected Article</h4>
+
+  <!-- Placeholder -->
+  <div
+    id="placeholder"
+    *ngIf="!article || !article.article">
+    Nothing selected.
+  </div>
+
+  <div
+    id="preview"
+    class="card card-default"
+    *ngIf="article && article.article">
+
+    <!-- Header -->
+    <div
+      id="header"
+      class="card-header separator">
+      <div class="card-title">
+        Last updated: {{article.article.lastUpdated | date:'fullDate'}}
+      </div>
+    </div>
+
+    <div
+      #cardBlock
+      trapScroll
+      trapKeyScroll
+      class="card-block">
+
+      <!-- Title -->
+      <div
+        id="title"
+        [innerHTML]="title"></div>
+      <div
+        id="subtitle"
+        [innerHTML]="subtitle"></div>
+
+      <!-- Body -->
+      <div id="body">
+        <p
+          *ngFor="let paragraph of paragraphs"
+          [innerHTML]="paragraph"></p>
+      </div>
+    </div>
+  </div>
+</div>

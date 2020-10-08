@@ -14,12 +14,15 @@ export async function migrate(args: string[]) {
     // For PostgreSQL connector, it does not create tables in the
     // right order.  Therefore, this change is needed.
     models: [
+      // Scraper
       'ArticleSource',
       'ArticleSpider',
       'Article',
       'ArticleScrapingDetails',
       'ArticleScrapingStatsAccum',
-      'ArticleScrapingStatsDyn'
+      'ArticleScrapingStatsDyn',
+      // Search
+      'ArticleSearchScheme',
     ],
   });
 
