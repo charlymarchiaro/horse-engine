@@ -5,9 +5,10 @@ import { Subscription, BehaviorSubject } from 'rxjs';
 import { BackendService } from '../../../services/backend.service';
 import { SearchService } from '../search.service';
 import { arrayEquals } from '../../../services/utils/utils';
-import { ResultsListService } from '../results-list.service';
+import { ResultsListService } from '../results-list/results-list.service';
 import { LoadState, LoadStatus } from '../../../services/utils/load-status';
 import { HighlightedArticle, SearchParams, SearchState } from '../../../model/search.model';
+import { ResultsDownloaderService } from '../results-downloader/results-downloader.service';
 
 
 export interface ArticleSelectEventArgs {
@@ -36,6 +37,8 @@ export class ResultsListComponent implements OnInit, OnDestroy {
   public pageSizeOptions = [10, 20, 50, 100];
 
   private searchParams: SearchParams;
+  public searchState: SearchState;
+
   public totalItemsCount: number;
 
   private currentPageItemsIds: string[] = [];
@@ -57,6 +60,7 @@ export class ResultsListComponent implements OnInit, OnDestroy {
     private resultsListService: ResultsListService,
     private searchService: SearchService,
     private backendService: BackendService,
+    private downloader: ResultsDownloaderService,
     private datePipe: DatePipe,
   ) {
     this.subscription.add(
@@ -69,6 +73,7 @@ export class ResultsListComponent implements OnInit, OnDestroy {
     this.subscription.add(
       searchService.searchState$.subscribe(
         ss => {
+          this.searchState = ss;
           if (ss === SearchState.searching) {
             this.setSelectedArticle(null);
             this.pageIndex = 0;
@@ -92,7 +97,7 @@ export class ResultsListComponent implements OnInit, OnDestroy {
           this.refreshPageItems();
         }
       )
-    )
+    );
   }
 
 
@@ -167,11 +172,19 @@ export class ResultsListComponent implements OnInit, OnDestroy {
   }
 
 
-  public setSelectedArticle(article: HighlightedArticle) {
+  private setSelectedArticle(article: HighlightedArticle) {
     this.selectedArticleId = (!article || !article.article)
       ? null
       : article.article.id;
 
     this.select.emit({ article });
+  }
+
+
+  public onExportToExcelButtonClick() {
+    this.downloader.scheduleDownload({
+      itemIds: this.searchService.searchResults.itemIds,
+      searchParams: this.searchParams
+    });
   }
 }

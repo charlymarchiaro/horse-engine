@@ -143,6 +143,12 @@ export class SearchResults {
 
   get retrievedPartsCount() { return this.partsSubject.getValue().length; }
 
+  get itemIds() {
+    return this.partsSubject.getValue()
+      .map(p => p.itemIds)
+      .reduce((list, part) => [...list, ...part], []);
+  }
+
   get totalItemsCount() {
     return this.partsSubject.getValue().reduce(
       (total, p) => total + p.itemIds.length, 0

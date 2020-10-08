@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LoadStatus, LoadState } from '../../../services/utils/load-status';
 import { HighlightedArticle } from '../../../model/search.model';
 
+
 @Component({
   selector: 'app-search-results',
   templateUrl: './results.component.html',
@@ -16,9 +17,8 @@ export class ResultsComponent implements OnInit {
   public selectedArticle: HighlightedArticle;
 
 
-  constructor(
-
-  ) { }
+  constructor() {
+  }
 
 
   ngOnInit() {

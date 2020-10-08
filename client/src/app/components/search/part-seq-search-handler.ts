@@ -79,7 +79,7 @@ export class PartSeqSearchHandler {
 
           if (tryIndex === PART_SEARCH_NUMBER_OF_TRIES - 1) {
             // Max retries reached --> Abort search (error)
-            console.error(`Search failed ${PART_SEARCH_NUMBER_OF_TRIES} times for part id:${tryIndex} --> aborting.`);
+            console.error(`Search failed ${PART_SEARCH_NUMBER_OF_TRIES} times for part id: ${tryIndex} --> aborting.`);
             await this.abortPartSearch(pidTag);
 
             this.emitErrorEvent(e.message);
@@ -87,7 +87,7 @@ export class PartSeqSearchHandler {
 
           } else {
             // Part search failed --> retry
-            console.warn(`Search failed for part id:${tryIndex} --> retrying.`);
+            console.warn(`Search failed for part id: ${tryIndex} --> retrying.`);
             await this.abortPartSearch(pidTag);
           }
         }

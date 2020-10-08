@@ -51,7 +51,7 @@
         <button
           mat-icon-button
           (click)="onExportToExcelButtonClick()"
-          [disabled]="totalItemsCount === 0">
+          [disabled]="totalItemsCount === 0 || searchState !== 'idle'">
           <mat-icon matTooltip="Export to Excel">library_books</mat-icon>
         </button>
       </div>
