@@ -33,6 +33,30 @@
         </div>
     </div>
     <div class="card-body {{_extraBodyClass}}" [@collapseState]="_isCollapsed == true ?'inactive':'active'">
+        
+        <!-- Disable mask -->
+        <div class="disable-mask" *ngIf="!_isDisableMaskTransparent && (_isDisabled || _isCollapsed)" style="
+            position: absolute;
+            background-color: #ffffffcc;
+            width: 100%;
+            height: 100%;
+            min-height: 65px;
+            left: 0;
+            top: 0;
+            z-index: 100;
+        "></div>
+
+        <div class="disable-mask" *ngIf="_isDisableMaskTransparent && (_isDisabled || _isCollapsed)" style="
+            position: absolute;
+            background-color: #ffffff00;
+            width: 100%;
+            height: 100%;
+            min-height: 65px;
+            left: 0;
+            top: 0;
+            z-index: 100;
+        "></div>
+        
         <ng-content></ng-content>
     </div>
     <div *ngIf="_messageVisible == true" class="pgn-wrapper" data-position="top">

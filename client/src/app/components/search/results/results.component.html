@@ -1,5 +1,7 @@
 <pgcard
   [Loading]="this.loadState.status === LoadStatus.loading"
+  [disabled]="this.loadState.status === LoadStatus.loading"
+  [DisableMaskTransparent]="true"
   [ShowMessage]="this.loadState.status === LoadStatus.error"
   [Message]="this.loadState.errorMessage"
   [Close]="false"

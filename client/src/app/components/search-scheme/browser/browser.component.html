@@ -6,13 +6,9 @@
   [Message]="errorMessage"
   [Close]="false"
   [Maximize]="false"
-  [Toggle]="true">
+  [Toggle]="true"
+  [disabled]="isDisabled">
   <ng-template #CardTitle>Search scheme browser</ng-template>
-
-  <!-- Disable mask -->
-  <div
-    class="disable-mask"
-    *ngIf="isDisabled || card._isCollapsed"></div>
 
   <div class="row nowrap">
 

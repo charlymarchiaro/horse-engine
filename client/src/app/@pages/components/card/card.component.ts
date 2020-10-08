@@ -48,13 +48,15 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
   ]
 })
 export class pgCard {
-   @ViewChild('hostContent', { static: false }) _hostContent: ElementRef;
-   @ViewChild('minimalCircleLoading', { static: false }) minimalCircleLoading: ElementRef;
-   @ViewChild('minimalCircleLoadingTrigger', { static: false }) minimalCircleLoadingTrigger: ElementRef;
-   @ContentChild('CardTitle', { static: true }) CardTitle: TemplateRef<void>;
-   @ContentChild('CardExtraControls', { static: true }) CardExtraControls: TemplateRef<void>;
+  @ViewChild('hostContent', { static: false }) _hostContent: ElementRef;
+  @ViewChild('minimalCircleLoading', { static: false }) minimalCircleLoading: ElementRef;
+  @ViewChild('minimalCircleLoadingTrigger', { static: false }) minimalCircleLoadingTrigger: ElementRef;
+  @ContentChild('CardTitle', { static: true }) CardTitle: TemplateRef<void>;
+  @ContentChild('CardExtraControls', { static: true }) CardExtraControls: TemplateRef<void>;
 
   _isCollapsed: boolean = false;
+  _isDisabled: boolean = false;
+  _isDisableMaskTransparent: boolean = false;
   _isMaximixed: boolean = false;
   _isLoading: boolean = false;
   _minimalHeader: boolean = false;
@@ -131,6 +133,16 @@ export class pgCard {
   @Input()
   set Toggle(value: boolean) {
     this._toggle = value;
+  }
+
+  @Input()
+  set disabled(value: boolean) {
+    this._isDisabled = value;
+  }
+
+  @Input()
+  set DisableMaskTransparent(value: boolean) {
+    this._isDisableMaskTransparent = value;
   }
 
   @Input()

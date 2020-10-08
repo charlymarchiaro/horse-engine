@@ -4,13 +4,9 @@
   [Close]="false"
   [Maximize]="false"
   [Toggle]="false"
-  [Refresh]="false">
+  [Refresh]="false"
+  [disabled]="isDisabled">
   <ng-template #CardTitle>Search scheme editor</ng-template>
-
-  <!-- Disable mask -->
-  <div
-    class="disable-mask"
-    *ngIf="isDisabled"></div>
 
   <div
     id="content"
