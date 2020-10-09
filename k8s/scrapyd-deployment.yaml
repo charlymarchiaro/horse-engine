@@ -12,6 +12,8 @@ spec:
       labels:
         component: scrapyd
     spec:
+      nodeSelector:
+        node-id: "2"
       volumes:
         - name: dshm
           emptyDir:
@@ -25,8 +27,8 @@ spec:
             requests:
               cpu: 10m
             limits:
-              cpu: 2000m
-              memory: 3072Mi
+              cpu: 1500m
+              memory: 2500Mi
           volumeMounts:
             - mountPath: /dev/shm
               name: dshm
