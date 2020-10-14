@@ -56,8 +56,8 @@ deploy:
   statusCheckDeadlineSeconds: 6000
   kubectl:
     manifests:
-      - k8s/client-deployment.yaml
-      - k8s/api-deployment.yaml
-      - k8s/scrapyd-deployment.yaml
-      - k8s/splash-deployment.yaml
-      # - k8s/postgres-deployment.yaml
+      - k8s/dev/client-deployment.yaml
+      - k8s/dev/api-deployment.yaml
+      - k8s/dev/scrapyd-deployment.yaml
+      - k8s/dev/splash-deployment.yaml
+      # - k8s/dev/postgres-deployment.yaml

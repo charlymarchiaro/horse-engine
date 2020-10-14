@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: splash-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: splash
+  template:
+    metadata:
+      labels:
+        component: splash
+    spec:
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+      containers:
+        - name: splash
+          image: charlymarchiaro/horse-engine-splash
+          ports:
+            - containerPort: 8050
+          resources:
+            requests:
+              cpu: 10m
+            limits:
+              cpu: 500m
+              memory: 2048Mi
+          volumeMounts:
+            - mountPath: /dev/shm
+              name: dshm
+

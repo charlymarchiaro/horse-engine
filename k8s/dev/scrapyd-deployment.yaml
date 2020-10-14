@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scrapyd-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: scrapyd
+  template:
+    metadata:
+      labels:
+        component: scrapyd
+    spec:
+      # nodeSelector:
+      #   node-id: "2"
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+      containers:
+        - name: scrapyd
+          image: charlymarchiaro/horse-engine-scrapyd
+          ports:
+            - containerPort: 6800
+          resources:
+            requests:
+              cpu: 1500m
+              memory: 2500Mi
+            limits:
+              cpu: 2000m
+              memory: 2500Mi
+          volumeMounts:
+            - mountPath: /dev/shm
+              name: dshm
+          env:
+            - name: DB_USER
+              value: sa
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pgpassword
+                  key: PGPASSWORD
+            - name: DB_SERVER
+              value: postgres-cluster-ip-service
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_NAME
+              value: horse_engine
