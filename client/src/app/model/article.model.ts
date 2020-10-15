@@ -59,9 +59,13 @@ export class Article {
   text?: string;
   lastUpdated?: Date;
   date?: Date;
+  scrapedAt: Date;
+  parseFunction?: string;
+  result: string;
   articleSourceId: string;
   articleSource?: ArticleSource;
-  articleScrapingDetails?: ArticleScrapingDetails;
+  articleSpiderId: string;
+  articleSpider?: ArticleSpider;
 
   constructor(r: ArticleResponse) {
     this.id = r.id;
@@ -70,9 +74,13 @@ export class Article {
     this.text = r.text;
     this.lastUpdated = r.lastUpdated ? new Date(r.lastUpdated) : null;
     this.date = r.date ? new Date(r.date) : null;
+    this.scrapedAt = r.scrapedAt ? new Date(r.scrapedAt) : null;
+    this.parseFunction = r.parseFunction;
+    this.result = r.result;
     this.articleSourceId = r.articleSourceId;
     this.articleSource = r.articleSource ? new ArticleSource(r.articleSource) : null;
-    this.articleScrapingDetails = r.articleScrapingDetails ? new ArticleScrapingDetails(r.articleScrapingDetails) : null;
+    this.articleSpiderId = r.articleSpiderId;
+    this.articleSpider = r.articleSpider ? new ArticleSpider(r.articleSpider) : null;
   }
 }
 
@@ -84,23 +92,13 @@ export interface ArticleResponse {
   text?: string;
   lastUpdated?: string;
   date?: string;
-  articleSourceId: string;
-  articleSource?: ArticleSourceResponse;
-  articleScrapingDetails?: ArticleScrapingDetailsResponse;
-}
-
-
-export interface ArticleScrapingDetailsResponse {
-  id: string;
   scrapedAt: string;
   parseFunction?: string;
   result: string;
-  error?: string;
-  errorDetails?: string;
+  articleSourceId: string;
+  articleSource?: ArticleSourceResponse;
   articleSpiderId: string;
-  articleId: string;
   articleSpider?: ArticleSpiderResponse;
-  article?: ArticleResponse;
 }
 
 
@@ -132,38 +130,6 @@ export interface ArticleSpiderResponse {
   kind: string;
   articleSourceId: string;
   articleSource?: ArticleSourceResponse;
-}
-
-
-
-/**
- * Article scraping details
- */
-
-export class ArticleScrapingDetails {
-  id: string;
-  scrapedAt: Date;
-  parseFunction?: string;
-  result: string;
-  error?: string;
-  errorDetails?: string;
-  articleSpiderId: string;
-  articleId: string;
-  articleSpider?: ArticleSpider;
-  article?: Article;
-
-  constructor(r: ArticleScrapingDetailsResponse) {
-    this.id = r.id;
-    this.scrapedAt = new Date(r.scrapedAt);
-    this.parseFunction = r.parseFunction;
-    this.result = r.result;
-    this.error = r.error;
-    this.errorDetails = r.errorDetails;
-    this.articleSpiderId = r.articleSpiderId;
-    this.articleId = r.articleId;
-    this.articleSpider = r.articleSpider ? new ArticleSpider(r.articleSpider) : null;
-    this.article = r.article ? new Article(r.article) : null;
-  }
 }
 
 

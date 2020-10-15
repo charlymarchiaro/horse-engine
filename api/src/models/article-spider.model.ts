@@ -1,6 +1,6 @@
 import { Entity, model, property, belongsTo, hasMany } from '@loopback/repository';
 import { ArticleSource, ArticleSourceWithRelations } from './article-source.model';
-import { ArticleScrapingDetails } from './article-scraping-details.model';
+
 
 @model({
   settings: {
@@ -60,9 +60,6 @@ export class ArticleSpider extends Entity {
     }
   })
   articleSourceId: string;
-
-  @hasMany(() => ArticleScrapingDetails)
-  articleScrapingDetails: ArticleScrapingDetails[];
 
   constructor(data?: Partial<ArticleSpider>) {
     super(data);

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { JobsListInfo } from '../../model/scrapyd.model';
 import { BackendService } from '../../services/backend.service';
-import { ArticleScrapingDetails } from '../../model/article.model';
+import { Article } from '../../model/article.model';
 
 
 
@@ -20,7 +20,7 @@ export class MainComponent implements OnInit, OnDestroy {
   private lastScrapedArticlesInfoTimer;
 
   public jobsListInfo: JobsListInfo;
-  public lastScrapedArticlesInfo: ArticleScrapingDetails[] = [];
+  public lastScrapedArticlesInfo: Article[] = [];
 
 
   public scheduleKeyword = '';

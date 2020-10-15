@@ -1,6 +1,7 @@
-import { Entity, model, property, belongsTo, hasOne } from '@loopback/repository';
+import { Entity, model, property, belongsTo } from '@loopback/repository';
 import { ArticleSource, ArticleSourceWithRelations } from './article-source.model';
-import { ArticleScrapingDetails } from './article-scraping-details.model';
+import { ArticleSpider, ArticleSpiderWithRelations } from './article-spider.model';
+
 
 @model({
   settings: {
@@ -11,6 +12,12 @@ import { ArticleScrapingDetails } from './article-scraping-details.model';
         entity: 'ArticleSource',
         entityKey: 'id',
         foreignKey: 'article_source_id',
+      },
+      fk__article__article_spider: {
+        name: 'fk__article__article_spider',
+        entity: 'ArticleSpider',
+        entityKey: 'id',
+        foreignKey: 'article_spider_id',
       },
     },
   },
@@ -89,8 +96,46 @@ export class Article extends Entity {
   })
   articleSourceId: string;
 
-  @hasOne(() => ArticleScrapingDetails)
-  articleScrapingDetails: ArticleScrapingDetails;
+  @property({
+    type: 'date',
+    postgresql: {
+      columnName: 'scraped_at',
+      dataType: 'TIMESTAMP WITH TIME ZONE',
+      nullable: 'YES',
+    }
+  })
+  scrapedAt: string;
+
+  @property({
+    type: 'string',
+    postgresql: {
+      columnName: 'parse_function',
+      dataType: 'VARCHAR',
+      dataLength: 64,
+      nullable: 'YES',
+    }
+  })
+  parseFunction?: string;
+
+  @property({
+    type: 'string',
+    postgresql: {
+      columnName: 'result',
+      dataType: 'VARCHAR',
+      dataLength: 64,
+      nullable: 'YES',
+    }
+  })
+  result: string;
+
+  @belongsTo(() => ArticleSpider, {}, {
+    postgresql: {
+      columnName: 'article_spider_id',
+      dataType: 'uuid',
+      nullable: 'YES',
+    }
+  })
+  articleSpiderId: string;
 
   constructor(data?: Partial<Article>) {
     super(data);
@@ -99,6 +144,7 @@ export class Article extends Entity {
 
 export interface ArticleRelations {
   articleSource?: ArticleSourceWithRelations;
+  articleSpider?: ArticleSpiderWithRelations;
 }
 
 export type ArticleWithRelations = Article & ArticleRelations;

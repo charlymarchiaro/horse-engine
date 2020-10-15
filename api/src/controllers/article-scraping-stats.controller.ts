@@ -1,12 +1,13 @@
 import { inject } from '@loopback/core';
 import { repository, Filter } from '@loopback/repository';
-import { get, post, requestBody, api, HttpErrors } from '@loopback/rest';
+import { get, post, requestBody, api, HttpErrors, RestBindings, Response } from '@loopback/rest';
 import { model, property } from '@loopback/repository';
 import { ArticleScrapingStatsAccumRepository } from '../repositories/article-scraping-stats-accum.repository';
 import { ArticleScrapingStatsDynRepository } from '../repositories/article-scraping-stats-dyn.repository';
 import { SimpleApiResponse } from '../globals';
 import { ArticleScrapingStats } from '../models/article-scraping-stats.model';
 import { ArticleScrapingStatsRepository } from '../repositories/article-scraping-stats.repository';
+import { AppConstants } from '../keys';
 
 
 @model()
@@ -25,7 +26,12 @@ export class ArticleScrapingStatsController {
     public statsDynRepository: ArticleScrapingStatsDynRepository,
     @repository(ArticleScrapingStatsRepository)
     public statsRepository: ArticleScrapingStatsRepository,
-  ) { }
+    @inject(RestBindings.Http.RESPONSE) private response: Response,
+  ) {
+    // Extending timeout from the default 120s
+    // https://stackoverflow.com/questions/57673829/how-can-i-set-timeout-in-lb4
+    (this.response as any).setTimeout(10 * 60 * 1000); // 10 min
+  }
 
 
   @get('/update-stats-tables', {
