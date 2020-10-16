@@ -91,9 +91,9 @@ export class ExcelExportService {
 
       await this.commonDialogsService.showNotificationDialog(
         'info',
-        'Archivo generado',
+        'Data exported',
         args.moduleLabel,
-        'El archivo fue generado con éxito: ' + args.fileName
+        'The data was exported successfully to file: ' + args.fileName
       );
 
       return { status: 'success' };
@@ -102,9 +102,9 @@ export class ExcelExportService {
 
       await this.commonDialogsService.showNotificationDialog(
         'error',
-        'Error de exportación',
+        'Exporting error',
         args.moduleLabel,
-        'Se produjo un error al exportar los datos.'
+        'Encountered an error while exporting the data.'
       );
 
       return {
