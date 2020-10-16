@@ -63,7 +63,7 @@ export class DatabaseQueryResultsComponent implements OnInit, OnChanges {
 
     this.tableData = this.data.map<TableFieldInfo[]>(i => [
       { type: 'label', value: i.sourceName, },
-      { type: 'link', value: 'http://' + i.url, label: 'Link', linkType: 'newTab' },
+      { type: 'link', value: i.url, label: 'Link', linkType: 'newTab' },
       {
         type: 'link',
         value: `/api/articles/${i.id}?filter=%7B%0A%20%20%22include%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%20%22relation%22%3A%20%22articleSpider%22%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%20%22relation%22%3A%20%22articleSource%22%20%7D%0A%20%20%5D%0A%7D`,
