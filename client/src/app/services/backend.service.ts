@@ -3,11 +3,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { JobsListInfo, JobScheduleInfo, SpidersListInfo } from '../model/scrapyd.model';
 import { ArticleFilteringScheme, DateSpan, getArticleFilteringSchemeWhereCondition } from '../components/keyword-search/model';
 
-import { ArticleScrapingDetails, ArticleScrapingDetailsResponse, ArticleSpiderResponse, ArticleSpider, ArticleScrapingStatsResponse, ArticleScrapingStatsFullResponse, ArticleScrapingStats, ArticleScrapingStatsFull, ArticleSourceResponse, ArticleSource } from '../model/article.model';
+import { ArticleSpiderResponse, ArticleSpider, ArticleScrapingStatsFullResponse, ArticleScrapingStatsFull, ArticleSourceResponse, ArticleSource, ArticleSummaryResponse, ArticleSummary } from '../model/article.model';
 import { ArticleResponse, Article } from '../model/article.model';
 import { SearchScheme, SearchSchemeKind, SearchSchemePayload } from '../model/search-scheme.model';
 import { ArticleSearchBooleanQueryPayload, ArticleSearchBooleanQueryResponse, ArticleSearchBooleanQueryResult, CancelSearchResponse } from '../model/search.model';
-import { SimpleApiResponse } from '../model/backend.model';
+import { Observable, of } from 'rxjs';
 
 
 @Injectable({
@@ -123,21 +123,12 @@ export class BackendService {
           'scrapedAt DESC',
           'id'
         ],
-        include: [
-          {
-            relation: 'article',
-            scope: {
-              include: [{ relation: 'articleSource' }]
-            }
-          },
-          { relation: 'articleSpider' }
-        ]
       })
     };
 
-    return this.http.get<ArticleScrapingDetailsResponse[]>(
-      '/api/article-scraping-details', { params }
-    ).map(r => r.map(i => new ArticleScrapingDetails(i)));
+    return this.http.get<ArticleSummaryResponse[]>(
+      '/api/last-scraped-articles', { params }
+    ).map(r => r.map(i => new ArticleSummary(i)));
   }
 
 
@@ -168,12 +159,7 @@ export class BackendService {
           ]
         },
         include: [
-          {
-            relation: 'articleScrapingDetails',
-            scope: {
-              include: [{ relation: 'articleSpider' }]
-            }
-          },
+          { relation: 'articleSpider' },
           { relation: 'articleSource' }
         ]
       })
@@ -197,12 +183,7 @@ export class BackendService {
           id: { inq: ids },
         },
         include: [
-          {
-            relation: 'articleScrapingDetails',
-            scope: {
-              include: [{ relation: 'articleSpider' }]
-            }
-          },
+          { relation: 'articleSpider' },
           { relation: 'articleSource' }
         ]
       })

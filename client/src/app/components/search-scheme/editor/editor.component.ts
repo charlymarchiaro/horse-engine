@@ -545,7 +545,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
       'source.tier': extractOptions(this.sources, 'tier'),
       'source.parse_category': extractOptions(this.sources, 'parseCategory'),
       'source.red_circle': extractOptions(this.sources, 'redCircle'),
-      'details.result': ['success', 'error'],
+      'article.result': ['success', 'error'],
       'spider.kind': ['crawl', 'sitemap']
     };
   }

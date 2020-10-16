@@ -32,7 +32,7 @@ export class DocumentPreviewComponent implements OnInit, OnChanges {
     if (
       !this.article
       || !this.article.article
-      || this.article.article.articleScrapingDetails.result !== 'success'
+      || this.article.article.result !== 'success'
     ) {
       this.title = null;
       this.subtitle = null;

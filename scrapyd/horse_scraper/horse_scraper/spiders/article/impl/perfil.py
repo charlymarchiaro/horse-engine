@@ -86,7 +86,7 @@ class Params(BaseArticleSpiderParams):
         ]
 
     def get_url_filter(self) -> UrlFilter:
-        return UrlFilter(allow_re=[".*\/noticias\/.*.phtml"], deny_re=[])
+        return UrlFilter(allow_re=[".*\/noticias\/.*.phtml"], deny_re=[".*.phtml#.*"])
 
     # Sitemap params
 

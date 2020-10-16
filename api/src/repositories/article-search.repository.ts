@@ -81,10 +81,8 @@ export class ArticleSearchRepository extends DefaultTransactionalRepository<
           scraper.article AS article
           INNER JOIN scraper.article_source AS source
             ON source.id = article.article_source_id
-          INNER JOIN scraper.article_scraping_details AS details
-            ON details.article_id = article.id
           INNER JOIN scraper.article_spider AS spider
-            ON details.article_spider_id = spider.id
+            ON article.article_spider_id = spider.id
       WHERE
           article.date >= '${fromDate}'
           AND article.date <= '${toDate}'

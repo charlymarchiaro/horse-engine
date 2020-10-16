@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: api
+  template:
+    metadata:
+      labels:
+        component: api
+    spec:
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+      containers:
+        - name: api
+          image: charlymarchiaro/horse-engine-api
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              cpu: 10m
+          volumeMounts:
+            - mountPath: /dev/shm
+              name: dshm
+          env:
+            - name: PG_HOST
+              value: postgres-cluster-ip-service
+            - name: PG_PORT
+              value: "5432"
+            - name: PG_USER
+              value: sa
+            - name: PG_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pgpassword
+                  key: PGPASSWORD
+            - name: PG_DATABASE
+              value: horse_engine
+            - name: SCRAPYD_HOST
+              value: scrapyd-cluster-ip-service
+            - name: SCRAPYD_PORT
+              value: "6800"

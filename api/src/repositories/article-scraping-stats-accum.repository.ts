@@ -37,13 +37,11 @@ export class ArticleScrapingStatsAccumRepository extends DefaultTransactionalRep
         WITH data_1 AS (
           SELECT        
               source.id AS source_id, 
-              CASE WHEN details.result = 'success' THEN 1 ELSE 0 END AS success,
-              CASE WHEN details.result = 'error' THEN 1 ELSE 0 END AS error,
+              CASE WHEN article.result = 'success' THEN 1 ELSE 0 END AS success,
+              CASE WHEN article.result = 'error' THEN 1 ELSE 0 END AS error,
               article.url AS url
           FROM
-              scraper.article_scraping_details AS details
-              INNER JOIN scraper.article AS article
-                ON article.id = details.article_id
+              scraper.article AS article
               INNER JOIN scraper.article_source AS source
                 ON source.id = article.article_source_id
         ),

@@ -18,5 +18,3 @@ class Article(scrapy.Item):
     spider_name = scrapy.Field()
     parse_function = scrapy.Field()
     result = scrapy.Field()
-    error = scrapy.Field()
-    error_details = scrapy.Field()

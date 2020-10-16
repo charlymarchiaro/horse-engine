@@ -218,8 +218,6 @@ class BaseArticleSpider:
             article["spider_name"] = self.name
             article["parse_function"] = None
             article["result"] = "error"
-            article["error"] = "All parse attempts failed"
-            article["error_details"] = ""
             return article
 
         self.current_article_parse_result.parsed_ok = True
@@ -231,8 +229,6 @@ class BaseArticleSpider:
         article["spider_name"] = self.name
         article["parse_function"] = parse_function
         article["result"] = "success"
-        article["error"] = None
-        article["error_details"] = None
 
         return article
 

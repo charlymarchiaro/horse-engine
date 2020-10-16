@@ -1,10 +1,10 @@
-import { DefaultCrudRepository, repository, BelongsToAccessor, HasOneRepositoryFactory } from '@loopback/repository';
-import { Article, ArticleRelations, ArticleSource, ArticleScrapingDetails } from '../models';
+import { DefaultCrudRepository, repository, BelongsToAccessor } from '@loopback/repository';
+import { Article, ArticleRelations, ArticleSource, ArticleSpider } from '../models';
 import { DbDataSource } from '../datasources';
 import { inject, Getter } from '@loopback/core';
 import { ArticleSourceRepository } from './article-source.repository';
-import { ArticleScrapingDetailsRepository } from './article-scraping-details.repository';
 import { ArticleWithRelations } from '../models/article.model';
+import { ArticleSpiderRepository } from './article-spider.repository';
 
 export class ArticleRepository extends DefaultCrudRepository<
   Article,
@@ -13,16 +13,26 @@ export class ArticleRepository extends DefaultCrudRepository<
   > {
 
   public readonly articleSource: BelongsToAccessor<ArticleSource, typeof Article.prototype.id>;
+  
+  public readonly articleSpider: BelongsToAccessor<ArticleSpider, typeof Article.prototype.id>;
 
-  public readonly articleScrapingDetails: HasOneRepositoryFactory<ArticleScrapingDetails, typeof Article.prototype.id>;
 
   constructor(
-    @inject('datasources.db') dataSource: DbDataSource, @repository.getter('ArticleSourceRepository') protected articleSourceRepositoryGetter: Getter<ArticleSourceRepository>, @repository.getter('ArticleScrapingDetailsRepository') protected articleScrapingDetailsRepositoryGetter: Getter<ArticleScrapingDetailsRepository>,
+    @inject('datasources.db') dataSource: DbDataSource, @repository.getter('ArticleSourceRepository') protected articleSourceRepositoryGetter: Getter<ArticleSourceRepository>, @repository.getter('ArticleSpiderRepository') protected articleSpiderRepositoryGetter: Getter<ArticleSpiderRepository>,
   ) {
     super(Article, dataSource);
-    this.articleScrapingDetails = this.createHasOneRepositoryFactoryFor('articleScrapingDetails', articleScrapingDetailsRepositoryGetter);
-    this.registerInclusionResolver('articleScrapingDetails', this.articleScrapingDetails.inclusionResolver);
     this.articleSource = this.createBelongsToAccessorFor('articleSource', articleSourceRepositoryGetter);
     this.registerInclusionResolver('articleSource', this.articleSource.inclusionResolver);
+    this.articleSpider = this.createBelongsToAccessorFor('articleSpider', articleSpiderRepositoryGetter);
+    this.registerInclusionResolver('articleSpider', this.articleSpider.inclusionResolver);
   }
 }
+
+// UPDATE scraper.article article SET
+// 	scraped_at=details.scraped_at, 
+// 	parse_function=details.parse_function, 
+// 	result=details.result, 
+// 	article_spider_id=details.article_spider_id
+// FROM
+// 	scraper.article_scraping_details details
+// 	WHERE details.article_id = article.id

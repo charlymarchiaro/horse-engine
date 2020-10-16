@@ -109,9 +109,9 @@ export enum SecondaryConditionField {
   sourceAdValue500 = 'source.ad_value_500',
   sourceAdValue150 = 'source.ad_value_150',
   sourceParseCategory = 'source.parse_category',
-  detailsScrapedAt = 'details.scraped_at',
-  detailsParseFunction = 'details.parse_function',
-  detailsResult = 'details.result',
+  articleScrapedAt = 'article.scraped_at',
+  articleParseFunction = 'article.parse_function',
+  articleResult = 'article.result',
   spiderKind = 'spider.kind',
 }
 
@@ -126,9 +126,9 @@ export const SecondaryConditionFieldInfo: { [key in SecondaryConditionField]: Fi
   'source.ad_value_500': { value: 'source.ad_value_500', label: 'Source > Ad value 5' },
   'source.ad_value_150': { value: 'source.ad_value_150', label: 'Source > Ad value 1,5' },
   'source.parse_category': { value: 'source.parse_category', label: 'Source > Parse category' },
-  'details.scraped_at': { value: 'details.scraped_at', label: 'Details > Scraped at' },
-  'details.parse_function': { value: 'details.parse_function', label: 'Details > Parse function' },
-  'details.result': { value: 'details.result', label: 'Details > Result' },
+  'article.scraped_at': { value: 'article.scraped_at', label: 'Article > Scraped at' },
+  'article.parse_function': { value: 'article.parse_function', label: 'Article > Parse function' },
+  'article.result': { value: 'article.result', label: 'Article > Result' },
   'spider.kind': { value: 'spider.kind', label: 'Spider > Kind' },
 };
 

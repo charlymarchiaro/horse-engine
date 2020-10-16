@@ -14,9 +14,9 @@ export enum Field {
   sourceAdValue500 = 'source.ad_value_500',
   sourceAdValue150 = 'source.ad_value_150',
   sourceParseCategory = 'source.parse_category',
-  detailsScrapedAt = 'details.scraped_at',
-  detailsParseFunction = 'details.parse_function',
-  detailsResult = 'details.result',
+  articleScrapedAt = 'article.scraped_at',
+  articleParseFunction = 'article.parse_function',
+  articleResult = 'article.result',
   spiderKind = 'spider.kind',
 }
 
