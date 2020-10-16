@@ -1,28 +1,12 @@
-import { Entity, model, property, belongsTo } from '@loopback/repository';
-import { ArticleSource, ArticleSourceWithRelations } from './article-source.model';
-import { ArticleSpider, ArticleSpiderWithRelations } from './article-spider.model';
+import { Entity, model, property } from '@loopback/repository';
 
 
 @model({
   settings: {
-    postgresql: { schema: 'scraper', table: 'article' },
-    foreignKeys: {
-      fk__article__article_source: {
-        name: 'fk__article__article_source',
-        entity: 'ArticleSource',
-        entityKey: 'id',
-        foreignKey: 'article_source_id',
-      },
-      fk__article__article_spider: {
-        name: 'fk__article__article_spider',
-        entity: 'ArticleSpider',
-        entityKey: 'id',
-        foreignKey: 'article_spider_id',
-      },
-    },
+    postgresql: { schema: 'scraper', table: 'article_summary' },
   },
 })
-export class Article extends Entity {
+export class ArticleSummary extends Entity {
   @property({
     type: 'string',
     id: true,
@@ -78,24 +62,15 @@ export class Article extends Entity {
   lastUpdated?: string;
 
   @property({
-    type: 'date',
-    index: true,
+    type: 'string',
     postgresql: {
-      columnName: 'date',
-      dataType: 'DATE',
-      nullable: 'YES',
-    }
-  })
-  date?: string;
-
-  @belongsTo(() => ArticleSource, {}, {
-    postgresql: {
-      columnName: 'article_source_id',
-      dataType: 'uuid',
+      columnName: 'source_name',
+      dataType: 'VARCHAR',
+      dataLength: 64,
       nullable: 'NO',
     }
   })
-  articleSourceId: string;
+  sourceName: string;
 
   @property({
     type: 'date',
@@ -129,23 +104,23 @@ export class Article extends Entity {
   })
   result: string;
 
-  @belongsTo(() => ArticleSpider, {}, {
+  @property({
+    type: 'string',
     postgresql: {
-      columnName: 'article_spider_id',
-      dataType: 'uuid',
-      nullable: 'YES',
+      columnName: 'spider_name',
+      dataType: 'VARCHAR',
+      dataLength: 64,
+      nullable: 'NO',
     }
   })
-  articleSpiderId: string;
+  spiderName: string;
 
-  constructor(data?: Partial<Article>) {
+  constructor(data?: Partial<ArticleSummary>) {
     super(data);
   }
 }
 
-export interface ArticleRelations {
-  articleSource?: ArticleSourceWithRelations;
-  articleSpider?: ArticleSpiderWithRelations;
+export interface ArticleSummaryRelations {
 }
 
-export type ArticleWithRelations = Article & ArticleRelations;
+export type ArticleSummaryWithRelations = ArticleSummary & ArticleSummaryRelations;

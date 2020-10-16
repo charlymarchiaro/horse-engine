@@ -49,6 +49,52 @@ export interface ArticleSourceResponse {
 
 
 /**
+ * Article Summary
+ */
+
+export class ArticleSummary {
+  id: string;
+  url: string;
+  title?: string;
+  text?: string;
+  lastUpdated?: Date;
+  sourceName: string;
+  scrapedAt: Date;
+  parseFunction?: string;
+  result: string;
+  spiderName: string;
+
+  constructor(r: ArticleSummaryResponse) {
+    this.id = r.id;
+    this.url = r.url;
+    this.title = r.title;
+    this.text = r.text;
+    this.lastUpdated = r.lastUpdated ? new Date(r.lastUpdated) : null;
+    this.sourceName = r.sourceName;
+    this.scrapedAt = r.scrapedAt ? new Date(r.scrapedAt) : null;
+    this.parseFunction = r.parseFunction;
+    this.result = r.result;
+    this.spiderName = r.spiderName;
+  }
+}
+
+
+export interface ArticleSummaryResponse {
+  id: string;
+  url: string;
+  title?: string;
+  text?: string;
+  lastUpdated?: string;
+  sourceName: string;
+  scrapedAt: string;
+  parseFunction?: string;
+  result: string;
+  spiderName: string;
+}
+
+
+
+/**
  * Article
  */
 

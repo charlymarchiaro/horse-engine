@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { JobsListInfo, JobScheduleInfo, SpidersListInfo } from '../model/scrapyd.model';
 import { ArticleFilteringScheme, DateSpan, getArticleFilteringSchemeWhereCondition } from '../components/keyword-search/model';
 
-import { ArticleSpiderResponse, ArticleSpider, ArticleScrapingStatsFullResponse, ArticleScrapingStatsFull, ArticleSourceResponse, ArticleSource } from '../model/article.model';
+import { ArticleSpiderResponse, ArticleSpider, ArticleScrapingStatsFullResponse, ArticleScrapingStatsFull, ArticleSourceResponse, ArticleSource, ArticleSummaryResponse, ArticleSummary } from '../model/article.model';
 import { ArticleResponse, Article } from '../model/article.model';
 import { SearchScheme, SearchSchemeKind, SearchSchemePayload } from '../model/search-scheme.model';
 import { ArticleSearchBooleanQueryPayload, ArticleSearchBooleanQueryResponse, ArticleSearchBooleanQueryResult, CancelSearchResponse } from '../model/search.model';
@@ -116,7 +116,6 @@ export class BackendService {
 
   // Last scraped articles
   public getLastScrapedArticlesInfo(numberOfArticles: number) {
-    return of([]);
     const params = {
       filter: JSON.stringify({
         limit: numberOfArticles,
@@ -124,16 +123,12 @@ export class BackendService {
           'scrapedAt DESC',
           'id'
         ],
-        include: [
-          { relation: 'articleSource' },
-          { relation: 'articleSpider' }
-        ]
       })
     };
 
-    return this.http.get<ArticleResponse[]>(
-      '/api/articles', { params }
-    ).map(r => r.map(i => new Article(i)));
+    return this.http.get<ArticleSummaryResponse[]>(
+      '/api/last-scraped-articles', { params }
+    ).map(r => r.map(i => new ArticleSummary(i)));
   }
 
 

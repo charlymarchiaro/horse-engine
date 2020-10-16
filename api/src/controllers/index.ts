@@ -10,3 +10,4 @@ export * from './scrapyd.controller';
 export * from './article-scraping-stats.controller';
 export * from './article-search.controller';
 export * from './article-search-scheme.controller';
+export * from './last-scraped-articles.controller';

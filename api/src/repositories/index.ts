@@ -6,3 +6,4 @@ export * from './article-scraping-stats-dyn.repository';
 export * from './article-scraping-stats.repository';
 export * from './article-search.repository';
 export * from './article-search-scheme.repository';
+export * from './article-summary.repository';

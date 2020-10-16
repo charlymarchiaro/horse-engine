@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { Article } from '../../../../model/article.model';
+import { Article, ArticleSummary } from '../../../../model/article.model';
 
 
 interface TableFieldInfo {
@@ -24,7 +24,7 @@ export class DatabaseQueryResultsComponent implements OnInit, OnChanges {
 
   public window = window;
 
-  @Input() public data: Article[] = [];
+  @Input() public data: ArticleSummary[] = [];
 
 
   constructor(
@@ -62,7 +62,7 @@ export class DatabaseQueryResultsComponent implements OnInit, OnChanges {
     ];
 
     this.tableData = this.data.map<TableFieldInfo[]>(i => [
-      { type: 'label', value: i.articleSource.name, },
+      { type: 'label', value: i.sourceName, },
       { type: 'link', value: 'http://' + i.url, label: 'Link', linkType: 'newTab' },
       {
         type: 'link',
@@ -77,7 +77,7 @@ export class DatabaseQueryResultsComponent implements OnInit, OnChanges {
         value: i.lastUpdated ? this.datePipe.transform(i.lastUpdated, 'MMM d, y, H:mm:ss') : '—',
       },
       { type: 'label', value: this.datePipe.transform(i.scrapedAt, 'MMM d, y, H:mm:ss'), },
-      { type: 'label', value: i.articleSpider.name, },
+      { type: 'label', value: i.spiderName, },
       { type: 'label', value: i.result, },
       { type: 'label', value: i.parseFunction || '—', },
     ]);

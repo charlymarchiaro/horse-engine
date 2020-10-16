@@ -18,6 +18,7 @@ export async function migrate(args: string[]) {
       'ArticleSource',
       'ArticleSpider',
       'Article',
+      'ArticleSummary',
       'ArticleScrapingStatsAccum',
       'ArticleScrapingStatsDyn',
       // Search

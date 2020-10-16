@@ -63,9 +63,7 @@ class ArticleDbHandler(object):
             )
             date = (
                 "'"
-                + self.sanitize_value(
-                    item["last_updated"].strftime("%Y/%m/%d")
-                )
+                + self.sanitize_value(item["last_updated"].strftime("%Y/%m/%d"))
                 + "'"
             )
         else:
@@ -92,28 +90,7 @@ class ArticleDbHandler(object):
 
         result = f"'{self.sanitize_value(item['result'])}'"
 
-        error = (
-            f"'{self.sanitize_value(item['error'])}'"
-            if item["error"] is not None
-            else "NULL"
-        )
-
-        error_details = (
-            f"'{self.sanitize_value(item['error_details'])}'"
-            if item["error_details"] is not None
-            else "NULL"
-        )
-
         # Delete if exists (this occurs if prior result was error)
-        sql = f"""
-                DELETE FROM
-		                scraper.article_scraping_details AS asd
-                WHERE
-		                asd.article_id IN (	SELECT id FROM scraper.article	WHERE url = {url} )
-                """
-
-        cursor.execute(sql)
-
         sql = f"""
                 DELETE FROM
 		                scraper.article AS article
@@ -132,7 +109,11 @@ class ArticleDbHandler(object):
                             text, 
                             last_updated, 
                             date, 
-                            article_source_id
+                            article_source_id,
+                            scraped_at,
+                            parse_function,
+                            result,
+                            article_spider_id
                         )
                         VALUES (
                             {url},
@@ -140,32 +121,10 @@ class ArticleDbHandler(object):
                             {text},
                             {last_updated},
                             {date},
-                            {article_source_id}
-                        )
-                        RETURNING id
-                """
-
-        cursor.execute(sql)
-
-        article_id = cursor.fetchone()[0]
-
-        sql = f"""
-                INSERT INTO 
-                        scraper.article_scraping_details(
-                            scraped_at, 
-                            parse_function, 
-                            result, 
-                            error, 
-                            error_details,
-                            article_spider_id,
-                            article_id
-                        )
-                        VALUES (
+                            {article_source_id},
                             {scraped_at},
                             {parse_function},
                             {result},
-                            {error},
-                            {error_details},
                             (
                                 SELECT 
                                         id 
@@ -174,8 +133,7 @@ class ArticleDbHandler(object):
                                 WHERE 
                                         name = {spider_name} 
                                 LIMIT 1
-                            ),
-                            '{article_id}'
+                            )
                         )
                 """
 
@@ -185,6 +143,8 @@ class ArticleDbHandler(object):
 
         # Close de connection
         cnxn.close()
+
+        self.add_to_last_scraped_articles(item, scraped_at)
 
         return None
 
@@ -202,12 +162,10 @@ class ArticleDbHandler(object):
                         article.id
                 FROM
                         scraper.article AS article
-                        INNER JOIN scraper.article_scraping_details AS details
-                            ON details.article_id = article.id
                 WHERE
                         article_source_id = '{article_source_id}'
-                        AND url LIKE '%{url}'
-                        AND details.result = 'success'
+                        AND url = '{url}'
+                        AND result = 'success'
 
                 """
         cursor.execute(sql)
@@ -259,12 +217,10 @@ class ArticleDbHandler(object):
                 FROM 
                         temp_articles_to_check AS t
                         INNER JOIN scraper.article AS article
-                            ON t.url like '%' || article.url
-                        INNER JOIN scraper.article_scraping_details AS details
-                            ON details.article_id = article.id
-                            AND details.result = 'success'
+                            ON t.url = article.url                            
                 WHERE
                         article.article_source_id = '{article_source_id}'
+                        AND article.result = 'success'
                 """
         cursor.execute(sql)
         cnxn.commit()
@@ -330,6 +286,79 @@ class ArticleDbHandler(object):
         info.parse_category = data["parse_category"]
 
         return info
+
+    def add_to_last_scraped_articles(
+        self, article: Article, scraped_at_str: str
+    ) -> None:
+
+        cnxn = self.get_db_connection()
+        cursor = cnxn.cursor()
+
+        if article["last_updated"] is not None:
+            last_updated_str = (
+                "'"
+                + self.sanitize_value(
+                    article["last_updated"].strftime("%Y/%m/%d %H:%M:%S")
+                )
+                + "'"
+            )
+        else:
+            last_updated_str = "NULL"
+
+        sql = f"""
+                INSERT INTO 
+                        scraper.article_summary(
+	                        url, 
+                            title, 
+                            text, 
+                            last_updated, 
+                            scraped_at, 
+                            parse_function, 
+                            result, 
+                            spider_name,
+                            source_name
+                        )
+	                    VALUES (
+                            '{article['url']}',
+                            '{article['title'][:27] + '...'}',
+                            '{article['text'][:27] + '...'}',
+                            {last_updated_str},
+                            {scraped_at_str},
+                            '{article['parse_function']}',
+                            '{article['result']}',
+                            '{article['spider_name']}',
+                            (
+                                SELECT 
+                                        name 
+                                FROM 
+                                        scraper.article_source
+                                WHERE 
+                                        id = '{article['source_id']}'
+                                LIMIT 1
+                            )
+                        );
+                """
+
+        cursor.execute(sql)
+
+        sql = f"""
+                DELETE FROM scraper.article_summary WHERE id NOT IN (
+                    SELECT
+                            id 
+                    FROM 
+                            scraper.article_summary
+                    ORDER BY
+                            scraped_at DESC
+                    LIMIT 10
+                )
+                """
+
+        cursor.execute(sql)
+
+        cnxn.commit()
+
+        # Close de connection
+        cnxn.close()
 
     def sanitize_value(self, value: Union[str, None]) -> str:
         if value is None:
