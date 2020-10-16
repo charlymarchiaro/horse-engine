@@ -135,16 +135,19 @@ class ArticleDbHandler(object):
                                 LIMIT 1
                             )
                         )
+                        RETURNING id
                 """
 
         cursor.execute(sql)
+
+        article_id = cursor.fetchone()[0]
 
         cnxn.commit()
 
         # Close de connection
         cnxn.close()
 
-        self.add_to_last_scraped_articles(item, scraped_at)
+        self.add_to_last_scraped_articles(item, article_id, scraped_at)
 
         return None
 
@@ -288,7 +291,7 @@ class ArticleDbHandler(object):
         return info
 
     def add_to_last_scraped_articles(
-        self, article: Article, scraped_at_str: str
+        self, article: Article, article_id: str, scraped_at_str: str
     ) -> None:
 
         cnxn = self.get_db_connection()
@@ -308,6 +311,7 @@ class ArticleDbHandler(object):
         sql = f"""
                 INSERT INTO 
                         scraper.article_summary(
+                            id,
 	                        url, 
                             title, 
                             text, 
@@ -319,6 +323,7 @@ class ArticleDbHandler(object):
                             source_name
                         )
 	                    VALUES (
+                            '{article_id}',
                             '{article['url']}',
                             '{article['title'][:27] + '...'}',
                             '{article['text'][:27] + '...'}',
