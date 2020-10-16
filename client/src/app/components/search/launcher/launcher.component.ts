@@ -54,7 +54,9 @@ export class LauncherComponent implements OnInit, OnDestroy, OnChanges {
 
 
     this.subscription.add(
-      searchService.searchParams$.pipe(filter(p => !!p)).subscribe(
+      searchService.searchParams$.pipe(
+        filter(p => !!p && !!p.dateSpan)
+      ).subscribe(
         p => {
           this.dateSpan = p.dateSpan;
           this.onDateSpanChange();

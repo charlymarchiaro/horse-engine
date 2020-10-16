@@ -8,6 +8,8 @@ import { MatSnackBar } from '@angular/material';
 import { normalizeString } from '../../../services/utils/utils';
 import { SearchService } from '../../search/search.service';
 import { SearchState } from '../../../model/search.model';
+import { CommonDialogsService } from '../../../services/utils/common-dialogs/common-dialogs.service';
+import { ConfirmationReturnCode } from '../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-search-scheme-browser',
@@ -51,6 +53,7 @@ export class BrowserComponent implements OnInit, OnDestroy {
     private searchSchemeService: SearchSchemeService,
     private searchService: SearchService,
     private snackBar: MatSnackBar,
+    private commonDialogsService: CommonDialogsService,
   ) { }
 
 
@@ -60,6 +63,11 @@ export class BrowserComponent implements OnInit, OnDestroy {
     );
     this.subscription.add(
       this.searchSchemeService.schemes$.subscribe(s => this.onSchemesListChange(s))
+    );
+    this.subscription.add(
+      this.searchService.searchParams$.subscribe(p => {
+        this.selected = [this.schemes.find(s => s.id === p.scheme.id)];
+      })
     );
     this.subscription.add(
       this.searchService.searchState$.subscribe(s => {
@@ -98,6 +106,11 @@ export class BrowserComponent implements OnInit, OnDestroy {
 
   public refresh() {
     this.updateSchemesList();
+  }
+
+
+  public onTableSelectionChange() {
+    this.searchService.setSelectedScheme(this.selected[0]);
   }
 
 
@@ -233,24 +246,38 @@ export class BrowserComponent implements OnInit, OnDestroy {
   onDeleteButtonClick() {
 
     const selected = this.selected[0];
-    this.isError = false;
 
-    this.searchSchemeService.deleteScheme(selected).then(
-      result => {
-        this.selected = [];
-        this.emitSelectionChange();
+    this.commonDialogsService.showConfirmationDialog(
+      'warning',
+      'Delete scheme',
+      'Search scheme browser',
+      `Are you sure you want to delete the search scheme '${selected.name}'?`
+    )
+      .then(
+        code => {
+          if (code === ConfirmationReturnCode.ACCEPT) {
 
-        this.snackBar.open(
-          `Search scheme deleted`,
-          'Close',
-          { duration: 3000 }
-        );
-      },
-      error => {
-        this.errorMessage = error.message;
-        this.isError = true;
-      }
-    );
+            this.isError = false;
+
+            this.searchSchemeService.deleteScheme(selected).then(
+              result => {
+                this.selected = [];
+                this.emitSelectionChange();
+
+                this.snackBar.open(
+                  `Search scheme deleted`,
+                  'Close',
+                  { duration: 3000 }
+                );
+              },
+              error => {
+                this.errorMessage = error.message;
+                this.isError = true;
+              }
+            );
+          }
+        }
+      );
   }
 
 

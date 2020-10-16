@@ -13,9 +13,7 @@
       (change)="onSchemeEditorChange($event)"
       (close)="onSchemeEditorClose()"></app-search-scheme-editor>
 
-    <app-search-launcher
-      *ngIf="selectedScheme"
-      [searchScheme]="selectedScheme"></app-search-launcher>
+    <app-search-launcher [searchScheme]="selectedScheme"></app-search-launcher>
 
     <app-search-results></app-search-results>
 

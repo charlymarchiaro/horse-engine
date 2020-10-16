@@ -6,14 +6,24 @@
   [Refresh]="false"
   [Toggle]="false">
   <ng-template #CardTitle>Search launcher</ng-template>
+
   <div id="content">
     <div
       id="top-row"
       class="row">
       <!-- Scheme info -->
-      <div id="scheme-info">
+      <div
+        id="scheme-info"
+        *ngIf="searchScheme">
         <h3 id="name">{{searchScheme.name}}</h3>
         <p id="description">{{searchScheme.description}}</p>
+      </div>
+
+      <!-- Placeholder -->
+      <div
+        id="placeholder"
+        *ngIf="!searchScheme">
+        No scheme selected.
       </div>
 
       <!-- Date span panel -->
@@ -79,7 +89,8 @@
           *ngIf="searchState === 'idle'"
           mat-flat-button
           color="primary"
-          (click)="onSubmit()">
+          (click)="onSubmit()"
+          [disabled]="!searchScheme">
           Submit
         </button>
 

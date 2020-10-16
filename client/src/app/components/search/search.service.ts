@@ -42,6 +42,23 @@ export class SearchService {
   ) { }
 
 
+  public setSelectedScheme(scheme: SearchScheme) {
+    const params = this.searchParamsSubject.getValue();
+
+    if (params && params.scheme && params.scheme.id === scheme.id) {
+      return;
+    }
+
+    // Reset the search results
+    this.searchResults.reset();
+
+    this.searchParamsSubject.next({
+      ...this.searchParamsSubject.getValue(),
+      scheme
+    });
+  }
+
+
   public submitSearch(
     scheme: SearchScheme,
     dateSpan: DateSpan,

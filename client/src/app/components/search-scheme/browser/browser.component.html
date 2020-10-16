@@ -65,7 +65,8 @@
         [selectionType]="'single'"
         [selected]="selected"
         [sorts]="sorts"
-        [scrollbarH]="true">
+        [scrollbarH]="true"
+        (select)="onTableSelectionChange()">
 
         <!-- name -->
         <ngx-datatable-column

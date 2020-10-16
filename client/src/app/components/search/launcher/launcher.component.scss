@@ -18,6 +18,14 @@
         min-height: 85px;
         justify-content: flex-end;
 
+        #placeholder {
+            flex-grow: 1;
+            min-width: 300px;
+            height: 85px;
+            padding: 30px 6px;
+            font-size: 14px;
+        }
+
         #scheme-info {
             flex-grow: 1;
             min-width: 300px;
@@ -56,16 +64,14 @@
             #labels {
                 display: flex;
                 flex-direction: column;
-                
+
                 font-size: 11px;
                 width: 145px;
 
-                #time-elapsed{
-
+                #time-elapsed {
                 }
 
                 #results-found {
-
                 }
             }
 
