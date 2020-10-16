@@ -13,7 +13,7 @@ export class ArticleRepository extends DefaultCrudRepository<
   > {
 
   public readonly articleSource: BelongsToAccessor<ArticleSource, typeof Article.prototype.id>;
-  
+
   public readonly articleSpider: BelongsToAccessor<ArticleSpider, typeof Article.prototype.id>;
 
 
@@ -27,12 +27,3 @@ export class ArticleRepository extends DefaultCrudRepository<
     this.registerInclusionResolver('articleSpider', this.articleSpider.inclusionResolver);
   }
 }
-
-// UPDATE scraper.article article SET
-// 	scraped_at=details.scraped_at, 
-// 	parse_function=details.parse_function, 
-// 	result=details.result, 
-// 	article_spider_id=details.article_spider_id
-// FROM
-// 	scraper.article_scraping_details details
-// 	WHERE details.article_id = article.id
