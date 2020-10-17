@@ -114,13 +114,18 @@ export class ResultsListComponent implements OnInit, OnDestroy {
   public onPageEvent(event: PageEvent) {
     try {
       if (event.pageSize !== this.pageSize) {
+
+        // Adjust page index to show the first item of the previous page
+        this.pageIndex = Math.floor(this.pageIndex * this.pageSize / event.pageSize);
+
         // Page size changed
         this.resultsListService.setItemsPerPage(event.pageSize);
       } else {
         // Page index changed
         this.pageIndex = event.pageIndex;
-        this.refreshPageItems();
       }
+
+      this.refreshPageItems();
 
     } catch (e) {
       console.error(e);

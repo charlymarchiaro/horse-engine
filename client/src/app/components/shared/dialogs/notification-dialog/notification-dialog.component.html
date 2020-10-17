@@ -1,49 +1,28 @@
-<div
-  id="container"
->
-  <div
-    id="header"
-  >
-    <div
-      id="title"
-    >
-      {{title}}
-    </div>
+<div id="container">
+  <div id="header">
+    <div id="title">{{title}}</div>
 
-    <div
-      id="sub-title"
-    >
-      {{subTitle}}
-    </div>
+    <div id="sub-title">{{subTitle}}</div>
 
     <mat-icon
       id="icon"
-      [ngStyle]="icon.style"
-    >
+      [ngStyle]="icon.style">
       {{icon.name}}
-    </mat-icon>    
+    </mat-icon>
   </div>
 
-
-  <div
-    id="body"
-  >
+  <div id="body">
     <hr>
 
-    <div
-      id="message"
-    >
-      {{message}}
-    </div>
+    <div id="message">{{message}}</div>
 
     <button
       id="ok-button"
       class="dialog-button"
       mat-stroked-button
       color="primary"
-      (click)="onOkButtonClick()"
-    >
-      Aceptar
+      (click)="onOkButtonClick()">
+      OK
     </button>
   </div>
 </div>

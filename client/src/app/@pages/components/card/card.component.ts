@@ -191,6 +191,10 @@ export class pgCard {
     this._isCollapsed = this._isCollapsed === true ? false : true;
   }
 
+  setCollapsed(value: boolean) {
+    this._isCollapsed = value;
+  }
+
   maximize(): void {
     let nativeElement = this._hostContent.nativeElement;
     if (this._isMaximixed) {

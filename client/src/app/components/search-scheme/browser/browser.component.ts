@@ -10,6 +10,7 @@ import { SearchService } from '../../search/search.service';
 import { SearchState } from '../../../model/search.model';
 import { CommonDialogsService } from '../../../services/utils/common-dialogs/common-dialogs.service';
 import { ConfirmationReturnCode } from '../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
+import { pgCard } from '../../../@pages/components/card/card.component';
 
 @Component({
   selector: 'app-search-scheme-browser',
@@ -38,6 +39,7 @@ export class BrowserComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();
 
 
+  @ViewChild(pgCard, { static: true }) pgCard: pgCard;
   @ViewChild(DatatableComponent, { static: true }) table: DatatableComponent;
 
 
@@ -72,6 +74,7 @@ export class BrowserComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.searchService.searchState$.subscribe(s => {
         this.searchState = s;
+        this.pgCard.setCollapsed(s !== SearchState.idle);
         this.updateIsDisabled();
       })
     );
