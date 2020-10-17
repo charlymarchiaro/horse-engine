@@ -2,3 +2,4 @@
 .secrets
 kube-state-metrics/
 .mypy_cache/3.7/@plugins_snapshot.json
+scrapyd/horse_scraper/output.txt
