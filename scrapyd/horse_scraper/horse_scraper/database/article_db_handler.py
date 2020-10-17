@@ -324,14 +324,14 @@ class ArticleDbHandler(object):
                         )
 	                    VALUES (
                             '{article_id}',
-                            '{article['url']}',
-                            '{article['title'][:27] + '...'}',
-                            '{article['text'][:27] + '...'}',
+                            '{self.sanitize_value(article['url'])}',
+                            '{self.sanitize_value(article['title'][:27] + '...')}',
+                            '{self.sanitize_value(article['text'][:27] + '...')}',
                             {last_updated_str},
                             {scraped_at_str},
-                            '{article['parse_function']}',
-                            '{article['result']}',
-                            '{article['spider_name']}',
+                            '{self.sanitize_value(article['parse_function'])}',
+                            '{self.sanitize_value(article['result'])}',
+                            '{self.sanitize_value(article['spider_name'])}',
                             (
                                 SELECT 
                                         name 
