@@ -7,6 +7,7 @@ import { BrowserComponent } from './browser/browser.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { pgCardModule } from '../../@pages/components/card/card.module';
 import { MaterialComponentsModule } from '../../material-components.module';
+import { BrowserService } from './browser/browser.service';
 
 
 
@@ -22,6 +23,7 @@ import { MaterialComponentsModule } from '../../material-components.module';
   ],
   providers: [
     SearchSchemeService,
+    BrowserService,
   ],
   exports: [
     EditorComponent,

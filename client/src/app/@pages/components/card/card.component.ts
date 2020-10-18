@@ -186,9 +186,11 @@ export class pgCard {
   }
 
   @Output() onRefresh: EventEmitter<void> = new EventEmitter();
+  @Output() toggled = new EventEmitter<boolean>();
 
   toggle(): void {
     this._isCollapsed = this._isCollapsed === true ? false : true;
+    this.toggled.emit(this._isCollapsed);
   }
 
   setCollapsed(value: boolean) {

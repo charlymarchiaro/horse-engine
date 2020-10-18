@@ -11,6 +11,7 @@ import { SearchState } from '../../../model/search.model';
 import { CommonDialogsService } from '../../../services/utils/common-dialogs/common-dialogs.service';
 import { ConfirmationReturnCode } from '../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
 import { pgCard } from '../../../@pages/components/card/card.component';
+import { BrowserService } from './browser.service';
 
 @Component({
   selector: 'app-search-scheme-browser',
@@ -34,6 +35,7 @@ export class BrowserComponent implements OnInit, OnDestroy {
 
   public searchState: SearchState;
   public isDisabled = false;
+  public isCollapsed = false;
 
 
   private subscription = new Subscription();
@@ -54,6 +56,7 @@ export class BrowserComponent implements OnInit, OnDestroy {
   constructor(
     private searchSchemeService: SearchSchemeService,
     private searchService: SearchService,
+    private browserService: BrowserService,
     private snackBar: MatSnackBar,
     private commonDialogsService: CommonDialogsService,
   ) { }
@@ -74,10 +77,13 @@ export class BrowserComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.searchService.searchState$.subscribe(s => {
         this.searchState = s;
-        this.pgCard.setCollapsed(s !== SearchState.idle);
         this.updateIsDisabled();
       })
     );
+    this.subscription.add(
+      this.browserService.collapsed$.subscribe(c => this.pgCard.setCollapsed(c))
+    );
+    this.pgCard.toggled.subscribe(c => this.browserService.setCollapsed(c));
 
     this.sorts = [
       { prop: 'updatedAt', dir: 'desc' },
