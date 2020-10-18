@@ -45,10 +45,23 @@ class DefaultArticleParser:
 
 def get_locale_date_order(country: str) -> str:
 
-    LOCALE_DATE_ORDER_DICT: Dict[str, str] = {"argentina": "DMY"}
+    country = country.lower()
 
-    ldo = LOCALE_DATE_ORDER_DICT[country.lower()]
-    if ldo:
-        return ldo
+    LOCALE_DATE_ORDER_DICT: Dict[str, str] = {
+        "argentina": "DMY",
+        "españa": "DMY",
+        "méxico": "DMY",
+        "uruguay": "DMY",
+        "colombia": "DMY",
+        "ecuador": "DMY",
+        "chile": "DMY",
+        "perú": "DMY",
+        "paraguay": "DMY",
+        "bolivia": "DMY",
+        "venezuela": "DMY",
+    }
 
-    return "YMD"
+    if not country in LOCALE_DATE_ORDER_DICT:
+        return "YMD"
+
+    return LOCALE_DATE_ORDER_DICT[country.lower()]
