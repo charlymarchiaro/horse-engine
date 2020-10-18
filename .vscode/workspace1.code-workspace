@@ -19,6 +19,9 @@
 	"settings": {
 		"mypy.targets": [
 			"scrapyd\\horse_scraper"
+		],
+		"python.analysis.extraPaths": [
+			"scrapyd/horse_scraper"
 		]
 	}
 }
