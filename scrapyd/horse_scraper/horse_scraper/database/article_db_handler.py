@@ -325,8 +325,8 @@ class ArticleDbHandler(object):
 	                    VALUES (
                             '{article_id}',
                             '{self.sanitize_value(article['url'])}',
-                            '{self.sanitize_value(article['title'][:27] + '...')}',
-                            '{self.sanitize_value(article['text'][:27] + '...')}',
+                            '{self.sanitize_value(article['title'])[:27] + '...'}',
+                            '{self.sanitize_value(article['text'])[:27] + '...'}',
                             {last_updated_str},
                             {scraped_at_str},
                             '{self.sanitize_value(article['parse_function'])}',
