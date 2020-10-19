@@ -116,8 +116,8 @@ export class Article {
   constructor(r: ArticleResponse) {
     this.id = r.id;
     this.url = r.url;
-    this.title = r.title;
-    this.text = r.text;
+    this.title = r.title || '';
+    this.text = r.text || '';
     this.lastUpdated = r.lastUpdated ? new Date(r.lastUpdated) : null;
     this.date = r.date ? new Date(r.date) : null;
     this.scrapedAt = r.scrapedAt ? new Date(r.scrapedAt) : null;
