@@ -47,3 +47,5 @@ spec:
               value: "5432"
             - name: DB_NAME
               value: horse_engine
+            - name: SCRAPYD_LOG_LEVEL
+              value: DEBUG
