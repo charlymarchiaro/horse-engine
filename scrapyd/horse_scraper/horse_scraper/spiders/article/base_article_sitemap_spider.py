@@ -130,6 +130,7 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
                     # no valid rules apply --> skip
                     continue
 
+                entry["entry_date"] = entry_date
                 article_entries.append(entry)
 
             continue
@@ -137,6 +138,7 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
         # Process article entries
         if len(article_entries) > 0:
             for entry in self.get_not_already_persisted_entries(article_entries):
+                entry_date = entry["entry_date"]
                 logging.info(
                     f"--> Valid url (entry_date={entry_date}) >>> (parsing article): "
                     + entry["loc"]
