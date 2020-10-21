@@ -68,7 +68,7 @@ export class DatabaseQueryResultsComponent implements OnInit, OnChanges {
         type: 'link',
         value: `/api/articles/${i.id}?filter=%7B%0A%20%20%22include%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%20%22relation%22%3A%20%22articleSpider%22%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%20%22relation%22%3A%20%22articleSource%22%20%7D%0A%20%20%5D%0A%7D`,
         label: 'View',
-        linkType: 'newWindow'
+        linkType: 'newTab'
       },
       { type: 'label', value: this.makeEllipsis(i.title, 30) || '—', },
       { type: 'label', value: this.makeEllipsis(i.text, 30) || '—', },
