@@ -24,6 +24,7 @@ class AttributeType(Enum):
     TEXT_CONTAINS = "TEXT_CONTAINS"
     TEXT_EQUALS = "TEXT_EQUALS"
     NG_BIND = "NG_BIND"
+    TARGET = "TARGET"
 
 
 def extract_all_text(
@@ -72,6 +73,9 @@ def generate_xpath_exclude_selector(exclude_item: Tuple[AttributeType, str]) -> 
 
     elif attrib_type == AttributeType.NG_BIND:
         return f'not( ancestor-or-self::*[contains(@ng-bind, "{value}")] )'
+
+    elif attrib_type == AttributeType.TARGET:
+        return f'not( ancestor-or-self::*[contains(@target, "{value}")] )'
 
     else:
         raise Exception("Invalid attribute type")
