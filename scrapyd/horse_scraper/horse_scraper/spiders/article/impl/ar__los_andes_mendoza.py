@@ -61,7 +61,12 @@ class Params(BaseArticleSpiderParams):
     def get_url_filter(self) -> UrlFilter:
         return UrlFilter(
             allow_re=[".*losandes.com.ar\/.+\/.{10,}(\/)?$",],
-            deny_re=[".*losandes.com.ar\/.+\/.+\/.+", ".*\/temas\/.*", ".*\/autor\/.*"],
+            deny_re=[
+                ".*losandes.com.ar\/.+\/.+\/.+",
+                ".*\/temas\/.*",
+                ".*\/autor\/.*",
+                ".*\/\d+\/",
+            ],
         )
 
     # Sitemap params
