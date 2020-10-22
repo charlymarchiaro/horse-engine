@@ -49,6 +49,7 @@ def get_locale_date_order(country: str) -> str:
 
     LOCALE_DATE_ORDER_DICT: Dict[str, str] = {
         "argentina": "DMY",
+        "brasil": "DMY",
         "españa": "DMY",
         "méxico": "DMY",
         "uruguay": "DMY",
