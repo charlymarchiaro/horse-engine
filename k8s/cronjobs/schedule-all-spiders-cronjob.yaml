@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: schedule-all-spiders
 spec:
-  schedule: "0 3 * * *"
+  schedule: "0 5 * * *"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
