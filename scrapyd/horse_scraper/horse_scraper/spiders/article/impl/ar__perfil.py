@@ -86,7 +86,17 @@ class Params(BaseArticleSpiderParams):
         ]
 
     def get_url_filter(self) -> UrlFilter:
-        return UrlFilter(allow_re=[".*\/noticias\/.*.phtml"], deny_re=[".*.phtml#.*"])
+        return UrlFilter(
+            allow_re=[".*\/noticias\/.*.phtml"],
+            deny_re=[
+                ".*.phtml#.*",
+                "caras.perfil.com\/{1,}caras.perfil.com"
+                "exitoina.perfil.com\/{1,}exitoina.perfil.com"
+                "parabrisas.perfil.com\/{1,}parabrisas.perfil.com"
+                "weekend.perfil.com\/{1,}weekend.perfil.com"
+                "www.perfil.com\/{1,}www.perfil.com",
+            ],
+        )
 
     # Sitemap params
 
@@ -113,6 +123,7 @@ class Params(BaseArticleSpiderParams):
         return [
             self.parser_1,
             self.parser_2,
+            self.parser_3,
         ]
 
     def parser_1(self, response):
@@ -152,6 +163,27 @@ class Params(BaseArticleSpiderParams):
                 (AttributeType.NAME, "script"),
                 (AttributeType.NAME, "style"),
                 (AttributeType.CLASS, "relacionada"),
+            ],
+        )
+
+        return ArticleData(title, text, last_updated)
+
+    # radio.perfil.com
+    def parser_3(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+        last_updated = article_data.last_updated
+
+        # text ----------
+        text = extract_all_text(
+            response,
+            root_xpath='//div[contains(@id, "news-body")]',
+            exclude_list=[
+                (AttributeType.NAME, "script"),
+                (AttributeType.NAME, "style"),
+                (AttributeType.CLASS, "relacionadas"),
             ],
         )
 
