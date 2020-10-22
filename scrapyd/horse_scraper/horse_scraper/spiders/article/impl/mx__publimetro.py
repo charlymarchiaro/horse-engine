@@ -143,7 +143,7 @@ class Params(BaseArticleSpiderParams):
         # text ----------
         text = extract_all_text(
             response,
-            root_xpath='//div[contains(@class, "body-content")]',
+            root_xpath='//div[contains(@class, "MuiContainer-root")]//div[contains(@class, "MuiGrid-root")]',
             exclude_list=[
                 (AttributeType.NAME, "script"),
                 (AttributeType.NAME, "style"),
