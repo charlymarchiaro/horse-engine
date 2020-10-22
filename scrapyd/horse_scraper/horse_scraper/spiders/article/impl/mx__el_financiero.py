@@ -106,6 +106,7 @@ class Params(BaseArticleSpiderParams):
     def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:
         return [
             self.parser_1,
+            self.parser_2,
         ]
 
     def parser_1(self, response):
@@ -119,6 +120,27 @@ class Params(BaseArticleSpiderParams):
         text = extract_all_text(
             response,
             root_xpath='//div[contains(@class, "main-article-text")]//*[contains(@class, "content")]',
+            exclude_list=[
+                (AttributeType.NAME, "script"),
+                (AttributeType.NAME, "style"),
+                (AttributeType.ID, "embed"),
+                (AttributeType.TARGET, "_blank"),
+            ],
+        )
+
+        return ArticleData(title, text, last_updated)
+
+    def parser_2(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+        last_updated = article_data.last_updated
+
+        # text ----------
+        text = extract_all_text(
+            response,
+            root_xpath='//div[contains(@class, "content")]',
             exclude_list=[
                 (AttributeType.NAME, "script"),
                 (AttributeType.NAME, "style"),
