@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { PageEvent } from '@angular/material';
 import { Subscription, BehaviorSubject } from 'rxjs';
@@ -51,6 +51,7 @@ export class ResultsListComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();
   private backendSubscription = new Subscription();
 
+  @ViewChild('listRef', { static: false }) listRef: ElementRef;
 
   @Output() public select = new EventEmitter<ArticleSelectEventArgs>();
   @Output() public loadState = this.loadStateSubject.asObservable();
@@ -123,6 +124,10 @@ export class ResultsListComponent implements OnInit, OnDestroy {
       } else {
         // Page index changed
         this.pageIndex = event.pageIndex;
+      }
+
+      if (this.listRef) {
+        this.listRef.nativeElement.scrollTop = 0;
       }
 
       this.refreshPageItems();
