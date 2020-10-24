@@ -1,5 +1,5 @@
 # ingress controller
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.35.0/deploy/static/provider/cloud/deploy.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.40.2/deploy/static/provider/cloud/deploy.yaml
 
 kubectl apply -f ingress-service.yaml
 
@@ -9,15 +9,15 @@ kubectl apply -f load-balancers/splash-load-balancer.yaml
 kubectl apply -f pvc/database-pvc.yaml
 
 kubectl apply -f api-cluster-ip-service.yaml
-kubectl apply -f api-deployment.yaml
+kubectl apply -f dev/api-deployment.yaml
 kubectl apply -f client-cluster-ip-service.yaml
-kubectl apply -f client-deployment.yaml
+kubectl apply -f dev/client-deployment.yaml
 kubectl apply -f scrapyd-cluster-ip-service.yaml
-kubectl apply -f scrapyd-deployment.yaml
+kubectl apply -f dev/scrapyd-deployment.yaml
 kubectl apply -f splash-cluster-ip-service.yaml
-kubectl apply -f splash-deployment.yaml
+kubectl apply -f dev/splash-deployment.yaml
 kubectl apply -f postgres-cluster-ip-service.yaml
-kubectl apply -f postgres-deployment.yaml
+kubectl apply -f dev/postgres-deployment.yaml
 
 # Dashboard
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
