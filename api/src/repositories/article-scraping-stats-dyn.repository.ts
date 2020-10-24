@@ -24,10 +24,6 @@ export class ArticleScrapingStatsDynRepository extends DefaultTransactionalRepos
 
     try {
 
-      const CURRENT_DATE_STR = moment().format('YYYY-MM-DD');
-      const PERIOD_DAYS_BACK = 60;
-
-
       // Clear current data
       const deletedCount = await this.execute(
         `
@@ -48,8 +44,6 @@ export class ArticleScrapingStatsDynRepository extends DefaultTransactionalRepos
               article_source_id
           FROM
               scraper.article
-          WHERE
-              date >= $1::date - ${PERIOD_DAYS_BACK}
         ),
         data_published_1 AS (
           SELECT        
@@ -62,7 +56,6 @@ export class ArticleScrapingStatsDynRepository extends DefaultTransactionalRepos
                 ON source.id = article.article_source_id
           WHERE
               article.date IS NOT NULL
-              AND article.date >= $1::date - ${PERIOD_DAYS_BACK}
           GROUP BY
               source_id, date1
         ),
@@ -75,8 +68,6 @@ export class ArticleScrapingStatsDynRepository extends DefaultTransactionalRepos
               article
               INNER JOIN scraper.article_source AS source
                 ON source.id = article.article_source_id
-          WHERE
-              article.date >= $1::date - ${PERIOD_DAYS_BACK}
           GROUP BY
               source_id, date1
         ),
@@ -92,7 +83,6 @@ export class ArticleScrapingStatsDynRepository extends DefaultTransactionalRepos
                 ON source.id = article.article_source_id
           WHERE
               article.date IS NOT NULL
-              AND article.date >= $1::date - ${PERIOD_DAYS_BACK}
         ),
         data_pub_to_scrap_2 AS (
           SELECT
@@ -149,7 +139,7 @@ export class ArticleScrapingStatsDynRepository extends DefaultTransactionalRepos
         ORDER BY 
             source_id, date1
         `,
-        [CURRENT_DATE_STR],
+        [],
         { transaction: tx },
       );
 
