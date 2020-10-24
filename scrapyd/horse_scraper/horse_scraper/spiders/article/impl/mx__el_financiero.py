@@ -107,6 +107,7 @@ class Params(BaseArticleSpiderParams):
         return [
             self.parser_1,
             self.parser_2,
+            self.parser_3,
         ]
 
     def parser_1(self, response):
@@ -136,6 +137,36 @@ class Params(BaseArticleSpiderParams):
 
         title = article_data.title
         last_updated = article_data.last_updated
+
+        # text ----------
+        text = extract_all_text(
+            response,
+            root_xpath='//div[contains(@class, "content")]',
+            exclude_list=[
+                (AttributeType.NAME, "script"),
+                (AttributeType.NAME, "style"),
+                (AttributeType.ID, "embed"),
+                (AttributeType.TARGET, "_blank"),
+            ],
+        )
+
+        return ArticleData(title, text, last_updated)
+
+    def parser_3(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+
+        # last_updated ----------
+        last_updated = dateparser.parse(
+            extract_all_text(
+                response,
+                root_xpath='//span[contains(@class, "publish")]',
+                exclude_list=[],
+            ),
+            settings={"DATE_ORDER": "DMY"},
+        )
 
         # text ----------
         text = extract_all_text(
