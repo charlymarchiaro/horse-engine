@@ -67,7 +67,12 @@ class Params(BaseArticleSpiderParams):
                 "www.forbes.com.mx\/.{20,}\/$",
                 "www.forbes.com.mx\/forbes-life\/.{20,}\/$",
             ],
-            deny_re=["www.forbes.com.mx.*\/(?!forbes-life)\/.+\/.*", ".*\/tag\/.*",],
+            deny_re=[
+                "www.forbes.com.mx.*\/(?!forbes-life)\/.+\/.*",
+                ".*\/tag\/.*",
+                ".*\/author\/.*",
+                ".*\/page\/.*",
+            ],
         )
 
     # Sitemap params
