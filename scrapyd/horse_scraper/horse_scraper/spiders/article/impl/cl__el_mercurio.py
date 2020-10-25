@@ -74,7 +74,8 @@ class Params(BaseArticleSpiderParams):
 
     def get_url_filter(self) -> UrlFilter:
         return UrlFilter(
-            allow_re=[f"\/noticias\/.*({self.date_allow_str}).*.html"], deny_re=[]
+            allow_re=[f"\/noticias\/.*({self.date_allow_str}).*.html"],
+            deny_re=["Fuente:"],
         )
 
     # Sitemap params
