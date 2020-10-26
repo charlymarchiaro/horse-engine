@@ -73,7 +73,7 @@ class Params(BaseArticleSpiderParams):
 
     def get_url_filter(self) -> UrlFilter:
         return UrlFilter(
-            allow_re=["www.elpais.com.uy\/.+\/.{20,}.html"], deny_re=["\/noticias\/"]
+            allow_re=["www.elpais.com.uy\/.+\/.{10,}.html"], deny_re=["\/noticias\/"]
         )
 
     # Sitemap params

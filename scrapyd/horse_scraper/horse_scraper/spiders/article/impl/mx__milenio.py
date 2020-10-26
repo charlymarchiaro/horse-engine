@@ -66,7 +66,7 @@ class Params(BaseArticleSpiderParams):
 
     def get_url_filter(self) -> UrlFilter:
         return UrlFilter(
-            allow_re=["milenio.com\/.+\/.{20,}"],
+            allow_re=["milenio.com\/.+\/.{10,}"],
             deny_re=[
                 "publicidad.milenio.com",
                 "descuentos.milenio.com",

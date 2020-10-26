@@ -64,8 +64,8 @@ class Params(BaseArticleSpiderParams):
     def get_url_filter(self) -> UrlFilter:
         return UrlFilter(
             allow_re=[
-                "www.forbes.com.mx\/.{20,}\/$",
-                "www.forbes.com.mx\/forbes-life\/.{20,}\/$",
+                "www.forbes.com.mx\/.{10,}\/$",
+                "www.forbes.com.mx\/forbes-life\/.{10,}\/$",
             ],
             deny_re=[
                 "www.forbes.com.mx.*\/(?!forbes-life)\/.+\/.*",
