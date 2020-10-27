@@ -62,7 +62,9 @@ class Params(BaseArticleSpiderParams):
         ]
 
     def get_url_filter(self) -> UrlFilter:
-        return UrlFilter(allow_re=[".*eluniversal.com.mx\/.+\/.{10,}"], deny_re=[])
+        return UrlFilter(
+            allow_re=[".*eluniversal.com.mx\/.+\/.{10,}"], deny_re=["page="]
+        )
 
     # Sitemap params
 
