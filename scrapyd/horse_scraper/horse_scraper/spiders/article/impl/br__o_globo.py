@@ -92,6 +92,7 @@ class Params(BaseArticleSpiderParams):
         return [
             self.parser_1,
             self.parser_2,
+            self.parser_3,
         ]
 
     def parser_1(self, response):
@@ -124,6 +125,39 @@ class Params(BaseArticleSpiderParams):
             last_updated = dateparser.parse(
                 match.group(0), settings={"DATE_ORDER": "DMY"}
             )
+
+        return ArticleData(title, text, last_updated)
+
+    # /analitico
+    def parser_3(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+        last_updated = article_data.last_updated
+
+        # text
+
+        data_json = extract_all_text(
+            response, root_xpath='//script[contains(@id, "posts")]', exclude_list=[],
+        )
+
+        data = json.loads(data_json)
+
+        post = next(p for p in data["posts"] if p["url"] == response.url)
+
+        text = ""
+
+        for paragraph in post["corpo"]:
+            if paragraph["type"] != "paragraph":
+                continue
+
+            for item in paragraph["value"]:
+                if item["type"] == "texto":
+                    text += item["value"] + " "
+
+                if item["type"] == "link":
+                    text += item["value"]["text"] + " "
 
         return ArticleData(title, text, last_updated)
 
