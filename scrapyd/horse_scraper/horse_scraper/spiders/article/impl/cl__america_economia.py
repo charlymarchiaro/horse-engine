@@ -1,5 +1,6 @@
 from typing import Tuple, List, Dict, Any, Union, Callable, cast
 
+import time
 import json
 import html
 import dateparser  # type: ignore
@@ -12,6 +13,7 @@ from scrapy.linkextractors import LinkExtractor  # type: ignore
 from scrapy.spiders import Rule  # type: ignore
 
 from horse_scraper.items import Article
+from horse_scraper.settings import DOWNLOAD_DELAY
 from horse_scraper.spiders.article.model import ArticleData, SpiderType
 from horse_scraper.spiders.article.base_article_spider_params import (
     BaseArticleSpiderParams,
@@ -28,7 +30,8 @@ from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 class Params(BaseArticleSpiderParams):
     def _after_initialize(self) -> None:
-        pass
+        # Override to stop redirects
+        self.dont_redirect = True
 
     # Common params
     def _get_spider_base_name(self) -> str:
@@ -58,6 +61,8 @@ class Params(BaseArticleSpiderParams):
             allow_re=["americaeconomia.com\/.+\/.+"],
             deny_re=[
                 "\/login",
+                "\/register\/",
+                "\/form$",
                 "\/p\/",
                 ".png$",
                 "\/images\/",
@@ -66,6 +71,11 @@ class Params(BaseArticleSpiderParams):
                 "\/agenda\/",
                 "\/entidades\/",
                 "\/personas\/",
+                "\/file\/",
+                "\/tags\/",
+                "\/categorias\/",
+                "\/term\/",
+                "\/auth0$",
             ],
         )
 
@@ -93,9 +103,14 @@ class Params(BaseArticleSpiderParams):
             self.parser_1,
             self.parser_2,
             self.parser_3,
+            self.parser_4,
+            self.parser_5,
         ]
 
     def parser_1(self, response):
+
+        # For some reason, this spider does not respect the download delay --> using time.sleep
+        time.sleep(DOWNLOAD_DELAY)
 
         article_data = self.get_default_parser_results(response)
 
@@ -163,6 +178,65 @@ class Params(BaseArticleSpiderParams):
             ),
             settings={"DATE_ORDER": "DMY"},
         )
+
+        return ArticleData(title, text, last_updated)
+
+    # asialink
+    def parser_4(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+
+        # text ----------
+        text = extract_all_text(
+            response,
+            root_xpath='//div[contains(@class, "field-name-body")]',
+            exclude_list=[
+                (AttributeType.NAME, "script"),
+                (AttributeType.NAME, "style"),
+            ],
+        )
+
+        # last_updated
+        date_str = extract_all_text(
+            response,
+            root_xpath='//div[contains(@class, "awesome-date")]',
+            exclude_list=[],
+        )
+
+        if date_str is None or date_str == "":
+            # Article has no date, use now
+            last_updated = datetime.now()
+        else:
+            last_updated = dateparser.parse(date_str, settings={"DATE_ORDER": "DMY"})
+
+        return ArticleData(title, text, last_updated)
+
+    # articulos
+    def parser_5(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+
+        # text ----------
+        text = extract_all_text(
+            response,
+            root_xpath='//div[contains(@class,"nota-contenedor")]',
+            exclude_list=[
+                (AttributeType.NAME, "script"),
+                (AttributeType.NAME, "style"),
+            ],
+        )
+
+        # last_updated
+        date_str = extract_all_text(
+            response, root_xpath='//div[contains(@class,"subtitulo")]', exclude_list=[],
+        )
+
+        date_str = date_str.split("|")[1]
+        last_updated = dateparser.parse(date_str, settings={"DATE_ORDER": "DMY"})
 
         return ArticleData(title, text, last_updated)
 
