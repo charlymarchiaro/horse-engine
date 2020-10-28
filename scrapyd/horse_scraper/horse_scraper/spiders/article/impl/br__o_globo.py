@@ -64,7 +64,10 @@ class Params(BaseArticleSpiderParams):
         ]
 
     def get_url_filter(self) -> UrlFilter:
-        return UrlFilter(allow_re=["oglobo.globo.com\/.+\/.+-\d{6,}"], deny_re=[])
+        return UrlFilter(
+            allow_re=["oglobo.globo.com\/.+\/.+-\d{6,}"],
+            deny_re=["\/fotogalerias\/", "memoria.oglobo.globo.com",],
+        )
 
     # Sitemap params
 
@@ -86,7 +89,43 @@ class Params(BaseArticleSpiderParams):
     # Parser functions
 
     def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:
-        return []
+        return [
+            self.parser_1,
+            self.parser_2,
+        ]
+
+    def parser_1(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+        text = article_data.text
+        last_updated = article_data.last_updated
+
+        return ArticleData(title, text, last_updated)
+
+    # acervo.oglobo
+    def parser_2(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+        text = article_data.text
+
+        # last_updated
+        last_updated = None
+
+        date_str = extract_all_text(
+            response, root_xpath='//p[contains(@class, "sem-borda")]', exclude_list=[],
+        )
+
+        match = re.search("\d{2}\/\d{2}\/\d{2}", date_str)
+        if match:
+            last_updated = dateparser.parse(
+                match.group(0), settings={"DATE_ORDER": "DMY"}
+            )
+
+        return ArticleData(title, text, last_updated)
 
 
 # Spider implementations
