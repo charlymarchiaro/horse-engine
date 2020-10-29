@@ -28,7 +28,8 @@ from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 class Params(BaseArticleSpiderParams):
     def _after_initialize(self) -> None:
-        pass
+        # Override to stop redirects
+        self.dont_redirect = True
 
     # Common params
     def _get_spider_base_name(self) -> str:
@@ -66,6 +67,7 @@ class Params(BaseArticleSpiderParams):
                 ".*\/temas\/.*",
                 ".*\/autor\/.*",
                 ".*\/\d+\/",
+                "category=",
             ],
         )
 
