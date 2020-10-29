@@ -47,7 +47,8 @@ class Params(BaseArticleSpiderParams):
 
     def get_url_filter(self) -> UrlFilter:
         return UrlFilter(
-            allow_re=[".*\/\d{6}\d*-.*"], deny_re=["\/autores\/", "\/ingresar"]
+            allow_re=[".*\/\d{6}\d*-.*"],
+            deny_re=["\/autores\/", "\/ingresar", "\/subnotas\/",],
         )
 
     # Sitemap params
