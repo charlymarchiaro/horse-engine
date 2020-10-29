@@ -71,11 +71,14 @@ class Params(BaseArticleSpiderParams):
                 "\/agenda\/",
                 "\/entidades\/",
                 "\/personas\/",
+                "\/autores\/",
                 "\/file\/",
                 "\/tags\/",
                 "\/categorias\/",
                 "\/term\/",
                 "\/auth0$",
+                "\/biblioteca\/",
+                "page=",
             ],
         )
 
