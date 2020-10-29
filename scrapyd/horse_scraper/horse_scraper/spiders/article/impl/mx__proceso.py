@@ -28,7 +28,12 @@ from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 class Params(BaseArticleSpiderParams):
     def _after_initialize(self) -> None:
-        pass
+        self.date_allow_str = self.get_date_allow_str(
+            year_format="04",
+            month_format="1",
+            day_format="1",
+            concat_fn=lambda year, month, day: f"/{year}/{month}/{day}/",
+        )
 
     # Common params
     def _get_spider_base_name(self) -> str:
@@ -74,12 +79,15 @@ class Params(BaseArticleSpiderParams):
         ]
 
     def get_url_filter(self) -> UrlFilter:
-        return UrlFilter(allow_re=["www.proceso.com.mx\/\d{5,}\/.+"], deny_re=[])
+        return UrlFilter(allow_re=[f".*({self.date_allow_str}).*\d+.html"], deny_re=[])
 
     # Sitemap params
 
     def get_sitemap_urls(self) -> List[str]:
-        return ["https://www.proceso.com.mx/sitemap_index.xml"]
+        return [
+            "https://www.proceso.com.mx/sitemaps/",
+            "https://www.proceso.com.mx/sitemaps/indexnews.asp",
+        ]
 
     def get_sitemap_follow(self) -> List[str]:
         return [".*"]
@@ -110,11 +118,11 @@ class Params(BaseArticleSpiderParams):
         # text ----------
         text = extract_all_text(
             response,
-            root_xpath='//div[contains(@class, "entry-content-inner")]',
+            root_xpath='//div[contains(@class, "cuerpo-nota")]',
             exclude_list=[
                 (AttributeType.NAME, "script"),
                 (AttributeType.NAME, "style"),
-                (AttributeType.TEXT_CONTAINS, "Debes leer:"),
+                (AttributeType.CLASS, "relacionadas"),
             ],
         )
 
