@@ -91,7 +91,7 @@ class Params(BaseArticleSpiderParams):
                 response,
                 root_xpath='//div[contains(@class, "headerArticulo")]//h3',
                 exclude_list=[],
-            ),
+            ).split("-")[0],
             settings={"DATE_ORDER": "DMY"},
         )
 
