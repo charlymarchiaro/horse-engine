@@ -90,6 +90,7 @@ class Params(BaseArticleSpiderParams):
             allow_re=[".*\/noticias\/.*.phtml"],
             deny_re=[
                 ".*.phtml#.*",
+                "perfil.com\/\/",
                 "caras.perfil.com\/{1,}caras.perfil.com"
                 "exitoina.perfil.com\/{1,}exitoina.perfil.com"
                 "parabrisas.perfil.com\/{1,}parabrisas.perfil.com"
