@@ -266,7 +266,7 @@ export class ArticleScrapingStatsRepository extends DefaultTransactionalReposito
             100.0 * (accum_t0.total_success_count - accum_t7.total_success_count) / 
             (
               accum_t0.total_success_count - accum_t7.total_success_count 
-              + accum_t0.total_error_count - accum_t7.total_error_count
+              + GREATEST(accum_t0.total_error_count - accum_t7.total_error_count, 0)
               + 0.000001 -- Offset to avoid division by zero error
             ) AS val
         FROM 
