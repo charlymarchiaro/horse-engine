@@ -36,7 +36,7 @@ class Params(BaseArticleSpiderParams):
         )
         # Enable Splash to parse dynamically loaded content
         self.splash_enabled = True
-        self.splash_wait_time = 2.5
+        self.splash_wait_time = 5
 
     # Common params
     def _get_spider_base_name(self) -> str:
