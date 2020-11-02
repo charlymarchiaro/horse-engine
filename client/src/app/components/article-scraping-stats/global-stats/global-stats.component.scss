@@ -80,3 +80,8 @@
 .positive-trend {
     color: #19ad79;
 }
+
+:host ::ng-deep .datatable-body-cell,
+:host ::ng-deep .datatable-header-cell-label {
+    font-size: 11px !important;
+}
