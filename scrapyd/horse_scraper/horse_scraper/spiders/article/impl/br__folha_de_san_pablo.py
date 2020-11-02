@@ -64,7 +64,7 @@ class Params(BaseArticleSpiderParams):
     def get_url_filter(self) -> UrlFilter:
         return UrlFilter(
             allow_re=[f"folha.uol.com.br\/.+({self.date_allow_str}).+.shtml"],
-            deny_re=[],
+            deny_re=["agora.folha.uol.com.br"],
         )
 
     # Sitemap params
