@@ -49,3 +49,5 @@ spec:
               value: horse_engine
             - name: SCRAPYD_LOG_LEVEL
               value: INFO
+            - name: SPLASH_URL
+              value: http://splash-cluster-ip-service:8050/

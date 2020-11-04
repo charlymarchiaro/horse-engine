@@ -110,7 +110,7 @@ ITEM_PIPELINES = {
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 # Splash
-SPLASH_URL = "http://splash-cluster-ip-service:8050/"
+SPLASH_URL = os.environ.get("SPLASH_URL")
 DUPEFILTER_CLASS = "scrapy_splash.SplashAwareDupeFilter"
 HTTPCACHE_STORAGE = "scrapy_splash.SplashAwareFSCacheStorage"
 
