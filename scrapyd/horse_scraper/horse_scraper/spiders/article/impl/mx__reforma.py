@@ -13,7 +13,6 @@ from scrapy.linkextractors import LinkExtractor  # type: ignore
 from scrapy.spiders import Rule  # type: ignore
 
 from horse_scraper.items import Article
-from horse_scraper.settings import SPLASH_URL
 from horse_scraper.spiders.article.model import ArticleData, SpiderType
 from horse_scraper.spiders.article.base_article_spider_params import (
     BaseArticleSpiderParams,
