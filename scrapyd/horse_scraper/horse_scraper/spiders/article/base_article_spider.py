@@ -107,6 +107,9 @@ class BaseArticleSpider:
         force_normal_request=False,
     ) -> Request:
 
+        # Allows an optional pre-processing of the url
+        url = self.params.pre_process_url(url)
+
         req_meta = {"dont_redirect": self.params.dont_redirect}
 
         if meta:

@@ -57,7 +57,7 @@ class BaseArticleSpiderParams:
     # Override to keep query string of the article's url
     keep_url_query_string: bool = False
 
-    # Override to stop redirects 
+    # Override to stop redirects
     dont_redirect: bool = False
 
     # Override to ignore missing sitemap entry dates
@@ -118,6 +118,11 @@ class BaseArticleSpiderParams:
     @abstractmethod
     def get_url_filter(self) -> UrlFilter:
         pass
+
+    # Allows an optional pre-processing of the url
+    @abstractmethod
+    def pre_process_url(self, url) -> str:
+        return url
 
     # Crawl params
     @abstractmethod
