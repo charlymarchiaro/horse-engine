@@ -73,12 +73,15 @@ class Params(BaseArticleSpiderParams):
                 "\/personas\/",
                 "\/autores\/",
                 "\/file\/",
+                "\/files\/",
                 "\/tags\/",
                 "\/categorias\/",
                 "\/term\/",
                 "\/auth0$",
                 "\/biblioteca\/",
                 "page=",
+                "\/page\/",
+                "\/programas\/",
             ],
         )
 
