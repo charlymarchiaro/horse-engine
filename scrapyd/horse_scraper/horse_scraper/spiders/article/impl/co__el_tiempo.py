@@ -65,7 +65,7 @@ class Params(BaseArticleSpiderParams):
         ]
 
     def get_url_filter(self) -> UrlFilter:
-        return UrlFilter(allow_re=[".*-\d{4,}$"], deny_re=[])
+        return UrlFilter(allow_re=[".*-\d{4,}$"], deny_re=["\/noticias\/"])
 
     # Sitemap params
 
@@ -95,6 +95,7 @@ class Params(BaseArticleSpiderParams):
     def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:
         return [
             self.parser_1,
+            self.parser_2,
         ]
 
     def parser_1(self, response):
@@ -114,6 +115,27 @@ class Params(BaseArticleSpiderParams):
                 (AttributeType.CLASS, "relacionados"),
                 (AttributeType.CLASS, "compartir"),
                 (AttributeType.TARGET, "_blank"),
+            ],
+        )
+
+        return ArticleData(title, text, last_updated)
+
+    # video
+    def parser_2(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+        last_updated = article_data.last_updated
+
+        # text ----------
+        text = extract_all_text(
+            response,
+            root_xpath='//div[contains(@class, "apertura")]',
+            exclude_list=[
+                (AttributeType.NAME, "script"),
+                (AttributeType.NAME, "style"),
+                (AttributeType.CLASS, "seguir"),
             ],
         )
 
