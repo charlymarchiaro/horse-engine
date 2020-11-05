@@ -147,6 +147,11 @@ class BaseArticleSpiderParams:
     def get_sitemap_urls(self) -> List[str]:
         pass
 
+    @abstractmethod
+    def get_rss_urls(self) -> List[str]:
+        # override to include rss urls
+        return []
+
     def get_sitemap_rules(self) -> List[Tuple[str, Union[str, None]]]:
         result: List[Tuple[str, Union[str, None]]] = []
         for rule in self.url_filter.deny_re:
@@ -163,6 +168,10 @@ class BaseArticleSpiderParams:
     @abstractmethod
     def should_parse_sitemap_entry(self, entry: Any) -> bool:
         pass
+
+    @abstractmethod
+    def should_parse_rss_entry(self, entry: Any) -> bool:
+        return True
 
     @abstractmethod
     def should_follow_sitemap_url(self, url: str) -> bool:

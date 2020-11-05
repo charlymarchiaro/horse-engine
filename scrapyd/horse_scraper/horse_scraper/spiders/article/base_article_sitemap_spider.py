@@ -58,10 +58,18 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
         self.sitemap_urls = self.params.get_sitemap_urls()
         self.sitemap_rules = self.params.get_sitemap_rules()
         self.sitemap_follow = self.params.get_sitemap_follow()
+        self.rss_urls = self.params.get_rss_urls()
 
         self.db_handler = ArticleDbHandler()
 
         SitemapSpider.__init__(self, self.name, *args, **kwargs)
+
+    def start_requests(self):
+        for url in self.sitemap_urls:
+            yield Request(url, self._parse_sitemap)
+
+        for url in self.rss_urls:
+            yield Request(url, self._parse_rss)
 
     def sitemap_filter(self, entries: Any) -> Generator[Any, None, None]:
         # Check if max run time has been exceeded
@@ -254,6 +262,63 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
 
         elif response.url.endswith(".xml") or response.url.endswith(".xml.gz"):
             return response.body
+
+    def rss_filter(self, entries: Any) -> Generator[Any, None, None]:
+        # Check if max run time has been exceeded
+        self.check_max_run_time()
+
+        # List article entries, so that to check more efficiently
+        # if they are already persisted in the database
+        article_entries: List[Any] = []
+
+        for entry in entries:
+            url = entry.xpath("link//text()").extract_first()
+            entry_date = dateutil_parse(entry.xpath("pubDate//text()").extract_first())
+
+            # analyzing article url:
+            if not self.should_follow_article_url(url):
+                # should not follow --> skip
+                continue
+
+            # check if entry_date is inside the search period
+            if not self.is_sitemap_entry_inside_search_period(entry_date):
+                # 'entry_date' is outside search period --> skip
+                continue
+
+            if not self.params.should_parse_rss_entry(entry):
+                # no valid rules apply --> skip
+                continue
+
+            article_entries.append({"loc": url, "entry_date": entry_date})
+
+            continue
+
+        # Process article entries
+        if len(article_entries) > 0:
+            for entry in self.get_not_already_persisted_entries(article_entries):
+                entry_date = entry["entry_date"]
+                logging.info(
+                    f"--> Valid url (entry_date={entry_date}) >>> (parsing article): "
+                    + entry["loc"]
+                )
+                yield entry
+
+    def _parse_rss(self, response):
+        # Check if max run time has been exceeded
+        self.check_max_run_time()
+
+        logging.info("_parse_rss: " + response.url)
+
+        it = self.rss_filter(response.xpath("//channel/item"))
+
+        for item in it:
+
+            url = item["loc"]
+
+            for r, c in self._cbs:
+                if r.search(url):
+                    yield self.create_request(url=url, callback=c)
+                    break
 
     def should_follow_article_url(self, url: str) -> bool:
         # Check if max run time has been exceeded
