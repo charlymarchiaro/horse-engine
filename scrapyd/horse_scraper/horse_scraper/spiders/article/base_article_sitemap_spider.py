@@ -309,6 +309,11 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
 
         logging.info("_parse_rss: " + response.url)
 
+        # remove CDATA
+        html = response.text
+        html = re.sub("<!\[CDATA\[ *(.+?) *\]\]>", r"\1", html)
+        response = response.replace(body=html)
+
         it = self.rss_filter(response.xpath("//channel/item"))
 
         for item in it:
