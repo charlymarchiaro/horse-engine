@@ -1,0 +1,21 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: schedule-spiders-hourly
+spec:
+  schedule: "0 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: schedule-spiders-hourly
+            image: buildpack-deps:curl
+            args:
+            - /bin/sh
+            - -ec
+            - 'curl -X POST "api-cluster-ip-service:3000/scrapyd/schedule-spiders-hourly" -H "accept: application/json" -H "Content-Type: application/json" -d "{}"'
+          restartPolicy: Never
