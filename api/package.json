@@ -57,6 +57,7 @@
     "loopback-connector-rest": "^3.6.0",
     "moment": "^2.27.0",
     "nodemon": "^2.0.4",
+    "rxjs": "^6.6.3",
     "tslib": "^2.0.0"
   },
   "devDependencies": {

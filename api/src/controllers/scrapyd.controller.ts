@@ -7,6 +7,7 @@ import { model, property } from '@loopback/repository';
 import { ArticleSpider } from '../models';
 import { ArticleSpiderRelations } from '../models/article-spider.model';
 import { exception } from 'console';
+import { ScrapydHourlySchedulerService } from '../services';
 
 
 
@@ -33,6 +34,8 @@ export class ScrapydController {
   constructor(
     @inject('services.Scrapyd')
     protected scrapydService: fromScrapyd.Scrapyd,
+    @inject('services.ScrapydHourlySchedulerService')
+    protected scrapydHourlyScheduler: ScrapydHourlySchedulerService,
     @repository(ArticleSpiderRepository)
     public articleSpiderRepository: ArticleSpiderRepository,
   ) { }
@@ -130,6 +133,40 @@ export class ScrapydController {
     const items = await Promise.all(promises);
 
     return { items }
+  }
+
+
+  @post('/schedule-spiders-hourly', {
+    responses: {
+      '200': {
+        content: {
+          'application/json': {
+            schema: { 'x-ts-type': fromScrapyd.BulkJobScheduleInfo },
+          },
+        },
+      },
+    },
+  })
+  async scheduleSpidersHourly(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: { 'x-ts-type': BulkScheduleSpiderRequestBody },
+        }
+      },
+    })
+    body: BulkScheduleSpiderRequestBody,
+  ): Promise<fromScrapyd.BulkJobScheduleInfo> {
+
+    const filter: Filter<ArticleSpider> = {
+      include: [{ relation: 'articleSource' }]
+    };
+
+    const result = await this.scrapydHourlyScheduler.scheduleSpidersHourly(
+      body.periodDaysBack
+    );
+
+    return result;
   }
 
 

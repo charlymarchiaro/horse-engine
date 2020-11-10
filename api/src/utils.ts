@@ -32,3 +32,19 @@ export function getYYYYMMDD(date: Date) {
     .toISOString().split('T')[0]
 }
 
+
+/**
+ * Get modulo: (value % length). Works for negative values as well.
+ * https://web.archive.org/web/20090717035140if_/javascript.about.com/od/problemsolving/a/modulobug.htm
+ */
+export function repeatValue(value: number, length: number): number {
+
+  return ((value % length) + length) % length;
+}
+
+/**
+ * https://www.sitepoint.com/delay-sleep-pause-wait/
+ */
+export function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
