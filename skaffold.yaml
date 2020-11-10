@@ -25,11 +25,11 @@ build:
         dockerfile: Dockerfile.dev
       sync:
         infer:
-          - "**/*.js"
+          # - "**/*.js"
           - "**/*.ts"
-          - "**/*.css"
-          - "**/*.scss"
-          - "**/*.html"
+          # - "**/*.css"
+          # - "**/*.scss"
+          # - "**/*.html"
 
     - image: charlymarchiaro/horse-engine-scrapyd
       context: scrapyd
