@@ -1,6 +1,6 @@
 import { injectable, /* inject, */ BindingScope, inject } from '@loopback/core';
 import * as fromScrapyd from '../services/scrapyd.service';
-import { repository, Filter } from '@loopback/repository';
+import { repository, Filter, model, property } from '@loopback/repository';
 import { ArticleSpiderRepository } from '../repositories/article-spider.repository';
 import { ArticleSpider, ArticleSpiderWithRelations } from '../models/article-spider.model';
 import { repeatValue, sleep } from '../utils';
@@ -72,6 +72,47 @@ interface ScheduleSlot {
 const PARALLEL_SCRAPYD_JOBS = 16;
 
 
+// Schedule info model
+@model()
+export class ScheduleStatsCategory {
+  @property() kind: string;
+  @property() parseCategory: string;
+  @property() tier: number;
+  @property() avgDelta: number | null;
+  @property() minDelta: number | null;
+  @property() maxDelta: number | null;
+}
+
+@model()
+export class ScheduleStats {
+  @property() totalLoad: number;
+  @property.array(ScheduleStatsCategory) categories: ScheduleStatsCategory[];
+}
+
+@model()
+export class ScheduleJobInfo {
+  @property() name: string;
+  @property() parseCateg: string;
+  @property() tier: number;
+  @property() optUtcHour: number;
+  @property() delta: number;
+}
+
+@model()
+export class ScheduleSlotInfo {
+  @property() utcHour: number;
+  @property() loadHs: number;
+  @property.array(ScheduleJobInfo) jobs: ScheduleJobInfo[];
+}
+
+@model()
+export class ScheduleInfo {
+  @property() stats: ScheduleStats;
+  @property.array(ScheduleSlotInfo) slots: ScheduleSlotInfo[];
+}
+
+
+
 @injectable({ scope: BindingScope.TRANSIENT })
 export class ScrapydHourlySchedulerService {
   constructor(
@@ -88,7 +129,7 @@ export class ScrapydHourlySchedulerService {
     await sleep(5000);
     const currentUtcHour = (new Date().getUTCHours());
 
-    const schedule = await this.arrangeSchedule();
+    const schedule = (await this.arrangeSchedule()).schedule;
 
     const slot = schedule[repeatValue(currentUtcHour, 24)];
 
@@ -119,13 +160,22 @@ export class ScrapydHourlySchedulerService {
 
     const items = await Promise.all(promises);
 
-    return new Promise<fromScrapyd.BulkJobScheduleInfo>((resolve, reject) => {
-      resolve({ items });
-    });
+    return ({ items });
   }
 
 
-  public async arrangeSchedule(displayResults = false): Promise<{ [utcHour: number]: ScheduleSlot }> {
+  public async getHourlySpidersSchedule(): Promise<ScheduleInfo> {
+    const info = (await this.arrangeSchedule({ displayResults: true })).info;
+    return info;
+  }
+
+
+  public async arrangeSchedule(
+    options: { displayResults: boolean; } = { displayResults: false, }
+  ): Promise<{
+    schedule: { [utcHour: number]: ScheduleSlot };
+    info: ScheduleInfo;
+  }> {
 
     const filter: Filter<ArticleSpider> = {
       include: [{ relation: 'articleSource' }]
@@ -239,13 +289,19 @@ export class ScrapydHourlySchedulerService {
       slot.loadHs += item.avgRunTimeHs;
     });
 
+    const stats = this.getScheduleStats(schedule, options);
+
+    const info: ScheduleInfo = {
+      stats,
+      slots: [],
+    };
+
     // Display results
-    if (displayResults) {
-      this.printScheduleStats(schedule);
+    for (let utcHour = 0; utcHour < 24; utcHour++) {
+      const slot = schedule[repeatValue(utcHour, 24)];
 
-      for (let utcHour = 0; utcHour < 24; utcHour++) {
-        const slot = schedule[repeatValue(utcHour, 24)];
-
+      // Log
+      if (options.displayResults) {
         console.log({
           utc_hour: utcHour,
           load_hs: slot.loadHs.toFixed(4),
@@ -260,9 +316,21 @@ export class ScrapydHourlySchedulerService {
           }))
         );
       }
+
+      info.slots.push({
+        utcHour,
+        loadHs: slot.loadHs,
+        jobs: slot.scheduledItems.map(i => ({
+          name: i.spider.name,
+          parseCateg: i.spider.articleSource?.parseCategory || 'base',
+          tier: i.spider.articleSource?.tier || 0,
+          optUtcHour: i.optimumScheduleUtcHour,
+          delta: repeatValue(utcHour - i.optimumScheduleUtcHour, 24),
+        }))
+      });
     }
 
-    return schedule;
+    return { schedule, info };
   }
 
 
@@ -287,7 +355,10 @@ export class ScrapydHourlySchedulerService {
   }
 
 
-  private printScheduleStats(schedule: { [utcHour: number]: ScheduleSlot }) {
+  private getScheduleStats(
+    schedule: { [utcHour: number]: ScheduleSlot },
+    options: { displayResults: boolean; } = { displayResults: false, }
+  ): ScheduleStats {
 
     const calcStats = (
       items: { optimumUtcHour: number; scheduledUtcHour: number; }[]
@@ -316,6 +387,11 @@ export class ScrapydHourlySchedulerService {
       return ({ avgDelta, minDelta, maxDelta });
     }
 
+    const result: ScheduleStats = {
+      totalLoad: 0,
+      categories: [],
+    };
+
     const allItems: { utcHour: number; qi: QueueItem }[] = [];
     Object.keys(schedule).forEach(utcHour => {
       const utcH = parseInt(utcHour);
@@ -323,15 +399,22 @@ export class ScrapydHourlySchedulerService {
       allItems.push(...slot.scheduledItems.map(qi => ({ utcHour: utcH, qi })));
     });
 
-    console.log('Schedule stats: -----------------------------------------------')
-    console.log('');
+    // Log
+    if (options.displayResults) {
+      console.log('Schedule stats: -----------------------------------------------')
+      console.log('');
+    }
 
     const totalLoad = Object.values(schedule).reduce((sumHs, slot) => {
       return sumHs + slot.loadHs
     }, 0) / PARALLEL_SCRAPYD_JOBS / 24 * 100.0;
 
-    console.log(`Total load: ${totalLoad.toFixed(1)}%`);
-    console.log('');
+    // Log
+    if (options.displayResults) {
+      console.log(`Total load: ${totalLoad.toFixed(1)}%`);
+      console.log('');
+    }
+    result.totalLoad = totalLoad;
 
     const rows = [];
 
@@ -357,10 +440,24 @@ export class ScrapydHourlySchedulerService {
             min_delta: stats.minDelta?.toFixed(3),
             max_delta: stats.maxDelta?.toFixed(3)
           })
+
+          result.categories.push({
+            kind,
+            parseCategory,
+            tier,
+            avgDelta: stats.avgDelta,
+            minDelta: stats.minDelta,
+            maxDelta: stats.maxDelta,
+          });
         }
       }
     }
-    console.table(rows);
+
+    // Log
+    if (options.displayResults) {
+      console.table(rows);
+    }
+    return result;
   }
 
 }

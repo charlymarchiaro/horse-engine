@@ -2,6 +2,7 @@ import { inject } from '@loopback/core';
 import { repository, Filter } from '@loopback/repository';
 import { get, post, requestBody, api } from '@loopback/rest';
 import * as fromScrapyd from '../services/scrapyd.service';
+import * as fromScrapydHourlyScheduler from '../services/scrapyd-hourly-scheduler.service';
 import { ArticleSpiderRepository } from '../repositories';
 import { model, property } from '@loopback/repository';
 import { ArticleSpider } from '../models';
@@ -133,6 +134,23 @@ export class ScrapydController {
     const items = await Promise.all(promises);
 
     return { items }
+  }
+
+
+  @get('/hourly-spiders-schedule', {
+    responses: {
+      '200': {
+        content: {
+          'application/json': {
+            schema: { 'x-ts-type': fromScrapydHourlyScheduler.ScheduleInfo },
+          },
+        },
+      },
+    },
+  })
+  async getHourlySpidersSchedule(): Promise<fromScrapydHourlyScheduler.ScheduleInfo> {
+    const result = await this.scrapydHourlyScheduler.getHourlySpidersSchedule();
+    return result;
   }
 
 
