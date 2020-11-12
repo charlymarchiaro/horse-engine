@@ -65,7 +65,10 @@ class Params(BaseArticleSpiderParams):
         ]
 
     def get_url_filter(self) -> UrlFilter:
-        return UrlFilter(allow_re=[".*-\d{4,}$"], deny_re=["\/noticias\/"])
+        return UrlFilter(
+            allow_re=[".*-\d{4,}$"],
+            deny_re=["\/noticias\/", "\/caricaturas\/", "tema-del-dia-la-w",],
+        )
 
     # Sitemap params
 
