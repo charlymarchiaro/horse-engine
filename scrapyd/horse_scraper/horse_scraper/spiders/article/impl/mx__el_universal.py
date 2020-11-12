@@ -37,6 +37,9 @@ class Params(BaseArticleSpiderParams):
     def get_allowed_domains(self) -> List[str]:
         return ["eluniversal.com.mx"]
 
+    def pre_process_url(self, url) -> str:
+        return url.replace("%C2%A0", "")
+
     # Crawl params
 
     def get_crawl_start_urls(self) -> List[str]:
