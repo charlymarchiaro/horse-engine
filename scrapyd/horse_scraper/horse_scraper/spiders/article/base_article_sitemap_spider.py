@@ -273,7 +273,11 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
 
         for entry in entries:
             url = entry.xpath("link//text()").extract_first()
-            entry_date = dateutil_parse(entry.xpath("pubDate//text()").extract_first())
+            date_str = entry.xpath("pubDate//text()").extract_first()
+            if url is None or date_str is None:
+                continue
+
+            entry_date = dateutil_parse(date_str)
 
             # analyzing article url:
             if not self.should_follow_article_url(url):
@@ -309,9 +313,13 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
 
         logging.info("_parse_rss: " + response.url)
 
-        # remove CDATA
         html = response.text
-        html = re.sub("<!\[CDATA\[ *(.+?) *\]\]>", r"\1", html)
+
+        # remove CDATA
+        html = html.replace("<![CDATA[", "").replace("]]>", "")
+        # normalize pubDate
+        html = html.replace("pubdate", "pubDate")
+
         response = response.replace(body=html)
 
         it = self.rss_filter(response.xpath("//channel/item"))
