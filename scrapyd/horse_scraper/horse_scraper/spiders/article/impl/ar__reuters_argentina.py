@@ -37,6 +37,9 @@ class Params(BaseArticleSpiderParams):
     def get_allowed_domains(self) -> List[str]:
         return ["lta.reuters.com"]
 
+    def pre_process_url(self, url) -> str:
+        return url.replace("/articulo/", "/article/")
+
     # Crawl params
 
     def get_crawl_start_urls(self) -> List[str]:
