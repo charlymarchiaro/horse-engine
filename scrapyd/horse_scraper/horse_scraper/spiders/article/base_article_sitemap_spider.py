@@ -139,6 +139,7 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
                     continue
 
                 entry["entry_date"] = entry_date
+                entry["loc"] = self.params.pre_process_url(entry["loc"])
                 article_entries.append(entry)
 
             continue
@@ -361,9 +362,7 @@ class BaseArticleSitemapSpider(BaseArticleSpider, SitemapSpider):
 
     def get_not_already_persisted_entries(self, entries: List[Any]) -> List[Any]:
         persisted_urls = self.db_handler.get_already_persisted_articles(
-            urls=list(
-                map(lambda e: self.params.pre_process_url(str(e["loc"])), entries)
-            ),
+            urls=list(map(lambda e: str(e["loc"]), entries)),
             article_source_id=self.source_info.id,
             keep_query_string=self.params.keep_url_query_string,
         )
