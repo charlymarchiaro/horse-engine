@@ -48,7 +48,9 @@ class Params(BaseArticleSpiderParams):
         ]
 
     def get_url_filter(self) -> UrlFilter:
-        return UrlFilter(allow_re=[".*articulo\/.+-id.+"], deny_re=[])
+        return UrlFilter(
+            allow_re=[".*article\/.+-id.+", ".*articulo\/.+-id.+"], deny_re=[]
+        )
 
     # Sitemap params
 
