@@ -161,7 +161,13 @@ class Params(BaseArticleSpiderParams):
         ]
 
     def get_url_filter(self) -> UrlFilter:
-        return UrlFilter(allow_re=[f".*({self.date_allow_str}).+.html"], deny_re=[])
+        return UrlFilter(
+            allow_re=[f".*({self.date_allow_str}).+.html"],
+            deny_re=[
+                "_relacionados.html",
+                f"\/album\/.*({self.date_allow_str})[^_]+.html",
+            ],
+        )
 
     # Sitemap params
 
@@ -281,9 +287,13 @@ class Params(BaseArticleSpiderParams):
     def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:
         return [
             self.parser_1,
+            self.parser_2,
         ]
 
     def parser_1(self, response):
+
+        if "/album/" in response.url:
+            raise Exception("It's an '/album/' url.")
 
         article_data = self.get_default_parser_results(response)
 
@@ -304,6 +314,29 @@ class Params(BaseArticleSpiderParams):
                 (AttributeType.CLASS, "popular-links"),
                 (AttributeType.CLASS, "share"),
                 (AttributeType.CLASS, "premium"),
+            ],
+        )
+
+        return ArticleData(title, text, last_updated)
+
+    # album
+    def parser_2(self, response):
+
+        if not "/album/" in response.url:
+            raise Exception("It's not an '/album/' url.")
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+        last_updated = article_data.last_updated
+
+        # text ----------
+        text = extract_all_text(
+            response,
+            root_xpath='//*[contains(@class,"article__caption")]',
+            exclude_list=[
+                (AttributeType.NAME, "script"),
+                (AttributeType.NAME, "style"),
             ],
         )
 
