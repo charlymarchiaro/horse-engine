@@ -67,12 +67,23 @@ SPIDER_MIDDLEWARES = {
     # "horse_scraper.middlewares.HorseScraperSpiderMiddleware": 543,
 }
 
+# Scrapoxy
+SCRAPOXY_IP_ADDRESS = os.environ.get("SCRAPOXY_IP_ADDRESS") or ""
+PROXY = "http://" + SCRAPOXY_IP_ADDRESS + ":8888"
+API_SCRAPOXY = "http://" + SCRAPOXY_IP_ADDRESS + ":8889/api"
+API_SCRAPOXY_PASSWORD = os.environ.get("SCRAPOXY_PASSWORD") or ""
+
+
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
     # "horse_scraper.middlewares.HorseScraperDownloaderMiddleware": 543,
     "scrapy_splash.SplashCookiesMiddleware": 723,
     "scrapy_splash.SplashMiddleware": 725,
+    "scrapoxy.downloadmiddlewares.proxy.ProxyMiddleware": 750,
+    "scrapoxy.downloadmiddlewares.wait.WaitMiddleware": 751,
+    "scrapoxy.downloadmiddlewares.scale.ScaleMiddleware": 752,
+    "scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware": None,
     "scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware": 810,
 }
 
