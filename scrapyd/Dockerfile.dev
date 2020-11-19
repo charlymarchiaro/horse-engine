@@ -21,7 +21,7 @@ RUN cd /etc/scrapyd \
 
 RUN echo bt
 
-COPY ./scrapyd.conf /etc/scrapyd/
+COPY ./scrapyd.conf.dev /etc/scrapyd/scrapyd.conf
 
 COPY ./horse_scraper /etc/
 
