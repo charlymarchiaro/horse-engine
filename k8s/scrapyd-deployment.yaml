@@ -51,3 +51,13 @@ spec:
               value: INFO
             - name: SPLASH_URL
               value: http://splash-cluster-ip-service:8050/
+            - name: SCRAPOXY_IP_ADDRESS
+              valueFrom:
+                secretKeyRef:
+                  name: scrapoxy-ip-address
+                  key: SCRAPOXY_IP_ADDRESS
+            - name: SCRAPOXY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: scrapoxy-password
+                  key: SCRAPOXY_PASSWORD

@@ -4,7 +4,7 @@ import logging
 import re
 import dateparser  # type: ignore
 
-from typing import Tuple, List, Dict, Iterator, Generator, Union, Callable, cast
+from typing import Any, Tuple, List, Dict, Iterator, Generator, Union, Callable, cast
 from abc import abstractmethod
 
 import scrapy  # type: ignore
@@ -32,6 +32,8 @@ from .model import (
 from horse_scraper.settings import (
     LOG_LEVEL,
     FEED_EXPORT_ENCODING,
+    PROXY,
+    SCRAPOXY_IP_ADDRESS,
 )
 from horse_scraper.database.article_db_handler import ArticleDbHandler
 from .base_article_spider_params import BaseArticleSpiderParams
@@ -110,13 +112,14 @@ class BaseArticleSpider:
         # Allows an optional pre-processing of the url
         url = self.params.pre_process_url(url)
 
-        req_meta = {"dont_redirect": self.params.dont_redirect}
+        req_meta: Dict[str, Any] = {"dont_redirect": self.params.dont_redirect}
 
         if meta:
             req_meta.update(meta)
 
         # Splash is disabled --> use default method
         if force_normal_request or self.params.splash_enabled == False:
+
             return Request(
                 url=url,
                 callback=callback,
@@ -142,16 +145,40 @@ class BaseArticleSpider:
 
         script = f"""
             function main(splash, args)
-            splash.private_mode_enabled = {private_mode_enabled}
-            assert(splash:go(args.url))
-            assert(splash:wait({self.params.splash_wait_time}))  
-            return {{
-                html = splash:html(),
-            }}
+                
+                splash:on_request(function(request)
+                    request:set_proxy{{
+                        host = "{SCRAPOXY_IP_ADDRESS}",
+                        port = 8888,
+                        username = "",
+                        password = "",
+                        type = "HTTP"
+                    }}
+                end)
+
+                splash:on_response_headers(function(response)
+                    proxy = response.headers["x-cache-proxyname"]
+                end)
+                
+                splash.private_mode_enabled = {private_mode_enabled}
+                
+                assert(splash:go(args.url))
+                assert(splash:wait({self.params.splash_wait_time}))
+
+                return {{
+                    html = splash:html(),
+                }}
             end
         """
 
         logging.debug("Creating Splash request: " + url)
+
+        # This line is required to avoid (500) errors due to 
+        # scrapoxy.downloadmiddlewares.proxy.ProxyMiddleware
+        # overriding the meta['proxy'] value:  
+        # [44] >> request.meta['proxy'] = self._proxy
+        req_meta["no-proxy"] = True
+
         return SplashRequest(
             url=url,
             callback=callback,
@@ -173,6 +200,13 @@ class BaseArticleSpider:
 
     def parse_items(self, response: HtmlResponse):
         logging.info("Parsing: " + response.url)
+
+        proxy = str(
+            response.headers["x-cache-proxyname"].decode() or "(None)"
+            if ("x-cache-proxyname" in response.headers)
+            else "(None)"
+        )
+        logging.info("Proxy id: " + proxy)
         logging.info("")
 
         article = Article()

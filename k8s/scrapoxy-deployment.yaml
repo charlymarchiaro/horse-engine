@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scrapoxy-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: scrapoxy
+  template:
+    metadata:
+      labels:
+        component: scrapoxy
+    spec:
+      nodeSelector:
+        node-id: "3"
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+      containers:
+        - name: scrapoxy
+          image: charlymarchiaro/scrapoxy
+          ports:
+            - name: proxy
+              containerPort: 8888
+            - name: commander
+              containerPort: 8889
+          resources:
+            requests:
+              cpu: 400m
+              memory: 800Mi
+            limits:
+              cpu: 500m
+              memory: 1000Mi
+          volumeMounts:
+            - mountPath: /dev/shm
+              name: dshm
+          env:
+            - name: COMMANDER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: scrapoxy-password
+                  key: SCRAPOXY_PASSWORD
+            - name: INSTANCE_SCALING_MIN
+              value: "1"
+            - name: INSTANCE_SCALING_MAX
+              value: "3"
+            - name: PROVIDERS_TYPE
+              value: digitalocean
+            - name: PROVIDERS_DIGITALOCEAN_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: scrapoxy-do-token
+                  key: SCRAPOXY_DO_TOKEN
+            - name: PROVIDERS_DIGITALOCEAN_REGION
+              value: nyc1
+            - name: PROVIDERS_DIGITALOCEAN_SIZE
+              value: s-1vcpu-1gb
+            - name: PROVIDERS_DIGITALOCEAN_SSHKEYNAME
+              value: mykey
+            - name: PROVIDERS_DIGITALOCEAN_IMAGENAME
+              value: forward-proxy
+            - name: PROVIDERS_DIGITALOCEAN_TAGS
+              value: proxy,instance

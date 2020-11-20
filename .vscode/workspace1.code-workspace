@@ -14,6 +14,12 @@
 		},
 		{
 			"path": "..\\..\\..\\..\\ProgramData\\Anaconda3\\envs\\horse-scraper\\Lib\\site-packages\\selenium"
+		},
+		{
+			"path": "..\\..\\..\\..\\ProgramData\\Anaconda3\\envs\\horse-scraper\\Lib\\site-packages\\scrapoxy"
+		},
+		{
+			"path": "..\\..\\..\\..\\ProgramData\\Anaconda3\\envs\\horse-scraper\\Lib\\site-packages\\scrapy_splash"
 		}
 	],
 	"settings": {

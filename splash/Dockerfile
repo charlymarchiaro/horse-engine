@@ -1,4 +1,4 @@
-FROM scrapinghub/splash:3.5.0
+FROM scrapinghub/splash:latest
 
 COPY filters /etc/splash/filters
 
