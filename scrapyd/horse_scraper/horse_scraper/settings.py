@@ -23,7 +23,10 @@ NEWSPIDER_MODULE = "horse_scraper.spiders"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36'
-USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
+USER_AGENT = (
+    os.environ.get("USER_AGENT")
+    or "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
+)
 DEFAULT_REQUEST_HEADERS = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "User-Agent": USER_AGENT,
@@ -41,15 +44,17 @@ DEFAULT_REQUEST_HEADERS = {
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 0.5
+DOWNLOAD_DELAY = int(os.environ.get("DOWNLOAD_DELAY") or 3)
 # The download delay setting will honor only one of:
-CONCURRENT_REQUESTS_PER_DOMAIN = 1
+CONCURRENT_REQUESTS_PER_DOMAIN = int(
+    os.environ.get("CONCURRENT_REQUESTS_PER_DOMAIN") or 1
+)
 # CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-COOKIES_ENABLED = False
+COOKIES_ENABLED = os.environ.get("COOKIES_ENABLED") == "True" or False
 
-REDIRECT_ENABLED = True
+REDIRECT_ENABLED = os.environ.get("REDIRECT_ENABLED") == "True" or True
 
 # Disable Telnet Console (enabled by default)
 # TELNETCONSOLE_ENABLED = False
@@ -131,8 +136,8 @@ FEED_EXPORT_ENCODING = "utf-8"
 LOG_LEVEL = os.environ.get("SCRAPYD_LOG_LEVEL") or "DEBUG"
 
 # App params
-CRAWL_PERIOD_DAYS_BACK = 15
-SITEMAP_PERIOD_DAYS_BACK = 15
-CRAWL_MAX_RUN_TIME_HOURS = 6
-SITEMAP_MAX_RUN_TIME_HOURS = 6
+CRAWL_PERIOD_DAYS_BACK = int(os.environ.get("PERIOD_DAYS_BACK") or 15)
+SITEMAP_PERIOD_DAYS_BACK = int(os.environ.get("PERIOD_DAYS_BACK") or 15)
+CRAWL_MAX_RUN_TIME_HOURS = int(os.environ.get("MAX_RUN_TIME_HOURS") or 6)
+SITEMAP_MAX_RUN_TIME_HOURS = int(os.environ.get("MAX_RUN_TIME_HOURS") or 6)
 
