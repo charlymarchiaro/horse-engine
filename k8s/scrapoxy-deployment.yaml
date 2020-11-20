@@ -20,7 +20,7 @@ spec:
             medium: Memory
       containers:
         - name: scrapoxy
-          image: fabienvauchelles/scrapoxy
+          image: charlymarchiaro/scrapoxy
           ports:
             - name: proxy
               containerPort: 8888
