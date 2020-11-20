@@ -23,7 +23,7 @@ NEWSPIDER_MODULE = "horse_scraper.spiders"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36'
-USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
 DEFAULT_REQUEST_HEADERS = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "User-Agent": USER_AGENT,
@@ -69,7 +69,7 @@ SPIDER_MIDDLEWARES = {
 
 # Scrapoxy
 SCRAPOXY_IP_ADDRESS = os.environ.get("SCRAPOXY_IP_ADDRESS") or ""
-PROXY = "http://" + SCRAPOXY_IP_ADDRESS + ":8888"
+PROXY = "http://" + SCRAPOXY_IP_ADDRESS + ":8888/?noconnect"
 API_SCRAPOXY = "http://" + SCRAPOXY_IP_ADDRESS + ":8889/api"
 API_SCRAPOXY_PASSWORD = os.environ.get("SCRAPOXY_PASSWORD") or ""
 
@@ -77,14 +77,14 @@ API_SCRAPOXY_PASSWORD = os.environ.get("SCRAPOXY_PASSWORD") or ""
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-    # "horse_scraper.middlewares.HorseScraperDownloaderMiddleware": 543,
     "scrapy_splash.SplashCookiesMiddleware": 723,
     "scrapy_splash.SplashMiddleware": 725,
     "scrapoxy.downloadmiddlewares.proxy.ProxyMiddleware": 750,
     "scrapoxy.downloadmiddlewares.wait.WaitMiddleware": 751,
-    "scrapoxy.downloadmiddlewares.scale.ScaleMiddleware": 752,
+    # "scrapoxy.downloadmiddlewares.scale.ScaleMiddleware": 752,
     "scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware": None,
     "scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware": 810,
+    # "horse_scraper.middlewares.HorseScraperDownloaderMiddleware": 900,
 }
 
 # Enable or disable extensions
