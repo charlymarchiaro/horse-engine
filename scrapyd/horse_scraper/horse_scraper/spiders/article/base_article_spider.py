@@ -119,6 +119,7 @@ class BaseArticleSpider:
 
         # Splash is disabled --> use default method
         if force_normal_request or self.params.splash_enabled == False:
+
             return Request(
                 url=url,
                 callback=callback,
@@ -153,6 +154,10 @@ class BaseArticleSpider:
                         password = "",
                         type = "HTTP"
                     }}
+                end)
+
+                splash:on_response_headers(function(response)
+                    proxy = response.headers["x-cache-proxyname"]
                 end)
                 
                 splash.private_mode_enabled = {private_mode_enabled}
@@ -195,6 +200,13 @@ class BaseArticleSpider:
 
     def parse_items(self, response: HtmlResponse):
         logging.info("Parsing: " + response.url)
+
+        proxy = str(
+            response.headers["x-cache-proxyname"].decode() or "(None)"
+            if ("x-cache-proxyname" in response.headers)
+            else "(None)"
+        )
+        logging.info("Proxy id: " + proxy)
         logging.info("")
 
         article = Article()
