@@ -1,0 +1,5 @@
+# namespace for the reaper
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: reaper
