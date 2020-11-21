@@ -28,7 +28,7 @@ spec:
             - name: SCHEDULE
               value: "55 * * * *"
             - name: MAX_DURATION
-              value: "0h00m2s"
+              value: "0h50m00s"
             - name: REQUIRE_LABEL_KEY
               value: component
             - name: REQUIRE_LABEL_VALUES
