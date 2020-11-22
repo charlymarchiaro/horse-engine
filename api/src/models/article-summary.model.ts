@@ -102,7 +102,7 @@ export class ArticleSummary extends Entity {
       nullable: 'YES',
     }
   })
-  result: string;
+  result?: string;
 
   @property({
     type: 'string',
@@ -114,6 +114,17 @@ export class ArticleSummary extends Entity {
     }
   })
   spiderName: string;
+
+  @property({
+    type: 'string',
+    postgresql: {
+      columnName: 'scrapyd_node_id',
+      dataType: 'VARCHAR',
+      dataLength: 64,
+      nullable: 'YES',
+    }
+  })
+  scrapydNodeId?: string;
 
   constructor(data?: Partial<ArticleSummary>) {
     super(data);
