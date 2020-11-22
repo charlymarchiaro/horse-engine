@@ -34,6 +34,7 @@ from horse_scraper.settings import (
     FEED_EXPORT_ENCODING,
     PROXY_SCRAPOXY_PASSWORD,
     SCRAPOXY_IP_ADDRESS,
+    SCRAPYD_NODE_ID,
 )
 from horse_scraper.database.article_db_handler import ArticleDbHandler
 from .base_article_spider_params import BaseArticleSpiderParams
@@ -59,6 +60,7 @@ class BaseArticleSpider:
 
     def __init__(self, name: str, *args, **kwargs):
         self.setup_logger()
+        self.log_info()
         self.init_date_span()
         self.init_source_info()
         self.init_params()
@@ -74,6 +76,17 @@ class BaseArticleSpider:
         hdlr.setFormatter(formatter)
         hdlr.setLevel(LOG_LEVEL)
         logger.addHandler(hdlr)
+
+    def log_info(self):
+        logging.info(
+            "----------------------------------------------------------------------"
+        )
+        logging.info(" ARTICLE SPIDER ")
+        logging.info(" Scrapyd Node id: " + SCRAPYD_NODE_ID)
+        logging.info(" Spider name: " + self.name)
+        logging.info(
+            "----------------------------------------------------------------------"
+        )
 
     def init_date_span(self):
         today = date.today()

@@ -33,3 +33,7 @@ spec:
             backend:
               serviceName: scrapyd-cluster-ip-service
               servicePort: 6800
+          - path: /scrapyd-02/?(.*)
+            backend:
+              serviceName: scrapyd-02-cluster-ip-service
+              servicePort: 6800
