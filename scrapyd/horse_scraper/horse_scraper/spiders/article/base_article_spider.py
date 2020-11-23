@@ -32,7 +32,7 @@ from .model import (
 from horse_scraper.settings import (
     LOG_LEVEL,
     FEED_EXPORT_ENCODING,
-    PROXY,
+    PROXY_SCRAPOXY_PASSWORD,
     SCRAPOXY_IP_ADDRESS,
 )
 from horse_scraper.database.article_db_handler import ArticleDbHandler
@@ -143,6 +143,13 @@ class BaseArticleSpider:
         else:
             private_mode_enabled = "false"
 
+        username = ""
+        password = ""
+
+        if PROXY_SCRAPOXY_PASSWORD is not None:
+            username = "scrapoxy"
+            password = PROXY_SCRAPOXY_PASSWORD
+
         script = f"""
             function main(splash, args)
                 
@@ -150,8 +157,8 @@ class BaseArticleSpider:
                     request:set_proxy{{
                         host = "{SCRAPOXY_IP_ADDRESS}",
                         port = 8888,
-                        username = "",
-                        password = "",
+                        username = "{username}",
+                        password = "{password}",
                         type = "HTTP"
                     }}
                 end)
@@ -173,9 +180,9 @@ class BaseArticleSpider:
 
         logging.debug("Creating Splash request: " + url)
 
-        # This line is required to avoid (500) errors due to 
+        # This line is required to avoid (500) errors due to
         # scrapoxy.downloadmiddlewares.proxy.ProxyMiddleware
-        # overriding the meta['proxy'] value:  
+        # overriding the meta['proxy'] value:
         # [44] >> request.meta['proxy'] = self._proxy
         req_meta["no-proxy"] = True
 

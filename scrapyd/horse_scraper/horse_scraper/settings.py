@@ -15,6 +15,8 @@ from shutil import which
 
 BOT_NAME = "horse_scraper"
 
+SCRAPYD_NODE_ID = str(os.environ.get("SCRAPYD_NODE_ID") or "(None)")
+
 SPIDER_MODULES = [
     "horse_scraper.spiders.article.impl",
 ]
@@ -74,8 +76,14 @@ SPIDER_MIDDLEWARES = {
 
 # Scrapoxy
 SCRAPOXY_IP_ADDRESS = os.environ.get("SCRAPOXY_IP_ADDRESS") or ""
-PROXY = "http://" + SCRAPOXY_IP_ADDRESS + ":8888/?noconnect"
-API_SCRAPOXY = "http://" + SCRAPOXY_IP_ADDRESS + ":8889/api"
+PROXY_SCRAPOXY_PASSWORD = os.environ.get("SCRAPOXY_PASSWORD")
+
+PROXY_SCRAPOXY_PATH = SCRAPOXY_IP_ADDRESS
+if PROXY_SCRAPOXY_PASSWORD is not None:
+    PROXY_SCRAPOXY_PATH = f"scrapoxy:{PROXY_SCRAPOXY_PASSWORD}@{SCRAPOXY_IP_ADDRESS}"
+
+PROXY = f"http://{PROXY_SCRAPOXY_PATH}:8888/?noconnect"
+API_SCRAPOXY = f"http://{SCRAPOXY_IP_ADDRESS}:8889/api"
 API_SCRAPOXY_PASSWORD = os.environ.get("SCRAPOXY_PASSWORD") or ""
 
 
