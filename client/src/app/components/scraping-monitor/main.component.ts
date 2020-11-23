@@ -35,7 +35,7 @@ export class MainComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.jobsPollingTimer = setInterval(
       () => this.updateJobsInfo(),
-      2000
+      5000
     );
 
     this.lastScrapedArticlesInfoTimer = setInterval(
@@ -103,15 +103,30 @@ export class MainComponent implements OnInit, OnDestroy {
   private async scheduleSpidersByKeword(keyword: string) {
     keyword = keyword.toLowerCase();
 
+    const params = keyword.split(':');
+    if (params.length !== 2) {
+      return;
+    }
+
+    const nodeIdKeyword = params[0];
+    const spiderNameKeyword = params[1];
+
+    const nodes = (await this.backendService.listAllScrapydNodes().toPromise());
     const spiders = await this.backendService.listAllSpiders().toPromise();
 
-    spiders.spiders.forEach(spiderName => {
-      if (spiderName.toLowerCase().includes(keyword)) {
-        this.backendService.scheduleSpider(spiderName).subscribe(
-          r => console.log(r)
-        );
+    nodes.nodes.forEach(nodeId => {
+      if (nodeId.toLowerCase().includes(nodeIdKeyword)) {
+        spiders.spiders.forEach(spiderName => {
+          if (spiderName.toLowerCase().includes(spiderNameKeyword)) {
+            console.log(nodeId + ':' + spiderName)
+            // this.backendService.scheduleSpider(spiderName).subscribe(
+            //   r => console.log(r)
+            // );
+          }
+        });
       }
     });
+
   }
 
 

@@ -2,22 +2,22 @@
   <div id="control-panel">
     <button (click)="onListAllSpidersClick()">List all spiders</button>
 
-    <button
-      (click)="onScheduleAllSpidersClick()"
-      [disabled]="true">
-      Schedule all spiders
-    </button>
-
     <button (click)="onScheduleByKeywordClick()">Schedule by keyword:</button>
     <input
       type="text"
-      placeholder="keyword"
+      placeholder="keyword (<node>:<spider>)"
+      (keydown.enter)="onScheduleByKeywordClick()"
       [(ngModel)]="scheduleKeyword">
 
-    <button (click)="onCancelByKeywordClick()">Cancel by keyword:</button>
+    <button
+      (click)="onCancelByKeywordClick()"
+      [disabled]="!cancelKeyword || cancelKeyword === ''">
+      Cancel by keyword:
+    </button>
     <input
       type="text"
-      placeholder="keyword"
+      placeholder="keyword (<node>:<spider>)"
+      (keydown.enter)="onCancelByKeywordClick()"
       [(ngModel)]="cancelKeyword">
 
     <button (click)="onCancelAllJobsClick()">Cancel all jobs</button>

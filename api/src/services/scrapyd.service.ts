@@ -5,6 +5,11 @@ import { model, property } from '@loopback/repository';
 
 
 @model()
+export class ScrapydNodeListInfo {
+  @property.array(String) nodes: string[];
+}
+
+@model()
 export class SpidersListInfo {
   @property() node_name: string;
   @property() status: string;

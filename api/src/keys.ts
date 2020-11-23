@@ -13,5 +13,6 @@ export namespace PostgresConstants {
 export namespace ScrapydConstants {
   export const SCRAPYD_HOST = process.env.SCRAPYD_HOST;
   export const SCRAPYD_PORT = process.env.SCRAPYD_PORT;
+  export const SCRAPYD_NODE_IDS = ['scrapyd-01', 'scrapyd-02'];
 }
 

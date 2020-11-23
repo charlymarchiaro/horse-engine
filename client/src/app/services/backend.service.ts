@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { JobsListInfo, JobScheduleInfo, SpidersListInfo } from '../model/scrapyd.model';
+import { JobsListInfo, JobScheduleInfo, SpidersListInfo, ScrapydNodeListInfo } from '../model/scrapyd.model';
 import { ArticleFilteringScheme, DateSpan, getArticleFilteringSchemeWhereCondition } from '../components/keyword-search/model';
 
 import { ArticleSpiderResponse, ArticleSpider, ArticleScrapingStatsFullResponse, ArticleScrapingStatsFull, ArticleSourceResponse, ArticleSource, ArticleSummaryResponse, ArticleSummary } from '../model/article.model';
@@ -23,6 +23,13 @@ export class BackendService {
 
 
   // Scraper
+
+  public listAllScrapydNodes() {
+    return this.http.get<ScrapydNodeListInfo>(
+      '/api/scrapyd/list-scrapyd-nodes'
+    );
+  }
+
 
   public listAllSpiders() {
     return this.http.get<SpidersListInfo>(

@@ -9,6 +9,7 @@ import { ArticleSpider } from '../models';
 import { ArticleSpiderRelations } from '../models/article-spider.model';
 import { exception } from 'console';
 import { ScrapydHourlySchedulerService } from '../services';
+import { ScrapydConstants } from '../keys';
 
 
 
@@ -40,6 +41,22 @@ export class ScrapydController {
     @repository(ArticleSpiderRepository)
     public articleSpiderRepository: ArticleSpiderRepository,
   ) { }
+
+
+  @get('/list-scrapyd-nodes', {
+    responses: {
+      '200': {
+        content: {
+          'application/json': {
+            schema: { 'x-ts-type': fromScrapyd.ScrapydNodeListInfo },
+          },
+        },
+      },
+    },
+  })
+  async listScrapydNodes(): Promise<fromScrapyd.ScrapydNodeListInfo> {
+    return { nodes: ScrapydConstants.SCRAPYD_NODE_IDS };
+  }
 
 
   @get('/list-spiders', {
