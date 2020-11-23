@@ -12,8 +12,8 @@ spec:
       labels:
         component: scrapoxy
     spec:
-      nodeSelector:
-        node-id: "3"
+      # nodeSelector:
+      #   node-id: "3"
       volumes:
         - name: dshm
           emptyDir:
@@ -28,11 +28,11 @@ spec:
               containerPort: 8889
           resources:
             requests:
-              cpu: 1250m
-              memory: 2500Mi
+              cpu: 10m
+              memory: 100Mi
             limits:
-              cpu: 1500m
-              memory: 3000Mi
+              cpu: 100m
+              memory: 200Mi
           volumeMounts:
             - mountPath: /dev/shm
               name: dshm
@@ -69,6 +69,8 @@ spec:
             - name: PROVIDERS_DIGITALOCEAN_IMAGENAME
               value: forward-proxy
             - name: PROVIDERS_DIGITALOCEAN_TAGS
-              value: proxy-instance
+              value: proxy-dev,instance-dev
+            - name: PROVIDERS_DIGITALOCEAN_DROPLETS_PATH
+              value: droplets-dev
             - name: INSTANCE_SCALING_DOWNSCALEDELAY
               value: "60000"
