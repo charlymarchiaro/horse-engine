@@ -16,6 +16,9 @@ spec:
         - name: dshm
           emptyDir:
             medium: Memory
+        - name: config-volume
+          configMap:
+            name: api-config-map
       containers:
         - name: api
           image: charlymarchiaro/horse-engine-api
@@ -27,6 +30,8 @@ spec:
           volumeMounts:
             - mountPath: /dev/shm
               name: dshm
+            - name: config-volume
+              mountPath: /home/node/app/config
           env:
             - name: PG_HOST
               value: postgres-cluster-ip-service

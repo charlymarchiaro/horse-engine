@@ -1,3 +1,5 @@
+let configFile = require('../config/config.json');
+
 export namespace AppConstants {
   export const RESPONSE_TIMEOUT_SECS = 180;
 }
@@ -11,8 +13,12 @@ export namespace PostgresConstants {
 }
 
 export namespace ScrapydConstants {
-  export const SCRAPYD_HOST = process.env.SCRAPYD_HOST;
-  export const SCRAPYD_PORT = process.env.SCRAPYD_PORT;
-  export const SCRAPYD_NODE_IDS = ['scrapyd-01', 'scrapyd-02'];
+  interface NodeInfo {
+    id: string;
+    host: string;
+    port: number;
+  };
+
+  export const SCRAPYD_NODES: NodeInfo[] = configFile.scrapydNodes;
 }
 

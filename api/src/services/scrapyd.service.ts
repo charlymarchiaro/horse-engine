@@ -1,7 +1,14 @@
+import legacy from 'loopback-datasource-juggler';
+export declare namespace juggler {
+  export import DataSource = legacy.DataSource;
+}
+
 import { getService } from '@loopback/service-proxy';
-import { inject, Provider } from '@loopback/core';
+import { Provider } from '@loopback/core';
 import { ScrapydDataSource } from '../datasources';
 import { model, property } from '@loopback/repository';
+import { ScrapydConstants } from '../keys';
+import { scrapydDataSourceFactory } from '../datasources/scrapyd.datasource';
 
 
 @model()
@@ -56,14 +63,35 @@ export interface Scrapyd {
   cancelJob(job: string): Promise<JobScheduleInfo>;
 }
 
-export class ScrapydProvider implements Provider<Scrapyd> {
-  constructor(
-    // scrapyd must match the name property in the datasource json file
-    @inject('datasources.scrapyd')
-    protected dataSource: ScrapydDataSource = new ScrapydDataSource(),
-  ) { }
 
-  value(): Promise<Scrapyd> {
-    return getService(this.dataSource);
+export class ScrapydProvider implements Provider<{ [id: string]: Scrapyd }> {
+
+  protected dataSources: { [id: string]: ScrapydDataSource };
+
+  constructor() {
+
+    this.dataSources = {};
+
+    const nodes = ScrapydConstants.SCRAPYD_NODES;
+
+    nodes.forEach(n => {
+      this.dataSources[n.id] = scrapydDataSourceFactory(n.id)
+    })
+  }
+
+  async getServices(dss: { [id: string]: ScrapydDataSource }) {
+
+    const response: { [id: string]: Scrapyd } = {};
+
+    for (const id of Object.keys(dss)) {
+      const ds = dss[id];
+      response[id] = await getService<Scrapyd>(ds)
+    };
+
+    return response;
+  }
+
+  value(): Promise<{ [id: string]: Scrapyd }> {
+    return this.getServices(this.dataSources);
   }
 }
