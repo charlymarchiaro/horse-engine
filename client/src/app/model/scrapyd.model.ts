@@ -20,6 +20,7 @@ export interface JobInfo {
 
 
 export interface JobsListInfo {
+  nodeId?: string;
   node_name: string;
   status: string;
   pending: JobInfo[];

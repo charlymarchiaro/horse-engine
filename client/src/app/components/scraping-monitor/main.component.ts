@@ -3,6 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { JobsListInfo } from '../../model/scrapyd.model';
 import { BackendService } from '../../services/backend.service';
 import { Article, ArticleSummary } from '../../model/article.model';
+import { isNull } from 'util';
 
 
 
@@ -19,12 +20,14 @@ export class MainComponent implements OnInit, OnDestroy {
   private jobsPollingTimer;
   private lastScrapedArticlesInfoTimer;
 
-  public jobsListInfo: JobsListInfo;
+  public jobsListInfo: { [nodeId: string]: JobsListInfo } = {};
   public lastScrapedArticlesInfo: ArticleSummary[] = [];
 
 
   public scheduleKeyword = '';
   public cancelKeyword = '';
+
+  public objectKeys = Object.keys;
 
 
   constructor(
@@ -59,18 +62,8 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
 
-  public onScheduleAllSpidersClick() {
-    this.scheduleAllSpiders();
-  }
-
-
   public onScheduleByKeywordClick() {
     this.scheduleSpidersByKeword(this.scheduleKeyword);
-  }
-
-
-  public onListJobsClick() {
-    this.listJobs();
   }
 
 
@@ -93,13 +86,6 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
 
-  private scheduleAllSpiders() {
-    this.backendService.scheduleAllSpiders().subscribe(
-      r => console.log(r)
-    );
-  }
-
-
   private async scheduleSpidersByKeword(keyword: string) {
     keyword = keyword.toLowerCase();
 
@@ -112,21 +98,22 @@ export class MainComponent implements OnInit, OnDestroy {
     const spiderNameKeyword = params[1];
 
     const nodes = (await this.backendService.listAllScrapydNodes().toPromise());
-    const spiders = await this.backendService.listAllSpiders().toPromise();
 
-    nodes.nodes.forEach(nodeId => {
+    for (const nodeId of nodes.nodes) {
+
+      const spiders = await this.backendService.listAllSpiders(nodeId).toPromise();
+
       if (nodeId.toLowerCase().includes(nodeIdKeyword)) {
         spiders.spiders.forEach(spiderName => {
           if (spiderName.toLowerCase().includes(spiderNameKeyword)) {
             console.log(nodeId + ':' + spiderName)
-            // this.backendService.scheduleSpider(spiderName).subscribe(
-            //   r => console.log(r)
-            // );
+            this.backendService.scheduleSpider(nodeId, spiderName).subscribe(
+              r => console.log(r)
+            );
           }
         });
       }
-    });
-
+    }
   }
 
 
@@ -134,35 +121,63 @@ export class MainComponent implements OnInit, OnDestroy {
   private async cancelSpidersByKeword(keyword: string) {
     keyword = keyword.toLowerCase();
 
-    const jobs = await this.backendService.listJobs().toPromise();
+    const params = keyword.split(':');
+    if (params.length > 2 || params.length === 0) {
+      return;
+    }
 
-    [...jobs.running, ...jobs.pending].forEach(job => {
+    let nodeIdKeyword;
+    let spiderNameKeyword;
+
+    if (params.length === 2) {
+      nodeIdKeyword = params[0];
+      spiderNameKeyword = params[1];
+    } else {
+      nodeIdKeyword = null;
+      spiderNameKeyword = params[0];
+    }
+
+    const nodes = (await this.backendService.listAllScrapydNodes().toPromise());
+
+    for (const nodeId of nodes.nodes) {
       if (
-        job.spider.toLowerCase().includes(keyword)
-        || job.id.toLowerCase().includes(keyword)
+        // If nodeId unspecified, try all nodes
+        isNull(nodeIdKeyword)
+        || nodeId.toLowerCase().includes(nodeIdKeyword)
       ) {
-        this.backendService.cancelJob(job.id);
+
+        const jobs = await this.backendService.listJobs(nodeId).toPromise();
+
+        [...jobs.running, ...jobs.pending].forEach(job => {
+          if (
+            job.spider.toLowerCase().includes(keyword)
+            || job.id.toLowerCase().includes(keyword)
+          ) {
+            this.backendService.cancelJob(nodeId, job.id);
+          }
+        });
       }
-    });
+    }
   }
 
 
-  private listJobs() {
-    this.backendService.listJobs().subscribe(
-      response => console.log(response)
-    );
+  private async cancelAllJobs() {
+    const nodes = (await this.backendService.listAllScrapydNodes().toPromise());
+
+    for (const nodeId of nodes.nodes) {
+      this.backendService.cancelAllJobs(nodeId);
+    }
   }
 
 
-  private cancelAllJobs() {
-    this.backendService.cancelAllJobs();
-  }
+  private async updateJobsInfo() {
+    const nodes = (await this.backendService.listAllScrapydNodes().toPromise());
 
-
-  private updateJobsInfo() {
-    this.backendService.listJobs().subscribe(
-      info => this.jobsListInfo = info
-    );
+    for (const nodeId of nodes.nodes) {
+      this.backendService.listJobs(nodeId).subscribe(
+        info => this.jobsListInfo[nodeId] = info
+      );
+    }
   }
 
 

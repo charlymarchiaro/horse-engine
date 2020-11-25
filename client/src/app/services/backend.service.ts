@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { JobsListInfo, JobScheduleInfo, SpidersListInfo, ScrapydNodeListInfo } from '../model/scrapyd.model';
 import { ArticleFilteringScheme, DateSpan, getArticleFilteringSchemeWhereCondition } from '../components/keyword-search/model';
 
@@ -31,9 +31,13 @@ export class BackendService {
   }
 
 
-  public listAllSpiders() {
+  public listAllSpiders(scrapydNodeId: string) {
+    const params = new HttpParams()
+      .set('scrapydNodeId', scrapydNodeId);
+
     return this.http.get<SpidersListInfo>(
-      '/api/scrapyd/list-spiders'
+      '/api/scrapyd/list-spiders',
+      { params }
     );
   }
 
@@ -55,8 +59,9 @@ export class BackendService {
   }
 
 
-  public scheduleSpider(spiderName: string) {
+  public scheduleSpider(scrapydNodeId: string, spiderName: string) {
     const params = JSON.stringify({
+      scrapydNodeId,
       spiderName
     });
 
@@ -70,8 +75,10 @@ export class BackendService {
   }
 
 
-  public scheduleAllSpiders() {
-    const params = JSON.stringify({});
+  public scheduleAllSpiders(scrapydNodeId: string) {
+    const params = JSON.stringify({
+      scrapydNodeId
+    });
 
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -83,19 +90,24 @@ export class BackendService {
   }
 
 
-  public listJobs() {
+  public listJobs(scrapydNodeId: string) {
+    const params = new HttpParams()
+      .set('scrapydNodeId', scrapydNodeId);
+
     return this.http.get<JobsListInfo>(
-      '/api/scrapyd/list-jobs'
+      '/api/scrapyd/list-jobs',
+      { params }
     );
   }
 
 
-  public cancelJob(jobId: string, force: boolean = true) {
+  public cancelJob(scrapydNodeId: string, jobId: string, force: boolean = true) {
 
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
     const params = JSON.stringify({
-      job: jobId
+      scrapydNodeId,
+      job: jobId,
     });
 
     const times = force ? 2 : 1;
@@ -113,10 +125,10 @@ export class BackendService {
   }
 
 
-  public cancelAllJobs(force: boolean = true) {
-    this.listJobs().subscribe(res => {
+  public cancelAllJobs(scrapydNodeId: string, force: boolean = true) {
+    this.listJobs(scrapydNodeId).subscribe(res => {
       [...res.running, ...res.pending]
-        .forEach(job => this.cancelJob(job.id, force));
+        .forEach(job => this.cancelJob(scrapydNodeId, job.id, force));
     });
   }
 
