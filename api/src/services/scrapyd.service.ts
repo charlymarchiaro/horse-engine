@@ -34,6 +34,7 @@ export class JobInfo {
 
 @model()
 export class JobsListInfo {
+  @property() nodeId?: string;
   @property() node_name: string;
   @property() status: string;
   @property.array(JobInfo) pending: JobInfo[];
