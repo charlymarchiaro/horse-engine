@@ -74,6 +74,6 @@ spec:
             - name: REDIRECT_ENABLED
               value: "True"
             - name: PERIOD_DAYS_BACK
-              value: "15"
+              value: "365"
             - name: MAX_RUN_TIME_HOURS
-              value: "6"
+              value: "2000"
