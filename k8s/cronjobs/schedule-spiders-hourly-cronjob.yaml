@@ -17,5 +17,5 @@ spec:
             args:
             - /bin/sh
             - -ec
-            - 'curl -X POST "api-cluster-ip-service:3000/scrapyd/schedule-spiders-hourly" -H "accept: application/json" -H "Content-Type: application/json" -d "{}"'
+            - 'curl -X POST "api-cluster-ip-service:3000/scrapyd/schedule-spiders-hourly" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"scrapydNodeId\":\"scrapyd-01\"}"'
           restartPolicy: Never
