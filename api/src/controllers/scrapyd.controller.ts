@@ -43,9 +43,7 @@ export class ScrapydController {
     protected scrapydHourlyScheduler: ScrapydHourlySchedulerService,
     @repository(ArticleSpiderRepository)
     public articleSpiderRepository: ArticleSpiderRepository,
-  ) {
-    console.log(scrapydServices)
-  }
+  ) { }
 
 
   @get('/list-scrapyd-nodes', {
@@ -235,7 +233,8 @@ export class ScrapydController {
   async listJobs(
     @param.query.string('scrapydNodeId') scrapydNodeId: string
   ): Promise<fromScrapyd.JobsListInfo> {
-    return this.scrapydServices[scrapydNodeId].listJobs();
+    return this.scrapydServices[scrapydNodeId].listJobs()
+      .then(r => ({ ...r, nodeId: scrapydNodeId }));
   }
 
 
