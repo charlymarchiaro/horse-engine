@@ -59,5 +59,6 @@ deploy:
       - k8s/dev/client-deployment.yaml
       - k8s/dev/api-deployment.yaml
       - k8s/dev/scrapyd-deployment.yaml
+      - k8s/dev/scrapyd-02-deployment.yaml
       - k8s/dev/splash-deployment.yaml
       # - k8s/dev/postgres-deployment.yaml

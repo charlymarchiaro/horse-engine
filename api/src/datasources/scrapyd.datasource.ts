@@ -1,80 +1,91 @@
 import { inject, lifeCycleObserver, LifeCycleObserver } from '@loopback/core';
 import { juggler } from '@loopback/repository';
 import { ScrapydConstants } from '../keys';
+import { exception } from 'console';
 
-const BASE_URL = `http://${ScrapydConstants.SCRAPYD_HOST}:${ScrapydConstants.SCRAPYD_PORT}`;
 
-const config = {
-  name: 'scrapyd',
-  connector: 'rest',
-  baseURL: BASE_URL,
-  crud: false,
-  "debug": "false",
-  "operations": [
-    {
-      "template": {
-        "method": "GET",
-        "url": BASE_URL + "/listspiders.json",
-        "headers": {
-          "accepts": "application/json",
+const config = (scrapydNodeId: string) => {
+
+  const node = ScrapydConstants.SCRAPYD_NODES.find(n => n.id === scrapydNodeId);
+
+  if (!node) {
+    throw exception('Invalid Scrapyd node id: ' + scrapydNodeId);
+  }
+
+  const baseUrl = `http://${node.host}:${node.port}`;
+
+  return ({
+    name: 'scrapyd',
+    connector: 'rest',
+    baseURL: baseUrl,
+    crud: false,
+    "debug": "false",
+    "operations": [
+      {
+        "template": {
+          "method": "GET",
+          "url": baseUrl + "/listspiders.json",
+          "headers": {
+            "accepts": "application/json",
+          },
+          "query": {
+            "project": "horse_scraper"
+          }
         },
-        "query": {
-          "project": "horse_scraper"
+        "functions": {
+          "listSpiders": []
         }
       },
-      "functions": {
-        "listSpiders": []
-      }
-    },
-    {
-      "template": {
-        "method": "POST",
-        "url": BASE_URL + "/schedule.json",
-        "headers": {
-          "accepts": "application/json",
+      {
+        "template": {
+          "method": "POST",
+          "url": baseUrl + "/schedule.json",
+          "headers": {
+            "accepts": "application/json",
+          },
+          "query": {
+            "project": "horse_scraper",
+            "spider": "{spiderName}",
+            "period_days_back": "{periodDaysBack}",
+          }
         },
-        "query": {
-          "project": "horse_scraper",
-          "spider": "{spiderName}",
-          "period_days_back": "{periodDaysBack}",
+        "functions": {
+          "scheduleSpider": ["spiderName", "periodDaysBack"]
         }
       },
-      "functions": {
-        "scheduleSpider": ["spiderName", "periodDaysBack"]
-      }
-    },
-    {
-      "template": {
-        "method": "GET",
-        "url": BASE_URL + "/listjobs.json",
-        "headers": {
-          "accepts": "application/json",
+      {
+        "template": {
+          "method": "GET",
+          "url": baseUrl + "/listjobs.json",
+          "headers": {
+            "accepts": "application/json",
+          },
+          "query": {
+            "project": "horse_scraper"
+          }
         },
-        "query": {
-          "project": "horse_scraper"
+        "functions": {
+          "listJobs": []
         }
       },
-      "functions": {
-        "listJobs": []
-      }
-    },
-    {
-      "template": {
-        "method": "POST",
-        "url": BASE_URL + "/cancel.json",
-        "headers": {
-          "accepts": "application/json",
+      {
+        "template": {
+          "method": "POST",
+          "url": baseUrl + "/cancel.json",
+          "headers": {
+            "accepts": "application/json",
+          },
+          "query": {
+            "project": "horse_scraper",
+            "job": "{job}"
+          }
         },
-        "query": {
-          "project": "horse_scraper",
-          "job": "{job}"
+        "functions": {
+          "cancelJob": ["job"]
         }
       },
-      "functions": {
-        "cancelJob": ["job"]
-      }
-    },
-  ]
+    ]
+  })
 };
 
 // Observe application's life cycle to disconnect the datasource when
@@ -94,3 +105,9 @@ export class ScrapydDataSource extends juggler.DataSource
     super(dsConfig);
   }
 }
+
+
+export const scrapydDataSourceFactory = (scrapydNodeId: string) => {
+  const dsConfig = config(scrapydNodeId);
+  return new ScrapydDataSource(dsConfig);
+};

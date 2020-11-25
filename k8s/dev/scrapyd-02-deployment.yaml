@@ -1,25 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: scrapyd-deployment
+  name: scrapyd-02-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      component: scrapyd
+      component: scrapyd-02
   template:
     metadata:
       labels:
-        component: scrapyd
+        component: scrapyd-02
     spec:
       # nodeSelector:
-      #   node-id: "2"
+      #   node-id: "3"
       volumes:
         - name: dshm
           emptyDir:
             medium: Memory
       containers:
-        - name: scrapyd
+        - name: scrapyd-02
           image: charlymarchiaro/horse-engine-scrapyd
           ports:
             - containerPort: 6800
@@ -35,7 +35,7 @@ spec:
               name: dshm
           env:
             - name: SCRAPYD_NODE_ID
-              value: "scrapyd-01"
+              value: "scrapyd-02"
             - name: DB_USER
               value: sa
             - name: DB_PASSWORD
@@ -50,7 +50,7 @@ spec:
             - name: DB_NAME
               value: horse_engine
             - name: SCRAPYD_LOG_LEVEL
-              value: DEBUG
+              value: INFO
             - name: SPLASH_URL
               value: http://splash-cluster-ip-service:8050/
             - name: SCRAPOXY_IP_ADDRESS
@@ -74,6 +74,6 @@ spec:
             - name: REDIRECT_ENABLED
               value: "True"
             - name: PERIOD_DAYS_BACK
-              value: "15"
+              value: "365"
             - name: MAX_RUN_TIME_HOURS
-              value: "2"
+              value: "2000"

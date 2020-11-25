@@ -34,6 +34,8 @@ spec:
             - mountPath: /dev/shm
               name: dshm
           env:
+            - name: SCRAPYD_NODE_ID
+              value: "scrapyd-01"
             - name: DB_USER
               value: sa
             - name: DB_PASSWORD

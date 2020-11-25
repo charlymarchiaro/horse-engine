@@ -10,6 +10,7 @@ import psycopg2.extras  # type: ignore
 import logging
 
 from horse_scraper.items import Article
+from horse_scraper.settings import SCRAPYD_NODE_ID
 from horse_scraper.spiders.article.model import ArticleSourceInfo
 
 
@@ -320,6 +321,7 @@ class ArticleDbHandler(object):
                             parse_function, 
                             result, 
                             spider_name,
+                            scrapyd_node_id,
                             source_name
                         )
 	                    VALUES (
@@ -332,6 +334,7 @@ class ArticleDbHandler(object):
                             '{self.sanitize_value(article['parse_function'])}',
                             '{self.sanitize_value(article['result'])}',
                             '{self.sanitize_value(article['spider_name'])}',
+                            '{SCRAPYD_NODE_ID}',
                             (
                                 SELECT 
                                         name 

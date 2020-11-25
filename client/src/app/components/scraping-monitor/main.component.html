@@ -2,22 +2,22 @@
   <div id="control-panel">
     <button (click)="onListAllSpidersClick()">List all spiders</button>
 
-    <button
-      (click)="onScheduleAllSpidersClick()"
-      [disabled]="true">
-      Schedule all spiders
-    </button>
-
     <button (click)="onScheduleByKeywordClick()">Schedule by keyword:</button>
     <input
       type="text"
-      placeholder="keyword"
+      placeholder="keyword (<node>:<spider>)"
+      (keydown.enter)="onScheduleByKeywordClick()"
       [(ngModel)]="scheduleKeyword">
 
-    <button (click)="onCancelByKeywordClick()">Cancel by keyword:</button>
+    <button
+      (click)="onCancelByKeywordClick()"
+      [disabled]="!cancelKeyword || cancelKeyword === ''">
+      Cancel by keyword:
+    </button>
     <input
       type="text"
-      placeholder="keyword"
+      placeholder="keyword (<node>?:<spider>)"
+      (keydown.enter)="onCancelByKeywordClick()"
       [(ngModel)]="cancelKeyword">
 
     <button (click)="onCancelAllJobsClick()">Cancel all jobs</button>
@@ -31,46 +31,54 @@
 
   <hr>
 
-  <div
-    id="jobs-list"
-    *ngIf="jobsListInfo">
-    <br>
-    <strong>Pending jobs ({{jobsListInfo.pending.length}}):</strong>
-    <app-job-info
-      *ngFor="let jobInfo of jobsListInfo.pending"
-      [jobInfo]="jobInfo"></app-job-info>
-    <div
-      class="job-info-placeholder"
-      *ngIf="jobsListInfo.pending.length === 0">
-      There are no jobs.
-    </div>
+  <mat-tab-group [@.disabled]="true">
+    <mat-tab
+      *ngFor="let nodeId of objectKeys(jobsListInfo)"
+      label="{{nodeId}}">
 
-    <hr>
+      <div
+        id="jobs-list"
+        *ngIf="jobsListInfo[nodeId]">
+        <br>
+        <strong>Pending jobs ({{jobsListInfo[nodeId].pending.length}}):</strong>
+        <app-job-info
+          *ngFor="let jobInfo of jobsListInfo[nodeId].pending"
+          [jobInfo]="jobInfo"></app-job-info>
+        <div
+          class="job-info-placeholder"
+          *ngIf="jobsListInfo[nodeId].pending.length === 0">
+          There are no jobs.
+        </div>
 
-    <br>
-    <strong>Running jobs ({{jobsListInfo.running.length}}):</strong>
-    <app-job-info
-      *ngFor="let jobInfo of jobsListInfo.running"
-      [jobInfo]="jobInfo"></app-job-info>
-    <div
-      class="job-info-placeholder"
-      *ngIf="jobsListInfo.running.length === 0">
-      There are no jobs.
-    </div>
+        <hr>
 
-    <hr>
+        <br>
+        <strong>Running jobs ({{jobsListInfo[nodeId].running.length}}):</strong>
+        <app-job-info
+          *ngFor="let jobInfo of jobsListInfo[nodeId].running"
+          [jobInfo]="jobInfo"></app-job-info>
+        <div
+          class="job-info-placeholder"
+          *ngIf="jobsListInfo[nodeId].running.length === 0">
+          There are no jobs.
+        </div>
 
-    <br>
-    <strong>Finished jobs ({{jobsListInfo.finished.length}}):</strong>
-    <app-job-info
-      *ngFor="let jobInfo of jobsListInfo.finished"
-      [jobInfo]="jobInfo"></app-job-info>
-    <div
-      class="job-info-placeholder"
-      *ngIf="jobsListInfo.finished.length === 0">
-      There are no jobs.
-    </div>
+        <hr>
 
-  </div>
+        <br>
+        <strong>Finished jobs ({{jobsListInfo[nodeId].finished.length}}):</strong>
+        <app-job-info
+          *ngFor="let jobInfo of jobsListInfo[nodeId].finished"
+          [jobInfo]="jobInfo"></app-job-info>
+        <div
+          class="job-info-placeholder"
+          *ngIf="jobsListInfo[nodeId].finished.length === 0">
+          There are no jobs.
+        </div>
+
+      </div>
+
+    </mat-tab>
+  </mat-tab-group>
 
 </div>

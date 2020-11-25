@@ -117,12 +117,12 @@ export class ScheduleInfo {
 export class ScrapydHourlySchedulerService {
   constructor(
     @inject('services.Scrapyd')
-    protected scrapydService: fromScrapyd.Scrapyd,
+    protected scrapydServices: { [id: string]: fromScrapyd.Scrapyd },
     @repository(ArticleSpiderRepository)
     public articleSpiderRepository: ArticleSpiderRepository,
   ) { }
 
-  public async scheduleSpidersHourly(periodDaysBack: number): Promise<fromScrapyd.BulkJobScheduleInfo> {
+  public async scheduleSpidersHourly(periodDaysBack: number, scrapydNodeId: string): Promise<fromScrapyd.BulkJobScheduleInfo> {
 
     // The function is designed to be called on an hourly basis.
     // Add a little delay to ensure a correct value for currentUtcHour
@@ -154,7 +154,10 @@ export class ScrapydHourlySchedulerService {
 
     slot.scheduledItems.forEach(i => {
       promises.push(
-        this.scrapydService.scheduleSpider(i.spider.name, periodDaysBack)
+        this.scrapydServices[scrapydNodeId].scheduleSpider(
+          i.spider.name,
+          periodDaysBack
+        )
       )
     })
 
@@ -164,7 +167,7 @@ export class ScrapydHourlySchedulerService {
   }
 
 
-  public async getHourlySpidersSchedule(): Promise<ScheduleInfo> {
+  public async getHourlySpidersSchedule(scrapydNodeId: string): Promise<ScheduleInfo> {
     const info = (await this.arrangeSchedule({ displayResults: true })).info;
     return info;
   }

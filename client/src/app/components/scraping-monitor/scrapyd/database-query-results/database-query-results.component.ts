@@ -59,6 +59,7 @@ export class DatabaseQueryResultsComponent implements OnInit, OnChanges {
       'Spider Name',
       'Result',
       'Parse Function',
+      'Scrapyd Node id',
     ];
 
     this.tableData = this.data.map<TableFieldInfo[]>(i => [
@@ -80,6 +81,7 @@ export class DatabaseQueryResultsComponent implements OnInit, OnChanges {
       { type: 'label', value: i.spiderName, },
       { type: 'label', value: i.result, },
       { type: 'label', value: i.parseFunction || '—', },
+      { type: 'label', value: i.scrapydNodeId || '—', },
     ]);
   }
 

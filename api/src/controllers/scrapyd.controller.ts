@@ -1,6 +1,6 @@
 import { inject } from '@loopback/core';
 import { repository, Filter } from '@loopback/repository';
-import { get, post, requestBody, api } from '@loopback/rest';
+import { get, post, requestBody, api, param } from '@loopback/rest';
 import * as fromScrapyd from '../services/scrapyd.service';
 import * as fromScrapydHourlyScheduler from '../services/scrapyd-hourly-scheduler.service';
 import { ArticleSpiderRepository } from '../repositories';
@@ -9,22 +9,26 @@ import { ArticleSpider } from '../models';
 import { ArticleSpiderRelations } from '../models/article-spider.model';
 import { exception } from 'console';
 import { ScrapydHourlySchedulerService } from '../services';
+import { ScrapydConstants } from '../keys';
 
 
 
 @model()
 export class ScheduleSpiderRequestBody {
+  @property() scrapydNodeId: string;
   @property() spiderName: string;
   @property() periodDaysBack: number;
 }
 
 @model()
 export class BulkScheduleSpiderRequestBody {
+  @property() scrapydNodeId: string;
   @property() periodDaysBack: number;
 }
 
 @model()
 export class CancelJobRequestBody {
+  @property() scrapydNodeId: string;
   @property() job: string;
 }
 
@@ -34,12 +38,28 @@ export class ScrapydController {
 
   constructor(
     @inject('services.Scrapyd')
-    protected scrapydService: fromScrapyd.Scrapyd,
+    protected scrapydServices: { [id: string]: fromScrapyd.Scrapyd },
     @inject('services.ScrapydHourlySchedulerService')
     protected scrapydHourlyScheduler: ScrapydHourlySchedulerService,
     @repository(ArticleSpiderRepository)
     public articleSpiderRepository: ArticleSpiderRepository,
   ) { }
+
+
+  @get('/list-scrapyd-nodes', {
+    responses: {
+      '200': {
+        content: {
+          'application/json': {
+            schema: { 'x-ts-type': fromScrapyd.ScrapydNodeListInfo },
+          },
+        },
+      },
+    },
+  })
+  async listScrapydNodes(): Promise<fromScrapyd.ScrapydNodeListInfo> {
+    return { nodes: ScrapydConstants.SCRAPYD_NODES.map(n => n.id) };
+  }
 
 
   @get('/list-spiders', {
@@ -53,8 +73,10 @@ export class ScrapydController {
       },
     },
   })
-  async listSpiders(): Promise<fromScrapyd.SpidersListInfo> {
-    return this.scrapydService.listSpiders();
+  async listSpiders(
+    @param.query.string('scrapydNodeId') scrapydNodeId: string
+  ): Promise<fromScrapyd.SpidersListInfo> {
+    return this.scrapydServices[scrapydNodeId].listSpiders();
   }
 
 
@@ -79,7 +101,10 @@ export class ScrapydController {
     })
     body: ScheduleSpiderRequestBody,
   ): Promise<fromScrapyd.JobScheduleInfo> {
-    return this.scrapydService.scheduleSpider(body.spiderName, body.periodDaysBack);
+    return this.scrapydServices[body.scrapydNodeId].scheduleSpider(
+      body.spiderName,
+      body.periodDaysBack
+    );
   }
 
 
@@ -128,7 +153,10 @@ export class ScrapydController {
     const promises: Promise<fromScrapyd.JobScheduleInfo>[] = [];
 
     spiders.forEach(s => {
-      promises.push(this.scrapydService.scheduleSpider(s.name, body.periodDaysBack))
+      promises.push(this.scrapydServices[body.scrapydNodeId].scheduleSpider(
+        s.name,
+        body.periodDaysBack
+      ))
     })
 
     const items = await Promise.all(promises);
@@ -148,8 +176,10 @@ export class ScrapydController {
       },
     },
   })
-  async getHourlySpidersSchedule(): Promise<fromScrapydHourlyScheduler.ScheduleInfo> {
-    const result = await this.scrapydHourlyScheduler.getHourlySpidersSchedule();
+  async getHourlySpidersSchedule(
+    @param.query.string('scrapydNodeId') scrapydNodeId: string
+  ): Promise<fromScrapydHourlyScheduler.ScheduleInfo> {
+    const result = await this.scrapydHourlyScheduler.getHourlySpidersSchedule(scrapydNodeId);
     return result;
   }
 
@@ -181,7 +211,8 @@ export class ScrapydController {
     };
 
     const result = await this.scrapydHourlyScheduler.scheduleSpidersHourly(
-      body.periodDaysBack
+      body.periodDaysBack,
+      body.scrapydNodeId,
     );
 
     return result;
@@ -199,8 +230,11 @@ export class ScrapydController {
       },
     },
   })
-  async listJobs(): Promise<fromScrapyd.JobsListInfo> {
-    return this.scrapydService.listJobs();
+  async listJobs(
+    @param.query.string('scrapydNodeId') scrapydNodeId: string
+  ): Promise<fromScrapyd.JobsListInfo> {
+    return this.scrapydServices[scrapydNodeId].listJobs()
+      .then(r => ({ ...r, nodeId: scrapydNodeId }));
   }
 
 
@@ -225,6 +259,6 @@ export class ScrapydController {
     })
     body: CancelJobRequestBody,
   ): Promise<fromScrapyd.JobScheduleInfo> {
-    return this.scrapydService.cancelJob(body.job);
+    return this.scrapydServices[body.scrapydNodeId].cancelJob(body.job);
   }
 }

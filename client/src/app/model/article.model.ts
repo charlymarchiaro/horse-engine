@@ -61,8 +61,9 @@ export class ArticleSummary {
   sourceName: string;
   scrapedAt: Date;
   parseFunction?: string;
-  result: string;
+  result?: string;
   spiderName: string;
+  scrapydNodeId?: string;
 
   constructor(r: ArticleSummaryResponse) {
     this.id = r.id;
@@ -75,6 +76,7 @@ export class ArticleSummary {
     this.parseFunction = r.parseFunction;
     this.result = r.result;
     this.spiderName = r.spiderName;
+    this.scrapydNodeId = r.scrapydNodeId;
   }
 }
 
@@ -90,6 +92,7 @@ export interface ArticleSummaryResponse {
   parseFunction?: string;
   result: string;
   spiderName: string;
+  scrapydNodeId?: string;
 }
 
 

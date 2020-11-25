@@ -5,6 +5,10 @@ export interface SpidersListInfo {
   spiders: string[];
 }
 
+export interface ScrapydNodeListInfo {
+  nodes: string[];
+}
+
 
 export interface JobInfo {
   project: string;
@@ -16,6 +20,7 @@ export interface JobInfo {
 
 
 export interface JobsListInfo {
+  nodeId?: string;
   node_name: string;
   status: string;
   pending: JobInfo[];

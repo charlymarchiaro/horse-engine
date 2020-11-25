@@ -51,6 +51,13 @@ kubectl \
   --server=$KUBERNETES_SERVER \
   --certificate-authority=cert.crt \
   --token=$KUBERNETES_TOKEN \
+  apply -f k8s/api-config-map.yaml
+
+kubectl \
+  --kubeconfig=/dev/null \
+  --server=$KUBERNETES_SERVER \
+  --certificate-authority=cert.crt \
+  --token=$KUBERNETES_TOKEN \
   set image deployments/api-deployment api=charlymarchiaro/horse-engine-api:$SHA
 
 # # postgres
@@ -88,3 +95,23 @@ kubectl \
 #   --certificate-authority=cert.crt \
 #   --token=$KUBERNETES_TOKEN \
 #   set image deployments/scrapyd-deployment scrapyd=charlymarchiaro/horse-engine-scrapyd:$SHA
+
+# scrapyd-02
+kubectl \
+  --kubeconfig=/dev/null \
+  --server=$KUBERNETES_SERVER \
+  --certificate-authority=cert.crt \
+  --token=$KUBERNETES_TOKEN \
+  delete deployment scrapyd-02-deployment
+kubectl \
+  --kubeconfig=/dev/null \
+  --server=$KUBERNETES_SERVER \
+  --certificate-authority=cert.crt \
+  --token=$KUBERNETES_TOKEN \
+  apply -f k8s/scrapyd-02-deployment.yaml
+# kubectl \
+#   --kubeconfig=/dev/null \
+#   --server=$KUBERNETES_SERVER \
+#   --certificate-authority=cert.crt \
+#   --token=$KUBERNETES_TOKEN \
+#   set image deployments/scrapyd-02-deployment scrapyd-02=charlymarchiaro/horse-engine-scrapyd:$SHA
