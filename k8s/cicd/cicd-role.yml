@@ -6,5 +6,5 @@ metadata:
 rules:
   - apiGroups: ["", "apps", "batch", "extensions"]
     resources:
-      ["ingresses", "deployments", "services", "replicasets", "pods", "jobs", "cronjobs"]
+      ["ingresses", "deployments", "services", "replicasets", "pods", "jobs", "cronjobs", "configmaps"]
     verbs: ["*"]
