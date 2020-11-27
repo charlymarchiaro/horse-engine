@@ -133,6 +133,8 @@ export class ScrapydHourlySchedulerService {
 
     const slot = schedule[repeatValue(currentUtcHour, 24)];
 
+    const scrapydService = this.scrapydServices[scrapydNodeId];
+
     console.log('');
     console.log('Scheduled jobs: ================================================================================================')
     console.log('');
@@ -154,10 +156,7 @@ export class ScrapydHourlySchedulerService {
 
     slot.scheduledItems.forEach(i => {
       promises.push(
-        this.scrapydServices[scrapydNodeId].scheduleSpider(
-          i.spider.name,
-          periodDaysBack
-        )
+        scrapydService.scheduleSpider(i.spider.name, periodDaysBack)
       )
     })
 
