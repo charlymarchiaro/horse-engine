@@ -85,7 +85,6 @@ class Params(BaseArticleSpiderParams):
             "https://www.abc.es/oferta-del-dia/",
             "https://www.abc.es/humor/",
             "https://www.abc.es/contacto/",
-            "https://www.vocento.com/politica-privacidad/",
         ]
 
     def get_url_filter(self) -> UrlFilter:
@@ -126,7 +125,28 @@ class Params(BaseArticleSpiderParams):
         article_data = self.get_default_parser_results(response)
 
         title = article_data.title
-        last_updated = article_data.last_updated
+
+        # last_updated ----------
+        published_time_xpath = response.xpath(
+            '//meta[@property="article:published_time"]/@content'
+        ).extract()
+        published_time_str = (
+            published_time_xpath[0] if len(published_time_xpath) > 0 else None
+        )
+
+        modified_time_xpath = response.xpath(
+            '//meta[@property="article:modified_time"]/@content'
+        ).extract()
+        modified_time_str = (
+            modified_time_xpath[0] if len(modified_time_xpath) > 0 else None
+        )
+
+        # Attempt to use modified_time (if present), published_time is frecuently incorrect
+        time_str = modified_time_str or published_time_str or None
+
+        last_updated = (
+            dateparser.parse(time_str) if time_str else article_data.last_updated
+        )
 
         # text ----------
         text = extract_all_text(
