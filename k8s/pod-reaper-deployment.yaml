@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: scrapoxy-pod-reaper-deployment
+  name: pod-reaper-deployment
   namespace: reaper
 spec:
   replicas: 1
   selector:
     matchLabels:
-      component: scrapoxy-pod-reaper
+      component: pod-reaper
   template:
     metadata:
       labels:
-        component: scrapoxy-pod-reaper
+        component: pod-reaper
     spec:
       serviceAccount: pod-reaper-service-account
       containers:
-        - name: scrapoxy-pod-reaper
+        - name: pod-reaper
           image: target/pod-reaper
           resources:
             limits:
@@ -32,4 +32,4 @@ spec:
             - name: REQUIRE_LABEL_KEY
               value: component
             - name: REQUIRE_LABEL_VALUES
-              value: scrapoxy
+              value: scrapoxy,splash
