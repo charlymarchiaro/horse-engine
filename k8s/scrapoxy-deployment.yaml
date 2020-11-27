@@ -28,11 +28,11 @@ spec:
               containerPort: 8889
           resources:
             requests:
-              cpu: 1250m
-              memory: 2500Mi
-            limits:
               cpu: 1500m
-              memory: 3000Mi
+              memory: 3500Mi
+            limits:
+              cpu: 1700m
+              memory: 4000Mi
           volumeMounts:
             - mountPath: /dev/shm
               name: dshm
@@ -52,7 +52,7 @@ spec:
             - name: INSTANCE_SCALING_MIN
               value: "1"
             - name: INSTANCE_SCALING_MAX
-              value: "6"
+              value: "10"
             - name: PROVIDERS_TYPE
               value: digitalocean
             - name: PROVIDERS_DIGITALOCEAN_TOKEN
@@ -71,4 +71,4 @@ spec:
             - name: PROVIDERS_DIGITALOCEAN_TAGS
               value: proxy-instance
             - name: INSTANCE_SCALING_DOWNSCALEDELAY
-              value: "60000"
+              value: "150000"
