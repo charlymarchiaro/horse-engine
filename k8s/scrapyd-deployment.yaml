@@ -13,7 +13,7 @@ spec:
         component: scrapyd
     spec:
       nodeSelector:
-        node-id: "2"
+        node-id: "3"
       volumes:
         - name: dshm
           emptyDir:
@@ -68,7 +68,7 @@ spec:
             - name: DOWNLOAD_DELAY
               value: "0"
             - name: CONCURRENT_REQUESTS_PER_DOMAIN
-              value: "3"
+              value: "1"
             - name: COOKIES_ENABLED
               value: "False"
             - name: REDIRECT_ENABLED

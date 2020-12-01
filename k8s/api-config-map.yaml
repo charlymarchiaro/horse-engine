@@ -10,11 +10,6 @@ data:
           "id": "scrapyd-01",
           "host": "scrapyd-cluster-ip-service",
           "port": 6800
-        },
-        {
-          "id": "scrapyd-02",
-          "host": "scrapyd-02-cluster-ip-service",
-          "port": 6800
         }
       ]
     }

@@ -52,7 +52,7 @@ spec:
             - name: INSTANCE_SCALING_MIN
               value: "1"
             - name: INSTANCE_SCALING_MAX
-              value: "10"
+              value: "1"
             - name: PROVIDERS_TYPE
               value: digitalocean
             - name: PROVIDERS_DIGITALOCEAN_TOKEN

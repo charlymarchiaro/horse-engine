@@ -96,19 +96,19 @@ kubectl \
 #   --token=$KUBERNETES_TOKEN \
 #   set image deployments/scrapyd-deployment scrapyd=charlymarchiaro/horse-engine-scrapyd:$SHA
 
-# scrapyd-02
-kubectl \
-  --kubeconfig=/dev/null \
-  --server=$KUBERNETES_SERVER \
-  --certificate-authority=cert.crt \
-  --token=$KUBERNETES_TOKEN \
-  delete deployment scrapyd-02-deployment
-kubectl \
-  --kubeconfig=/dev/null \
-  --server=$KUBERNETES_SERVER \
-  --certificate-authority=cert.crt \
-  --token=$KUBERNETES_TOKEN \
-  apply -f k8s/scrapyd-02-deployment.yaml
+# # scrapyd-02
+# kubectl \
+#   --kubeconfig=/dev/null \
+#   --server=$KUBERNETES_SERVER \
+#   --certificate-authority=cert.crt \
+#   --token=$KUBERNETES_TOKEN \
+#   delete deployment scrapyd-02-deployment
+# kubectl \
+#   --kubeconfig=/dev/null \
+#   --server=$KUBERNETES_SERVER \
+#   --certificate-authority=cert.crt \
+#   --token=$KUBERNETES_TOKEN \
+#   apply -f k8s/scrapyd-02-deployment.yaml
 # kubectl \
 #   --kubeconfig=/dev/null \
 #   --server=$KUBERNETES_SERVER \
