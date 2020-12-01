@@ -41,7 +41,8 @@ export class ArticleScrapingStatsDynRepository extends DefaultTransactionalRepos
               id,
               date,
               scraped_at,
-              article_source_id
+              article_source_id,
+              result
           FROM
               scraper.article
         ),
@@ -55,7 +56,7 @@ export class ArticleScrapingStatsDynRepository extends DefaultTransactionalRepos
               INNER JOIN scraper.article_source AS source
                 ON source.id = article.article_source_id
           WHERE
-              article.date IS NOT NULL
+              article.result = 'success'
           GROUP BY
               source_id, date1
         ),
