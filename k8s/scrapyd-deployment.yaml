@@ -66,7 +66,7 @@ spec:
             - name: USER_AGENT
               value: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
             - name: DOWNLOAD_DELAY
-              value: "0"
+              value: "2"
             - name: CONCURRENT_REQUESTS_PER_DOMAIN
               value: "1"
             - name: COOKIES_ENABLED
