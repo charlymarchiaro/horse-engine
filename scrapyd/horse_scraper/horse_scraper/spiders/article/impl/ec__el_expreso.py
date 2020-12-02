@@ -37,6 +37,13 @@ class Params(BaseArticleSpiderParams):
     def get_allowed_domains(self) -> List[str]:
         return ["expreso.ec"]
 
+    def pre_process_url(self, url) -> str:
+        url = str(url)
+        # if last part of url does not have an extension, add .html
+        if url[-5:].find(".") == -1:
+            url += ".html"
+        return url
+
     # Crawl params
 
     def get_crawl_start_urls(self) -> List[str]:
@@ -90,7 +97,7 @@ class Params(BaseArticleSpiderParams):
         ]
 
     def get_url_filter(self) -> UrlFilter:
-        return UrlFilter(allow_re=["expreso.ec\/.+\/.+-\d+$"], deny_re=[])
+        return UrlFilter(allow_re=["expreso.ec\/.+\/.+-\d+(.html)?$"], deny_re=[])
 
     # Sitemap params
 
