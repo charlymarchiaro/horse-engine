@@ -86,6 +86,7 @@ class Params(BaseArticleSpiderParams):
                 "\/video\/",
                 "interactivo.eluniversal",
                 "\/edicion-impresa\/",
+                "archivo.eluniversal",
             ],
         )
 
