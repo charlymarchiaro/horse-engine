@@ -28,11 +28,11 @@ spec:
               containerPort: 8889
           resources:
             requests:
-              cpu: 1500m
-              memory: 3500Mi
+              cpu: 1000m
+              memory: 2000Mi
             limits:
-              cpu: 1700m
-              memory: 4000Mi
+              cpu: 1500m
+              memory: 2500Mi
           volumeMounts:
             - mountPath: /dev/shm
               name: dshm

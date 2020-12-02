@@ -29,10 +29,10 @@ spec:
           resources:
             requests:
               cpu: 2000m
-              memory: 3800Mi
+              memory: 4000Mi
             limits:
               cpu: 2000m
-              memory: 3800Mi
+              memory: 4000Mi
           volumeMounts:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/data
