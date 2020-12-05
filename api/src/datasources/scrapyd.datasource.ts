@@ -4,7 +4,18 @@ import { ScrapydConstants } from '../keys';
 import { exception } from 'console';
 
 
-const config = (scrapydNodeId: string) => {
+// Empty config to avoid lb4 errors
+const config = {
+  name: 'scrapyd',
+  connector: 'rest',
+  baseURL: null,
+  crud: false,
+  "debug": "false",
+  "operations": []
+};
+
+
+const configFactory = (scrapydNodeId: string) => {
 
   const node = ScrapydConstants.SCRAPYD_NODES.find(n => n.id === scrapydNodeId);
 
@@ -108,6 +119,6 @@ export class ScrapydDataSource extends juggler.DataSource
 
 
 export const scrapydDataSourceFactory = (scrapydNodeId: string) => {
-  const dsConfig = config(scrapydNodeId);
+  const dsConfig = configFactory(scrapydNodeId);
   return new ScrapydDataSource(dsConfig);
 };
