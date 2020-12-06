@@ -13,3 +13,4 @@ export * from './article-secondary-match-condition.model';
 export * from './search-date-span.model';
 export * from './article-boolean-query.model';
 export * from './article-search-scheme.model';
+export * from './article-sketch.model';

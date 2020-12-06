@@ -21,6 +21,7 @@ export async function migrate(args: string[]) {
       'ArticleSummary',
       'ArticleScrapingStatsAccum',
       'ArticleScrapingStatsDyn',
+      'ArticleSketch',
       // Search
       'ArticleSearchScheme',
     ],
