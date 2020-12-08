@@ -57,7 +57,7 @@ export class ArticleSource extends Entity {
   region: string;
 
   @property({
-    type: 'string',
+    type: 'boolean',
     required: false,
     postgresql: {
       columnName: 'red_circle',

@@ -43,32 +43,24 @@ class DocSketchGenerator(object):
         if len(shingles) == 0:
             return []
 
-        print(doc)
-
         fingerprints = [self.get_fingerprint(sh) for sh in shingles]
         min_hashes = [self.get_min_hash(fingerprints, p) for p in self.permutations]
-
-        offset = 2 ** 63
-        print([h - offset for h in min_hashes])
-        print("")
-        print("")
 
         return min_hashes
 
     def extract_shingle_list(self, doc: str) -> List[str]:
         shingles_set = set()
 
-        # doc = self.sanitize(doc)
         tokens = gensim.utils.simple_preprocess(doc)
         for i in range(0, len(tokens) - self.shingle_length + 1):
             shingles_set.add(" ".join(tokens[i : i + self.shingle_length]))
 
         return sorted(shingles_set)
 
-    def get_fingerprint(self, str: str) -> int:
+    def get_fingerprint(self, doc: str) -> int:
         hash = 0
-        for i, c in enumerate(str):
-            hash += guid(c) * self.base ** (len(str) - 1 - i)
+        for i, c in enumerate(doc):
+            hash += guid(c) * self.base ** (len(doc) - 1 - i)
         hash = hash % self.modulo
         return hash
 

@@ -115,6 +115,8 @@ export class Article {
   articleSource?: ArticleSource;
   articleSpiderId: string;
   articleSpider?: ArticleSpider;
+  isDuplicate?: boolean;
+  originalArticleId?: string;
 
   constructor(r: ArticleResponse) {
     this.id = r.id;
@@ -130,6 +132,8 @@ export class Article {
     this.articleSource = r.articleSource ? new ArticleSource(r.articleSource) : null;
     this.articleSpiderId = r.articleSpiderId;
     this.articleSpider = r.articleSpider ? new ArticleSpider(r.articleSpider) : null;
+    this.isDuplicate = r.isDuplicate;
+    this.originalArticleId = r.originalArticleId;
   }
 }
 
@@ -148,6 +152,8 @@ export interface ArticleResponse {
   articleSource?: ArticleSourceResponse;
   articleSpiderId: string;
   articleSpider?: ArticleSpiderResponse;
+  isDuplicate?: boolean;
+  originalArticleId?: string;
 }
 
 

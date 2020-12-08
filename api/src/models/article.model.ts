@@ -138,6 +138,27 @@ export class Article extends Entity {
   })
   articleSpiderId: string;
 
+  @property({
+    type: 'boolean',
+    postgresql: {
+      columnName: 'is_duplicate',
+      dataType: 'BOOLEAN',
+      nullable: 'YES',
+    }
+  })
+  isDuplicate?: boolean;
+
+
+  @property({
+    type: 'string',
+    postgresql: {
+      columnName: 'original_article_id',
+      dataType: 'uuid',
+      nullable: 'YES',
+    }
+  })
+  originalArticleId?: string;
+
   constructor(data?: Partial<Article>) {
     super(data);
   }

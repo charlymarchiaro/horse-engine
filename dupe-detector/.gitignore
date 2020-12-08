@@ -1,0 +1,11 @@
+.vscode
+__pycache__
+*.log
+**/output
+.env
+
+build
+*.egg-info
+setup.py
+.mypy_cache
+test_scripts
