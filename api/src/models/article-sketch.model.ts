@@ -1,18 +1,9 @@
-import { Entity, model, property, belongsTo } from '@loopback/repository';
-import { Article, ArticleWithRelations } from './article.model';
+import { Entity, model, property } from '@loopback/repository';
 
 
 @model({
   settings: {
     postgresql: { schema: 'scraper', table: 'article_sketch' },
-    foreignKeys: {
-      fk__article_sketch__article: {
-        name: 'fk__article_sketch__article',
-        entity: 'Article',
-        entityKey: 'id',
-        foreignKey: 'article_id',
-      },
-    },
   },
 })
 export class ArticleSketch extends Entity {
@@ -28,7 +19,8 @@ export class ArticleSketch extends Entity {
   })
   id?: string;
 
-  @belongsTo(() => Article, {}, {
+  @property({
+    type: 'string',
     postgresql: {
       columnName: 'article_id',
       dataType: 'uuid',
@@ -47,10 +39,29 @@ export class ArticleSketch extends Entity {
     }
   })
   hash: string;
+
+  @property({
+    type: 'date',
+    postgresql: {
+      columnName: 'date',
+      dataType: 'DATE',
+      nullable: 'NO',
+    }
+  })
+  date: string;
+
+  @property({
+    type: 'string',
+    postgresql: {
+      columnName: 'article_source_id',
+      dataType: 'uuid',
+      nullable: 'NO',
+    }
+  })
+  articleSourceId: string;
 }
 
 export interface ArticleSketchRelations {
-  article?: ArticleWithRelations;
 }
 
 export type ArticleSketchWithRelations = ArticleSketch & ArticleSketchRelations;
