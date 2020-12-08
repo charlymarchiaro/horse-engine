@@ -27,6 +27,10 @@ spec:
           resources:
             requests:
               cpu: 10m
+              memory: 100Mi
+            limits:
+              cpu: 500m
+              memory: 500Mi
           volumeMounts:
             - mountPath: /dev/shm
               name: dshm
