@@ -42,6 +42,7 @@ export class ArticleSketch extends Entity {
 
   @property({
     type: 'date',
+    index: true,
     postgresql: {
       columnName: 'date',
       dataType: 'DATE',
@@ -52,6 +53,7 @@ export class ArticleSketch extends Entity {
 
   @property({
     type: 'string',
+    index: true,
     postgresql: {
       columnName: 'article_source_id',
       dataType: 'uuid',
