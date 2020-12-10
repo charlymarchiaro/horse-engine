@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dupe-detector-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: dupe-detector
+  template:
+    metadata:
+      labels:
+        component: dupe-detector
+    spec:
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+      containers:
+        - name: dupe-detector
+          image: charlymarchiaro/horse-engine-dupe-detector
+          resources:
+            requests:
+              cpu: 10m
+              memory: 500Mi
+            limits:
+              cpu: 500m
+              memory: 1024Mi
+          volumeMounts:
+            - mountPath: /dev/shm
+              name: dshm
+          env:
+            - name: DB_USER
+              value: sa
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pgpassword
+                  key: PGPASSWORD
+            - name: DB_SERVER
+              value: postgres-cluster-ip-service
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_NAME
+              value: horse_engine

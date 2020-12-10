@@ -2,7 +2,7 @@ from typing import List, Optional, Tuple, Iterator, Union, Callable, Any, cast
 
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 from urllib.parse import urlparse, ParseResult
 
@@ -13,6 +13,9 @@ import logging
 
 from .doc_comparator import DocComparator
 from .doc_sketch import DocSketchGenerator
+from .profiler import Profiler
+
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 # p = 20
 permutations = [
@@ -74,21 +77,37 @@ def process_articles():
         level=logging.DEBUG,
         format="%(asctime)s %(levelname)s %(message)s",
         handlers=[
-            logging.FileHandler("/var/log/debug.log"),
+            logging.FileHandler(
+                dir_path + "/log/debug.log", mode="w", encoding="utf-8"
+            ),
             logging.StreamHandler(sys.stdout),
         ],
     )
 
     logging.info(
-        "Processing articles ------------------------------------------------------"
+        f"   ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════╗"
     )
-    logging.info("")
+    logging.info(
+        f">> ║                                                                                                          ║"
+    )
+    logging.info(
+        f">> ║  Article duplicate detector                                                                              ║"
+    )
+    logging.info(
+        f">> ║                                                                                                          ║"
+    )
+    logging.info(
+        f"   ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════╝"
+    )
 
-    doc_sketch_generator = DocSketchGenerator(31, 2 ** 64, permutations, 3, 1600)
-    ARTICLES_BATCH_SIZE = 200
+    ARTICLES_BATCH_SIZE = 5000
     ARTICLES_COUNT_LOG = 50
     HASH_OFFSET = 2 ** 63
-    POLING_INTERVAL_MIN = 2
+    POLING_INTERVAL_MIN = 10
+    STATS_LOG_INTERVAL_SEC = 3
+
+    doc_sketch_generator = DocSketchGenerator(31, 2 ** 64, permutations, 3, 1600)
+    profiler = Profiler(STATS_LOG_INTERVAL_SEC)
 
     cnxn1 = get_db_connection()
     cnxn2 = get_db_connection()
@@ -97,6 +116,9 @@ def process_articles():
 
     while True:
         time1 = time.time()
+
+        # Profiler ###############
+        profiler.reg_time("t1")
 
         # Get total number of articles to be processed
         sql = f"""
@@ -121,18 +143,20 @@ def process_articles():
             time.sleep(60 * POLING_INTERVAL_MIN)
             continue
 
-        print("")
-        print(f">> Found {total_articles} articles to be processed")
-        print("")
+        logging.info("")
+        logging.info(f">> Found {total_articles} articles to be processed")
+        logging.info("")
+
+        # Profiler ###############
+        profiler.reg_time("t2")
 
         while True:
+            # Profiler ###############
+            profiler.reg_time("t3")
+
             sql = f"""
                     SELECT
-                            id, 
-                            date,
-                            title,
-                            text,
-                            article_source_id
+                            id
                     FROM
                             scraper.article article
                     WHERE
@@ -151,8 +175,27 @@ def process_articles():
             if cursor1.rowcount == 0:
                 break
 
-            # Iterate the article list
-            for row in cursor1:
+            article_id_list = list(map(lambda r: r[0], cursor1.fetchall()))
+
+            # Iterate the article id list
+            for article_id in article_id_list:
+                # Profiler ###############
+                profiler.reg_time("t4")
+
+                sql = f"""
+                    SELECT
+                            date,
+                            title,
+                            text,
+                            article_source_id
+                    FROM
+                            scraper.article article
+                    WHERE
+                            id = '{article_id}'
+                    """
+
+                cursor1.execute(sql)
+                row = cursor1.fetchone()
 
                 # Calculate stats
                 processed_articles_count += 1
@@ -171,26 +214,30 @@ def process_articles():
                         time1 = time.time()
                         timespan_processed_articles_count = 0
 
-                    date_str = row[1]
+                        profiler.log_stats()
+
+                    date_str = row[0]
                     logging.info(
-                        f"[{complete_percent_str}% complete] Article date: {date_str}, processed articles: {processed_articles_count}/{total_articles} at {articles_per_sec_str} [articles/sec]"
+                        f">> [{complete_percent_str}% complete] Article date: {date_str}, processed articles: {processed_articles_count}/{total_articles} at {articles_per_sec_str} [articles/sec]"
                     )
 
                 # concatenate title and text
-                article_id = row[0]
-                date = row[1]
-                title = row[2]
-                text = row[3]
-                article_source_id = row[4]
+                date = row[0]
+                title = row[1]
+                text = row[2]
+                article_source_id = row[3]
 
                 # Generate sketch
                 doc = title + " " + text
                 sketch = doc_sketch_generator.generate_sketch(doc)
                 hashes = [str(h - HASH_OFFSET) for h in sketch]
 
+                # Profiler ###############
+                profiler.reg_time("t5")
+
                 if len(hashes) == 0:
                     logging.info(
-                        f"[{complete_percent_str}% complete] Article sketch is empty ({article_id}): doc='{doc}', setting it as original."
+                        f">> [{complete_percent_str}% complete] Article sketch is empty ({article_id}): doc='{doc}', setting it as original."
                     )
                     # Update article
                     update_article(cursor2, cnxn2, article_id, "false", article_id)
@@ -219,7 +266,14 @@ def process_articles():
                 cursor2.execute(sql)
                 cnxn2.commit()
 
+                # Profiler ###############
+                profiler.reg_time("t6")
+
                 # Find dupe candidates
+
+                date_from = date - timedelta(days=2)
+                date_to = date + timedelta(days=2)
+
                 sql = f"""
                         WITH data as (
                             SELECT
@@ -231,7 +285,7 @@ def process_articles():
                             WHERE
                                     hash IN ({hashes_str})
                                     AND article_source_id = '{article_source_id}'
-                                    AND ABS(date - '{date}') <= 2
+                                    AND date BETWEEN '{str(date_from)}' AND '{str(date_to)}'
                             GROUP BY
                                     article_id
                             ORDER BY
@@ -252,6 +306,9 @@ def process_articles():
 
                 cursor2.execute(sql)
                 candidates_rows = cursor2.fetchall()
+
+                # Profiler ###############
+                profiler.reg_time("t7")
 
                 # Analyze candidates
 
@@ -281,8 +338,8 @@ def process_articles():
                             candidates.append(ArticleInfo(id, title, text, is_original))
 
                     if article is None:
-                        logging.info(
-                            "ERROR: Considered article not found. id:" + article_id
+                        logging.error(
+                            ">> ERROR: Considered article not found. id:" + article_id
                         )
                     else:
 
@@ -295,13 +352,13 @@ def process_articles():
                         if original is not None:
                             # Original found
                             logging.info(
-                                "---------------------------------------------------------------------------------------------------------------"
+                                f"   ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════╗"
                             )
                             logging.info(
-                                f">> Original found for article ({article_id}): {original.id}"
+                                f">> ║ Original found for article ({article_id}): {original.id}  ║"
                             )
                             logging.info(
-                                "---------------------------------------------------------------------------------------------------------------"
+                                f"   ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════╝"
                             )
                             is_duplicate_str = "true"
                             original_article_id_str = original.id
@@ -315,6 +372,9 @@ def process_articles():
                     is_duplicate_str = "false"
                     original_article_id_str = article_id
 
+                # Profiler ###############
+                profiler.reg_time("t8")
+
                 # Update article
                 update_article(
                     cursor2,
@@ -323,6 +383,9 @@ def process_articles():
                     is_duplicate_str,
                     original_article_id_str,
                 )
+
+                # Profiler ###############
+                profiler.reg_time("t9")
 
 
 def update_article(
