@@ -7,8 +7,9 @@ kubectl apply -f ingress-service.yaml
 kubectl apply -f load-balancers/postgres-load-balancer.yaml
 kubectl apply -f load-balancers/splash-load-balancer.yaml
 
-kubectl apply -f pvc/database-pvc.yaml
+kubectl apply -f dev/database-pvc.yaml
 
+kubectl apply -f api-config-map.yaml
 kubectl apply -f api-cluster-ip-service.yaml
 kubectl apply -f dev/api-deployment.yaml
 kubectl apply -f client-cluster-ip-service.yaml
