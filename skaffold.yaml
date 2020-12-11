@@ -42,15 +42,24 @@ build:
           - "**/*.conf"
           - "**/*.cfg"
 
-    - image: charlymarchiaro/horse-engine-splash
-      context: splash
-      docker:
-        dockerfile: Dockerfile.dev
+    # - image: charlymarchiaro/horse-engine-splash
+    #   context: splash
+    #   docker:
+    #     dockerfile: Dockerfile.dev
 
     # - image: charlymarchiaro/horse-engine-postgres
     #   context: postgres
     #   docker:
     #     dockerfile: Dockerfile.dev
+
+    # - image: charlymarchiaro/horse-engine-dupe-detector
+    #   context: dupe-detector
+    #   docker:
+    #     dockerfile: Dockerfile.dev
+    #   sync:
+    #     infer:
+    #       - "**/*.py"
+    #       - "**/*.txt"
 
 deploy:
   statusCheckDeadlineSeconds: 6000
@@ -59,6 +68,7 @@ deploy:
       - k8s/dev/client-deployment.yaml
       - k8s/dev/api-deployment.yaml
       - k8s/dev/scrapyd-deployment.yaml
-      - k8s/dev/scrapyd-02-deployment.yaml
+      # - k8s/dev/scrapyd-02-deployment.yaml
       - k8s/dev/splash-deployment.yaml
       # - k8s/dev/postgres-deployment.yaml
+      # - k8s/dev/dupe-detector-deployment.yaml
