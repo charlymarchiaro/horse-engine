@@ -21,6 +21,11 @@ class DocComparator(object):
         overlap = self.jaccard(shingles1, shingles2)
         return overlap > self.overlap_threshold
 
+    def docs_similarity(self, doc1: str, doc2: str) -> float:
+        shingles1 = self.extract_shingle_list(doc1)
+        shingles2 = self.extract_shingle_list(doc2)
+        return self.jaccard(shingles1, shingles2)
+
     def extract_shingle_list(self, doc: str) -> List[str]:
         shingles_set = set()
 

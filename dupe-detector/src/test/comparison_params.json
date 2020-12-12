@@ -1,0 +1,9 @@
+{
+    "num_permutations": [20, 10],
+    "base": [31],
+    "hash_bits": [64, 32, 16],
+    "shingle_length": [3],
+    "max_num_shingles": [1600],
+    "hash_collision_thresh": [0.75],
+    "overlap_thresh": [0.95]
+}
