@@ -15,6 +15,7 @@ export interface ArticleSearchBooleanQueryPayload {
   matchConditions: ArticleMatchConditionSet;
   secondaryMatchConditions: ArticleSecondaryMatchCondition[];
   dateSpan: DateSpan;
+  excludeDuplicates: boolean;
 }
 
 export interface ArticleSearchBooleanQueryResponse {
@@ -88,6 +89,7 @@ export enum SearchState {
 export interface SearchParams {
   scheme: SearchScheme;
   dateSpan: DateSpan;
+  excludeDuplicates: boolean;
 }
 
 

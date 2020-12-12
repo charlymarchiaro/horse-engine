@@ -12,6 +12,7 @@ import { CommonDialogsService } from '../../../services/utils/common-dialogs/com
 import { ConfirmationReturnCode } from '../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
 import { pgCard } from '../../../@pages/components/card/card.component';
 import { BrowserService } from './browser.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-search-scheme-browser',
@@ -70,7 +71,9 @@ export class BrowserComponent implements OnInit, OnDestroy {
       this.searchSchemeService.schemes$.subscribe(s => this.onSchemesListChange(s))
     );
     this.subscription.add(
-      this.searchService.searchParams$.subscribe(p => {
+      this.searchService.searchParams$.pipe(
+        filter(p => !!p && !!p.scheme)
+      ).subscribe(p => {
         this.selected = [this.schemes.find(s => s.id === p.scheme.id)];
       })
     );

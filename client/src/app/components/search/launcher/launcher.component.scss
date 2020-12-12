@@ -52,6 +52,14 @@
             }
         }
 
+        #exclude-duplicates-checkbox {
+            padding: 0 8px 0 2px;
+
+            ::ng-deep label {
+                font-size: 11px;
+            }
+        }
+
         #results-info-panel {
             display: flex;
             justify-content: flex-end;
@@ -59,7 +67,7 @@
             align-items: center;
             flex-flow: wrap;
             padding: 0 16px;
-            width: 250px;
+            width: 230px;
 
             #labels {
                 display: flex;

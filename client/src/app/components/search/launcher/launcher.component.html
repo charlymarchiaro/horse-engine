@@ -64,6 +64,16 @@
         </mat-form-field>
       </div>
 
+      <!-- Exclude duplicates -->
+      <mat-checkbox
+        id="exclude-duplicates-checkbox"
+        color="primary"
+        type="checkbox"
+        [checked]="excludeDuplicates"
+        (change)="onExcludeDuplicatesChange($event.checked)">
+        Exclude duplicates
+      </mat-checkbox>
+
       <!-- Results info panel -->
       <div id="results-info-panel">
         <div id="labels">

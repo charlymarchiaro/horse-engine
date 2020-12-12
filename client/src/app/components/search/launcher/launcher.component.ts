@@ -24,6 +24,7 @@ export class LauncherComponent implements OnInit, OnDestroy, OnChanges {
   public isError: boolean;
 
   public dateSpan: DateSpan;
+  public excludeDuplicates: boolean;
 
   public searchParams: SearchParams;
   public searchState: SearchState;
@@ -32,7 +33,6 @@ export class LauncherComponent implements OnInit, OnDestroy, OnChanges {
 
 
   @Input() searchScheme: SearchScheme;
-  @Output() public dateSpanChange = new EventEmitter<DateSpan>();
 
 
   searchProgress: number;
@@ -45,21 +45,13 @@ export class LauncherComponent implements OnInit, OnDestroy, OnChanges {
   constructor(
     private searchService: SearchService,
   ) {
-    this.dateSpan = {
-      fromDateIncl: getDatePart(addDays(new Date(), -30)),
-      toDateIncl: getDatePart(new Date())
-    };
-
-    this.onDateSpanChange();
-
-
     this.subscription.add(
       searchService.searchParams$.pipe(
-        filter(p => !!p && !!p.dateSpan)
+        filter(p => !!p)
       ).subscribe(
         p => {
           this.dateSpan = p.dateSpan;
-          this.onDateSpanChange();
+          this.excludeDuplicates = p.excludeDuplicates;
         }
       )
     );
@@ -123,7 +115,7 @@ export class LauncherComponent implements OnInit, OnDestroy, OnChanges {
     this.isError = false;
     this.errorMessage = null;
 
-    this.searchService.submitSearch(this.searchScheme, this.dateSpan);
+    this.searchService.submitSearch(this.searchScheme, this.dateSpan, this.excludeDuplicates);
   }
 
 
@@ -133,11 +125,16 @@ export class LauncherComponent implements OnInit, OnDestroy, OnChanges {
 
 
   public onDateSpanChange() {
-    this.dateSpan = {
+    const dateSpan = {
       fromDateIncl: getDatePart(this.dateSpan.fromDateIncl),
       toDateIncl: getDatePart(this.dateSpan.toDateIncl),
     };
-    this.dateSpanChange.emit(this.dateSpan);
+    this.searchService.setSearchParam('dateSpan', dateSpan);
   }
 
+
+  public onExcludeDuplicatesChange(value: boolean) {
+    this.excludeDuplicates = value;
+    this.searchService.setSearchParam('excludeDuplicates', value);
+  }
 }

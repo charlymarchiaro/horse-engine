@@ -4,7 +4,7 @@ import { DateSpan } from '../keyword-search/model';
 import { SearchScheme } from '../../model/search-scheme.model';
 import { SearchState, SearchResults, DEFAULT_DAYS_PER_PART, SearchResultsPart, ResultInfo, ResultStatus, TimeElapsedInfo, SearchParams } from '../../model/search.model';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { getDateDiffDays, addDays, secondsToHMS } from '../../services/utils/utils';
+import { getDateDiffDays, addDays, secondsToHMS, getDatePart } from '../../services/utils/utils';
 import { PartSeqSearchHandler } from './part-seq-search-handler';
 
 
@@ -39,7 +39,17 @@ export class SearchService {
 
   constructor(
     private backendService: BackendService,
-  ) { }
+  ) {
+    // Default params
+    this.searchParamsSubject.next({
+      dateSpan: {
+        fromDateIncl: getDatePart(addDays(new Date(), -30)),
+        toDateIncl: getDatePart(new Date())
+      },
+      excludeDuplicates: true,
+      scheme: null,
+    });
+  }
 
 
   public setSelectedScheme(scheme: SearchScheme) {
@@ -59,15 +69,25 @@ export class SearchService {
   }
 
 
+  public setSearchParam(param: 'dateSpan' | 'excludeDuplicates', value: any) {
+    const params = this.searchParamsSubject.getValue();
+    this.searchParamsSubject.next({
+      ...params,
+      [param]: value
+    });
+  }
+
+
   public submitSearch(
     scheme: SearchScheme,
     dateSpan: DateSpan,
-    daysPerPart: number = DEFAULT_DAYS_PER_PART
+    excludeDuplicates: boolean,
+    daysPerPart: number = DEFAULT_DAYS_PER_PART,
   ) {
 
     this.searchStateSubject.next(SearchState.searching);
     this.searchResults.reset();
-    this.searchParamsSubject.next({ scheme, dateSpan });
+    this.searchParamsSubject.next({ scheme, dateSpan, excludeDuplicates });
 
     // Setup time elapsed handler
     this.startTime = new Date();
@@ -98,6 +118,7 @@ export class SearchService {
     this.handler = new PartSeqSearchHandler(
       scheme,
       partDateSpans,
+      excludeDuplicates,
       this.backendService,
     );
 

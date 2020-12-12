@@ -9,6 +9,7 @@ import { ResultsListService } from '../results-list/results-list.service';
 import { LoadState, LoadStatus } from '../../../services/utils/load-status';
 import { HighlightedArticle, SearchParams, SearchState } from '../../../model/search.model';
 import { ResultsDownloaderService } from '../results-downloader/results-downloader.service';
+import { filter } from 'rxjs/operators';
 
 
 export interface ArticleSelectEventArgs {
@@ -65,7 +66,9 @@ export class ResultsListComponent implements OnInit, OnDestroy {
     private datePipe: DatePipe,
   ) {
     this.subscription.add(
-      searchService.searchParams$.subscribe(
+      searchService.searchParams$.pipe(
+        filter(p => !!p && !!p.scheme)
+      ).subscribe(
         p => {
           this.searchParams = p;
         }

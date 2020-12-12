@@ -34,6 +34,9 @@ export class ArticleBooleanQuery extends Model {
 
   @property(SearchDateSpan)
   dateSpan: SearchDateSpan;
+
+  @property(Boolean)
+  excludeDuplicates: boolean;
 }
 
 export interface ArticleBooleanQueryRelations {

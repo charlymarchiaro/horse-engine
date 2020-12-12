@@ -25,6 +25,7 @@ export class PartSeqSearchHandler {
   constructor(
     private scheme: SearchScheme,
     private partsDateSpans: DateSpan[],
+    private excludeDuplicates: boolean,
     private backendService: BackendService,
   ) { }
 
@@ -32,6 +33,8 @@ export class PartSeqSearchHandler {
   public async execute() {
 
     let partIndex = -1;
+
+    const excludeDuplicates = this.excludeDuplicates;
 
     // Part loop
     for (const dateSpan of this.partsDateSpans) {
@@ -57,6 +60,7 @@ export class PartSeqSearchHandler {
             matchConditions: this.scheme.scheme.matchConditions,
             secondaryMatchConditions: this.scheme.scheme.secondaryMatchConditions,
             dateSpan,
+            excludeDuplicates,
           }).toPromise();
 
           this.partRetrieved.emit({

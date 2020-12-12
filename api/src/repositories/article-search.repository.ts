@@ -29,6 +29,12 @@ export class ArticleSearchRepository extends DefaultTransactionalRepository<
 
     const conditions: string[] = [];
 
+    // Duplicate exclusion
+    if (query.excludeDuplicates === true) {
+      // If is_duplicate is NULL, the article is considered as an original by default
+      conditions.push('(article.is_duplicate IS NULL OR article.is_duplicate = false)');
+    }
+
     // Secondary match conditions
     const areThereSecondaryMatchConditions =
       query.secondaryMatchConditions.length > 0;
