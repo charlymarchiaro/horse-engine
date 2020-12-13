@@ -14,7 +14,8 @@ export class ArticleSketch extends Entity {
     useDefaultIdType: false,
     postgresql: {
       columnName: 'id',
-      dataType: 'uuid',
+      // 64 bits
+      dataType: 'BIGINT',
     },
   })
   id?: string;
@@ -30,21 +31,23 @@ export class ArticleSketch extends Entity {
   articleId: string;
 
   @property({
-    type: 'string',
+    type: 'number',
     index: true,
     postgresql: {
       columnName: 'hash',
-      dataType: 'BIGINT',
+      // 32 bits
+      dataType: 'INTEGER',
       nullable: 'NO',
     }
   })
-  hash: string;
+  hash: number;
 
   @property({
     type: 'date',
     index: true,
     postgresql: {
       columnName: 'date',
+      // 32 bits
       dataType: 'DATE',
       nullable: 'NO',
     }
@@ -52,15 +55,16 @@ export class ArticleSketch extends Entity {
   date: string;
 
   @property({
-    type: 'string',
+    type: 'number',
     index: true,
     postgresql: {
-      columnName: 'article_source_id',
-      dataType: 'uuid',
+      columnName: 'article_source_id_hash',
+      // 16 bits
+      dataType: 'SMALLINT',
       nullable: 'NO',
     }
   })
-  articleSourceId: string;
+  articleSourceId: number;
 }
 
 export interface ArticleSketchRelations {
