@@ -146,6 +146,7 @@ def run_test_for_params(params):
 
     return {
         "params": params,
+        "permutations": permutations,
         "overall_score": overall_score,
         "dupe_candidate_stats": dupe_candidate_stats,
         "doc_comparison_stats": doc_comparison_stats,
