@@ -8,17 +8,16 @@ import { Entity, model, property } from '@loopback/repository';
 })
 export class ArticleSketch extends Entity {
   @property({
-    type: 'string',
+    type: 'number',
+    required: false,
     id: true,
-    generated: true,
-    useDefaultIdType: false,
     postgresql: {
       columnName: 'id',
       // 64 bits
-      dataType: 'BIGINT',
+      dataType: 'BIGSERIAL',
     },
   })
-  id?: string;
+  id?: number;
 
   @property({
     type: 'string',
@@ -56,7 +55,6 @@ export class ArticleSketch extends Entity {
 
   @property({
     type: 'number',
-    index: true,
     postgresql: {
       columnName: 'article_source_id_hash',
       // 16 bits
