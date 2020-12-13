@@ -38,11 +38,13 @@
             [(ngModel)]="dateSpan.fromDateIncl"
             required
             readonly
-            (dateChange)="onDateSpanChange()">
+            (dateChange)="onDateSpanChange()"
+            [disabled]="searchState === 'searching'">
 
           <mat-datepicker-toggle
             [for]="startDatepickerRef"
-            matSuffix></mat-datepicker-toggle>
+            matSuffix
+            [disabled]="searchState === 'searching'"></mat-datepicker-toggle>
           <mat-datepicker #startDatepickerRef></mat-datepicker>
         </mat-form-field>
 
@@ -55,11 +57,13 @@
             [(ngModel)]="dateSpan.toDateIncl"
             required
             readonly
-            (dateChange)="onDateSpanChange()">
+            (dateChange)="onDateSpanChange()"
+            [disabled]="searchState === 'searching'">
 
           <mat-datepicker-toggle
             [for]="endDatepickerRef"
-            matSuffix></mat-datepicker-toggle>
+            matSuffix
+            [disabled]="searchState === 'searching'"></mat-datepicker-toggle>
           <mat-datepicker #endDatepickerRef></mat-datepicker>
         </mat-form-field>
       </div>
@@ -70,7 +74,8 @@
         color="primary"
         type="checkbox"
         [checked]="excludeDuplicates"
-        (change)="onExcludeDuplicatesChange($event.checked)">
+        (change)="onExcludeDuplicatesChange($event.checked)"
+        [disabled]="searchState === 'searching'">
         Exclude duplicates
       </mat-checkbox>
 
