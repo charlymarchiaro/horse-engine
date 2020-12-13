@@ -48,6 +48,13 @@ export class ResultsListComponent implements OnInit, OnDestroy {
 
   public currentPageArticles: HighlightedArticle[] = [];
 
+  // public origTooltipLabel = '(&nbsp;&nbsp;): Original&#13;(d): Duplicate&#13;(?): Not yet analyzed';
+  public origTooltipLabel = `
+                            (  ): Original
+                            (d): Duplicate
+                            (?): Not yet analyzed
+                            `;
+
 
   private subscription = new Subscription();
   private backendSubscription = new Subscription();

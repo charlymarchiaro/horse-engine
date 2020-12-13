@@ -50,6 +50,13 @@
             border-bottom: 1px solid #ccc;
             background-color: #eee;
             z-index: 100;
+
+            ::ng-deep .mat-icon {
+                font-size: 11px;
+                width: 12px;
+                height: 12px;
+                top: 2px;
+            }
         }
 
         th,
@@ -101,4 +108,8 @@
             background-color: #eee;
         }
     }
+}
+
+::ng-deep .line-broken-tooltip {
+    white-space: pre-line;
 }

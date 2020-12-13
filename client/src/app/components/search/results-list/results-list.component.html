@@ -21,7 +21,13 @@
         <thead>
           <th [width]="180">Source</th>
           <th [width]="90">Date</th>
-          <th [width]="35">Orig</th>
+          <th
+            [width]="45"
+            [matTooltip]="origTooltipLabel"
+            matTooltipClass="line-broken-tooltip">
+            Orig
+            <mat-icon>help_outline</mat-icon>
+          </th>
           <th>Title</th>
           <th [width]="80">Link</th>
         </thead>
@@ -34,7 +40,7 @@
             <td class="no-wrap">{{article.article.articleSource.name}}</td>
             <td class="no-wrap">{{article.article.lastUpdated | date}}</td>
             <td class="no-wrap">
-              {{article.article.isDuplicate ? '(d)' : ''}}
+              {{article.article.isDuplicate ? '(d)' : article.article.isDuplicate === false ? '' : '(?)'}}
             </td>
             <td [innerHTML]="article.markedTitleHtml"></td>
             <td
