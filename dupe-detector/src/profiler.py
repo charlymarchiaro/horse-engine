@@ -4,13 +4,11 @@ from typing import Dict, List
 
 
 class Profiler(object):
-    log_interval_sec: int
     last_time: float
     last_label: str
     stats_data: Dict[str, List[float]]
 
-    def __init__(self, log_interval_sec: int):
-        self.log_interval_sec = log_interval_sec
+    def __init__(self):
         self.last_time = 0
         self.last_label = "*"
         self.stats_data = {}
@@ -28,8 +26,6 @@ class Profiler(object):
 
         self.last_time = current_time
         self.last_label = label
-
-        # logging.debug(f">> [PROFILER] [{delta_label}]={delta_time_str} ms")
 
     def log_stats(self):
         logging.debug(

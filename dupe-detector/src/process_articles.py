@@ -17,29 +17,32 @@ from .profiler import Profiler
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
-# p = 20
-permutations = [
-    10860082479889078273,
-    18146476644888601766,
-    233553032589960151,
-    10967695330228645662,
-    6821188699044910121,
-    14400788574713660870,
-    9181433326940709801,
-    7279614793293620057,
-    9496004170356472843,
-    17151808059591017054,
-    10000763465023568806,
-    6255463620087109822,
-    9433684511981558648,
-    3676517932193916746,
-    17491443244268117736,
-    4241833991987314871,
-    1201571948985230358,
-    17345635143656104241,
-    9493763764167397590,
-    15530938825082927871,
+# p = 8
+PERMUTATIONS = [
+    1115786864,
+    662436351,
+    3022251224,
+    4033289138,
+    601754926,
+    439309108,
+    1343728718,
+    750903223,
 ]
+ARTICLE_HASH_BASE = 15
+ARTICLE_HASH_BITS = 32
+ARTICLE_HASH_OFFSET = 2 ** (ARTICLE_HASH_BITS - 1)
+SHINGLE_LENGTH = 3
+MAX_NUM_SHINGLES = 1600
+HASH_COLLISION_THRESH = 0.4
+DOC_COMPARATOR_OVERLAP_THRESH = 0.75
+
+ARTICLE_SOURCE_ID_HASH_BASE = 15
+ARTICLE_SOURCE_ID_HASH_BITS = 16
+ARTICLE_SOURCE_ID_HASH_OFFSET = 2 ** (ARTICLE_SOURCE_ID_HASH_BITS - 1)
+
+ARTICLES_BATCH_SIZE = 5000
+ARTICLES_COUNT_LOG = 50
+POLING_INTERVAL_MIN = 10
 
 
 class ArticleInfo(object):
@@ -100,14 +103,17 @@ def process_articles():
         f"   ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════╝"
     )
 
-    ARTICLES_BATCH_SIZE = 5000
-    ARTICLES_COUNT_LOG = 50
-    HASH_OFFSET = 2 ** 63
-    POLING_INTERVAL_MIN = 10
-    STATS_LOG_INTERVAL_SEC = 3
-
-    doc_sketch_generator = DocSketchGenerator(31, 2 ** 64, permutations, 3, 1600)
-    profiler = Profiler(STATS_LOG_INTERVAL_SEC)
+    doc_sketch_generator = DocSketchGenerator(
+        ARTICLE_HASH_BASE,
+        2 ** ARTICLE_HASH_BITS,
+        PERMUTATIONS,
+        SHINGLE_LENGTH,
+        MAX_NUM_SHINGLES,
+    )
+    article_source_id_hash_generator = DocSketchGenerator(
+        ARTICLE_SOURCE_ID_HASH_BASE, 2 ** ARTICLE_SOURCE_ID_HASH_BITS, [], 0, 0
+    )
+    profiler = Profiler()
 
     cnxn1 = get_db_connection()
     cnxn2 = get_db_connection()
@@ -226,11 +232,15 @@ def process_articles():
                 title = row[1]
                 text = row[2]
                 article_source_id = row[3]
+                article_source_id_hash = (
+                    article_source_id_hash_generator.get_fingerprint(article_source_id)
+                    - ARTICLE_SOURCE_ID_HASH_OFFSET
+                )
 
                 # Generate sketch
                 doc = title + " " + text
                 sketch = doc_sketch_generator.generate_sketch(doc)
-                hashes = [str(h - HASH_OFFSET) for h in sketch]
+                hashes = [str(h - ARTICLE_HASH_OFFSET) for h in sketch]
 
                 # Profiler ###############
                 profiler.reg_time("t5")
@@ -246,7 +256,7 @@ def process_articles():
                 hashes_str = ", ".join(hashes)
                 values_str = ", ".join(
                     map(
-                        lambda h: f"('{article_id}', {h}, '{date}', '{article_source_id}')",
+                        lambda h: f"('{article_id}', {h}, '{date}', {article_source_id_hash})",
                         hashes,
                     )
                 )
@@ -258,7 +268,7 @@ def process_articles():
                                     article_id,
                                     hash,
                                     date,
-                                    article_source_id
+                                    article_source_id_hash
                                 )
                                 VALUES {values_str};
                         """
@@ -273,6 +283,7 @@ def process_articles():
 
                 date_from = date - timedelta(days=2)
                 date_to = date + timedelta(days=2)
+                count_thresh = len(PERMUTATIONS) * HASH_COLLISION_THRESH
 
                 sql = f"""
                         WITH data as (
@@ -284,7 +295,7 @@ def process_articles():
                                     scraper.article_sketch
                             WHERE
                                     hash IN ({hashes_str})
-                                    AND article_source_id = '{article_source_id}'
+                                    AND article_source_id_hash = '{article_source_id_hash}'
                                     AND date BETWEEN '{str(date_from)}' AND '{str(date_to)}'
                             GROUP BY
                                     article_id
@@ -301,7 +312,7 @@ def process_articles():
                                 INNER JOIN scraper.article article
                                     ON data.article_id = article.id
                         WHERE
-                                c > 15
+                                c > {count_thresh}
                         """
 
                 cursor2.execute(sql)
@@ -409,7 +420,7 @@ def find_original(
     article: ArticleInfo, candidates: List[ArticleInfo]
 ) -> Union[ArticleInfo, None]:
 
-    dc = DocComparator(3, 1600, 0.95)
+    dc = DocComparator(SHINGLE_LENGTH, MAX_NUM_SHINGLES, DOC_COMPARATOR_OVERLAP_THRESH)
 
     doc1 = article.title + " " + article.text
 
