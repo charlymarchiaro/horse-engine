@@ -21,6 +21,7 @@
         <thead>
           <th [width]="180">Source</th>
           <th [width]="90">Date</th>
+          <th [width]="80">Orig/dup</th>
           <th>Title</th>
           <th [width]="80">Link</th>
         </thead>
@@ -32,6 +33,9 @@
             (click)="onArticleSelect(article)">
             <td class="no-wrap">{{article.article.articleSource.name}}</td>
             <td class="no-wrap">{{article.article.lastUpdated | date}}</td>
+            <td class="no-wrap">
+              {{article.article.isDuplicate ? '(d)' : ''}}
+            </td>
             <td [innerHTML]="article.markedTitleHtml"></td>
             <td
               class="no-wrap link"
