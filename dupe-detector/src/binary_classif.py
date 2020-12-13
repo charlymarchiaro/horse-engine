@@ -4,6 +4,10 @@ from typing import Dict, List, Tuple
 from .utils import *
 
 
+def f1_score(v1: float, v2: float) -> float:
+    return 2 * v1 * v2 / (v1 + v2) if v1 * v2 != 0 else 0
+
+
 class BinaryClassifCateg(Enum):
     TP = "TP"
     FP = "FP"
@@ -37,11 +41,7 @@ class BinaryClassifStats(object):
         tn = self.result_counts[BinaryClassifCateg.TN]
         precision = tp / (tp + fp) if tp != 0 else 0
         recall = tp / (tp + fn) if tp != 0 else 0
-        f1 = (
-            2 * (precision * recall) / (precision + recall)
-            if precision * recall != 0
-            else 0
-        )
+        f1 = f1_score(precision, recall)
 
         return {
             "tp": tp,

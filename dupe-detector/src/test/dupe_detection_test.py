@@ -126,6 +126,14 @@ def run_test_for_params(params):
     dupeCandidateStats.print_stats()
     docComparisonStats.print_stats()
 
+    dupe_candidate_stats = dupeCandidateStats.get_stats()
+    doc_comparison_stats = docComparisonStats.get_stats()
+
+    dupe_candidate_score = dupe_candidate_stats["f1"]
+    doc_comparison_score = doc_comparison_stats["f1"]
+    overall_score = f1_score(dupe_candidate_score, doc_comparison_score)
+    overall_score_str = "{:.1f}".format(overall_score * 100) + "%"
+
     print()
     max_hash_range_utiliz_coef_str = (
         "{:.1f}".format(100 * max_hash_range_utiliz_coef) + "%"
@@ -133,7 +141,16 @@ def run_test_for_params(params):
     print(
         f">> Max hash range utilization coefficient: {max_hash_range_utiliz_coef_str}"
     )
+    print(f">> OVERALL SCORE: {overall_score_str}")
     print()
+
+    return {
+        "params": params,
+        "overall_score": overall_score,
+        "dupe_candidate_stats": dupe_candidate_stats,
+        "doc_comparison_stats": doc_comparison_stats,
+        "max_hash_range_utiliz_coef": max_hash_range_utiliz_coef,
+    }
 
 
 def run_test():
@@ -147,6 +164,9 @@ def run_test():
         print()
         print_subtitle_1("Are duplicates")
         print(">> " + str(comparison["are_duplicates"]))
+
+    best_params_tests = {"score": 0, "tests": []}
+    all_tests = []
 
     params_set = 0
     for num_permutations in num_permutations_list:
@@ -170,7 +190,24 @@ def run_test():
                                 }
                                 print_title_1(f"PARAMS SET #{params_set}")
                                 pp.pprint(params)
-                                run_test_for_params(params)
+
+                                # Run the test
+                                test_results = run_test_for_params(params)
+
+                                test_score = test_results["overall_score"]
+
+                                if test_score > best_params_tests["score"]:
+                                    best_params_tests["tests"] = [test_results]
+                                    best_params_tests["score"] = test_score
+                                elif test_score == best_params_tests["score"]:
+                                    best_params_tests["tests"].append(test_results)
+
+                                all_tests.append(test_results)
+
+    print_title_1("FINAL RESULTS")
+    pp.pprint(best_params_tests)
+    print_subtitle_1("All tests results")
+    pp.pprint(all_tests)
 
 
 run_test()
