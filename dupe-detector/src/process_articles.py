@@ -313,6 +313,10 @@ def process_articles():
                                     ON data.article_id = article.id
                         WHERE
                                 c > {count_thresh}
+                                AND (
+                                    article.is_duplicate = false
+                                    OR article.id = '{article_id}'
+                                )
                         """
 
                 cursor2.execute(sql)
