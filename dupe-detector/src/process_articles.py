@@ -282,7 +282,7 @@ def process_articles():
                 # Find dupe candidates
 
                 date_from = date - timedelta(days=2)
-                date_to = date + timedelta(days=2)
+                date_to = date + timedelta(days=0)
                 count_thresh = len(PERMUTATIONS) * HASH_COLLISION_THRESH
 
                 sql = f"""
