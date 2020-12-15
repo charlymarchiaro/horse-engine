@@ -55,6 +55,7 @@ export class ArticleSketch extends Entity {
 
   @property({
     type: 'number',
+    index: true,
     postgresql: {
       columnName: 'article_source_id_hash',
       // 16 bits
