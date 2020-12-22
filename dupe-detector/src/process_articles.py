@@ -40,7 +40,7 @@ ARTICLE_SOURCE_ID_HASH_BASE = 15
 ARTICLE_SOURCE_ID_HASH_BITS = 16
 ARTICLE_SOURCE_ID_HASH_OFFSET = 2 ** (ARTICLE_SOURCE_ID_HASH_BITS - 1)
 
-ARTICLES_BATCH_SIZE = 5000
+ARTICLES_BATCH_SIZE = 20000
 ARTICLES_COUNT_LOG = 50
 POLING_INTERVAL_MIN = 10
 
@@ -282,7 +282,10 @@ def process_articles():
                 # Find dupe candidates
 
                 date_from = date - timedelta(days=2)
-                date_to = date + timedelta(days=0)
+                dates_str = ", ".join(
+                    [f"'{str(date_from + timedelta(days=i))}'" for i in range(5)]
+                )
+
                 count_thresh = len(PERMUTATIONS) * HASH_COLLISION_THRESH
 
                 sql = f"""
@@ -294,9 +297,9 @@ def process_articles():
                             FROM
                                     scraper.article_sketch
                             WHERE
-                                    hash IN ({hashes_str})
+                                    date IN ({dates_str})
                                     AND article_source_id_hash = '{article_source_id_hash}'
-                                    AND date BETWEEN '{str(date_from)}' AND '{str(date_to)}'
+                                    AND hash IN ({hashes_str})
                             GROUP BY
                                     article_id
                             ORDER BY
