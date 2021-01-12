@@ -30,8 +30,8 @@ class Params(BaseArticleSpiderParams):
     def _after_initialize(self) -> None:
         self.date_allow_str = self.get_date_allow_str(
             year_format="04",
-            month_format="02",
-            day_format="02",
+            month_format="01",
+            day_format="01",
             concat_fn=lambda year, month, day: f"{year}{month}{day}",
         )
 
