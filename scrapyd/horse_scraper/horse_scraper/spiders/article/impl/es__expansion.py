@@ -168,6 +168,7 @@ class Params(BaseArticleSpiderParams):
     def get_parser_functions(self) -> List[Callable[[HtmlResponse], ArticleData]]:
         return [
             self.parser_1,
+            self.parser_2,
         ]
 
     def parser_1(self, response):
@@ -189,6 +190,21 @@ class Params(BaseArticleSpiderParams):
                 (AttributeType.CLASS, "article__secondary"),
             ],
         )
+
+        return ArticleData(title, text, last_updated)
+
+    # Album
+    def parser_2(self, response):
+
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+        last_updated = article_data.last_updated
+
+        # text ----------
+        text = response.xpath(
+            '(//meta [contains(@name, "description")])[1]//@content'
+        ).extract()[0]
 
         return ArticleData(title, text, last_updated)
 
