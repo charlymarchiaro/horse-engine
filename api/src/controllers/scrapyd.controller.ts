@@ -1,3 +1,5 @@
+import { authenticate } from '@loopback/authentication';
+
 import { inject } from '@loopback/core';
 import { repository, Filter } from '@loopback/repository';
 import { get, post, requestBody, api, param } from '@loopback/rest';
@@ -33,6 +35,7 @@ export class CancelJobRequestBody {
 }
 
 
+@authenticate('jwt')
 @api({ basePath: 'scrapyd' })
 export class ScrapydController {
 

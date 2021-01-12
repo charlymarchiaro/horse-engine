@@ -12,3 +12,4 @@ export * from './article-search.controller';
 export * from './article-search-scheme.controller';
 export * from './last-scraped-articles.controller';
 export * from './article-dupe-detection.controller';
+export * from './user.controller';

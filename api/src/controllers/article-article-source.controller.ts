@@ -1,3 +1,5 @@
+import { authenticate } from '@loopback/authentication';
+
 import {
   repository,
 } from '@loopback/repository';
@@ -10,8 +12,10 @@ import {
   Article,
   ArticleSource,
 } from '../models';
-import {ArticleRepository} from '../repositories';
+import { ArticleRepository } from '../repositories';
 
+
+@authenticate('jwt')
 export class ArticleArticleSourceController {
   constructor(
     @repository(ArticleRepository)
@@ -24,7 +28,7 @@ export class ArticleArticleSourceController {
         description: 'ArticleSource belonging to Article',
         content: {
           'application/json': {
-            schema: {type: 'array', items: getModelSchemaRef(ArticleSource)},
+            schema: { type: 'array', items: getModelSchemaRef(ArticleSource) },
           },
         },
       },

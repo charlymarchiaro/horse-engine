@@ -1,3 +1,5 @@
+import { authenticate } from '@loopback/authentication';
+
 import {
   Count,
   CountSchema,
@@ -19,6 +21,8 @@ import {
 import { ArticleSketch } from '../models';
 import { ArticleSketchRepository } from '../repositories';
 
+
+@authenticate('jwt')
 export class ArticleDupeDetectionController {
   constructor(
     @repository(ArticleSketchRepository)

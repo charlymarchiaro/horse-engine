@@ -1,3 +1,5 @@
+import { authenticate } from '@loopback/authentication';
+
 import {
   Count,
   CountSchema,
@@ -16,20 +18,22 @@ import {
   del,
   requestBody,
 } from '@loopback/rest';
-import {ArticleSpider} from '../models';
-import {ArticleSpiderRepository} from '../repositories';
+import { ArticleSpider } from '../models';
+import { ArticleSpiderRepository } from '../repositories';
 
+
+@authenticate('jwt')
 export class ArticleSpiderController {
   constructor(
     @repository(ArticleSpiderRepository)
-    public articleSpiderRepository : ArticleSpiderRepository,
-  ) {}
+    public articleSpiderRepository: ArticleSpiderRepository,
+  ) { }
 
   @post('/article-spiders', {
     responses: {
       '200': {
         description: 'ArticleSpider model instance',
-        content: {'application/json': {schema: getModelSchemaRef(ArticleSpider)}},
+        content: { 'application/json': { schema: getModelSchemaRef(ArticleSpider) } },
       },
     },
   })
@@ -53,7 +57,7 @@ export class ArticleSpiderController {
     responses: {
       '200': {
         description: 'ArticleSpider model count',
-        content: {'application/json': {schema: CountSchema}},
+        content: { 'application/json': { schema: CountSchema } },
       },
     },
   })
@@ -71,7 +75,7 @@ export class ArticleSpiderController {
           'application/json': {
             schema: {
               type: 'array',
-              items: getModelSchemaRef(ArticleSpider, {includeRelations: true}),
+              items: getModelSchemaRef(ArticleSpider, { includeRelations: true }),
             },
           },
         },
@@ -88,7 +92,7 @@ export class ArticleSpiderController {
     responses: {
       '200': {
         description: 'ArticleSpider PATCH success count',
-        content: {'application/json': {schema: CountSchema}},
+        content: { 'application/json': { schema: CountSchema } },
       },
     },
   })
@@ -96,7 +100,7 @@ export class ArticleSpiderController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(ArticleSpider, {partial: true}),
+          schema: getModelSchemaRef(ArticleSpider, { partial: true }),
         },
       },
     })
@@ -112,7 +116,7 @@ export class ArticleSpiderController {
         description: 'ArticleSpider model instance',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(ArticleSpider, {includeRelations: true}),
+            schema: getModelSchemaRef(ArticleSpider, { includeRelations: true }),
           },
         },
       },
@@ -120,7 +124,7 @@ export class ArticleSpiderController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(ArticleSpider, {exclude: 'where'}) filter?: FilterExcludingWhere<ArticleSpider>
+    @param.filter(ArticleSpider, { exclude: 'where' }) filter?: FilterExcludingWhere<ArticleSpider>
   ): Promise<ArticleSpider> {
     return this.articleSpiderRepository.findById(id, filter);
   }
@@ -137,7 +141,7 @@ export class ArticleSpiderController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(ArticleSpider, {partial: true}),
+          schema: getModelSchemaRef(ArticleSpider, { partial: true }),
         },
       },
     })

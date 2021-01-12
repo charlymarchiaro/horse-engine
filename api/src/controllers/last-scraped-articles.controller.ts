@@ -1,3 +1,5 @@
+import { authenticate } from '@loopback/authentication';
+
 import {
   Count,
   CountSchema,
@@ -16,14 +18,16 @@ import {
   del,
   requestBody,
 } from '@loopback/rest';
-import {ArticleSummary} from '../models';
-import {ArticleSummaryRepository} from '../repositories';
+import { ArticleSummary } from '../models';
+import { ArticleSummaryRepository } from '../repositories';
 
+
+@authenticate('jwt')
 export class LastScrapedArticlesController {
   constructor(
     @repository(ArticleSummaryRepository)
-    public articleSummaryRepository : ArticleSummaryRepository,
-  ) {}
+    public articleSummaryRepository: ArticleSummaryRepository,
+  ) { }
 
   @get('/last-scraped-articles', {
     responses: {
@@ -33,7 +37,7 @@ export class LastScrapedArticlesController {
           'application/json': {
             schema: {
               type: 'array',
-              items: getModelSchemaRef(ArticleSummary, {includeRelations: true}),
+              items: getModelSchemaRef(ArticleSummary, { includeRelations: true }),
             },
           },
         },

@@ -1,3 +1,5 @@
+import { authenticate } from '@loopback/authentication';
+
 import { inject } from '@loopback/core';
 import { repository, Filter } from '@loopback/repository';
 import { get, post, requestBody, api, HttpErrors, RestBindings, Response } from '@loopback/rest';
@@ -30,6 +32,7 @@ export class CancelSearchResponse {
 }
 
 
+@authenticate('jwt')
 @api({ basePath: 'article-search' })
 export class ArticleSearchController {
   constructor(

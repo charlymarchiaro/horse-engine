@@ -1,3 +1,5 @@
+import { authenticate } from '@loopback/authentication';
+
 import { inject } from '@loopback/core';
 import { repository, Filter } from '@loopback/repository';
 import { get, post, requestBody, api, HttpErrors, RestBindings, Response } from '@loopback/rest';
@@ -17,6 +19,7 @@ export class ArticleScrapingFullStatsResponse {
 }
 
 
+@authenticate('jwt')
 @api({ basePath: 'article-stats' })
 export class ArticleScrapingStatsController {
   constructor(
