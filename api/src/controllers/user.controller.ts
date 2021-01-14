@@ -1,17 +1,19 @@
 import { authenticate, AuthenticationBindings } from '@loopback/authentication';
 import { inject } from '@loopback/core';
 import { model, property, repository } from '@loopback/repository';
-import { get, getJsonSchemaRef, post, requestBody } from '@loopback/rest';
+import { get, post, requestBody, HttpErrors } from '@loopback/rest';
 import * as _ from 'lodash';
 import { PasswordHasherBindings, TokenServiceBindings, UserServiceBindings } from '../keys';
 import { Credentials, UserRepository } from '../repositories';
-import { validateCredentials } from '../services';
+import { basicAuthorization, validateCredentials } from '../services';
 import { BcryptHasher } from '../services/hash-password.service';
 import { JWTService } from '../services/jwt.service';
 import { MyUserService, UserExtProfile } from '../services/user.service';
 import { OPERATION_SECURITY_SPEC } from '../utils/security.spec';
 import { securityId, UserProfile } from '@loopback/security';
-import { User } from '../models/user.model';
+import { authorize } from '@loopback/authorization';
+import { Role } from '../models';
+
 
 
 @model()
@@ -49,6 +51,12 @@ export class UserController {
       email: body.email,
       password: body.password,
     });
+
+    if (await this.userRepository.findOne({ where: { email: body.email } })) {
+      throw new HttpErrors.UnprocessableEntity(
+        'This email is already used by a registered user'
+      );
+    };
 
     const passwordHash = await this.hasher.hashPassword(body.password)
     const savedUser = await this.userRepository.create({
@@ -97,7 +105,8 @@ export class UserController {
   }
 
 
-  @authenticate("jwt")
+  @authenticate('jwt')
+  @authorize({ allowedRoles: [], voters: [basicAuthorization] })
   @get('/users/me', {
     security: OPERATION_SECURITY_SPEC,
     responses: {

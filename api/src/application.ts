@@ -16,6 +16,7 @@ import { PasswordHasherBindings, TokenServiceBindings, TokenServiceConstants, Us
 import { AuthenticationComponent, registerAuthenticationStrategy } from '@loopback/authentication';
 import { JWTStrategy } from './authentication-strategies/jwt.strategies';
 import { SECURITY_SCHEME_SPEC } from '@loopback/authentication-jwt';
+import { AuthorizationComponent } from '@loopback/authorization';
 
 export { ApplicationConfig };
 
@@ -32,7 +33,8 @@ export class ApiApplication extends BootMixin(
     this.addSecuritySpec();
 
     this.component(AuthenticationComponent);
-    registerAuthenticationStrategy(this, JWTStrategy)
+    registerAuthenticationStrategy(this, JWTStrategy);
+    this.component(AuthorizationComponent);
 
     // Set up the custom sequence
     this.sequence(MySequence);

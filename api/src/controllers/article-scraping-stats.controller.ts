@@ -9,7 +9,9 @@ import { ArticleScrapingStatsDynRepository } from '../repositories/article-scrap
 import { SimpleApiResponse } from '../globals';
 import { ArticleScrapingStats } from '../models/article-scraping-stats.model';
 import { ArticleScrapingStatsRepository } from '../repositories/article-scraping-stats.repository';
-import { AppConstants } from '../keys';
+import { authorize } from '@loopback/authorization';
+import { Role } from '../models/role.model';
+import { basicAuthorization } from '../services';
 
 
 @model()
@@ -20,6 +22,7 @@ export class ArticleScrapingFullStatsResponse {
 
 
 @authenticate('jwt')
+@authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
 @api({ basePath: 'article-stats' })
 export class ArticleScrapingStatsController {
   constructor(

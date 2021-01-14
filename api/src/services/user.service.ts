@@ -53,6 +53,7 @@ export class MyUserService implements UserService<User, Credentials>{
       name: user.firstName + ' ' + user.lastName,
       id: user.id,
       email: user.email,
+      roles: user.roles,
     };
   }
 

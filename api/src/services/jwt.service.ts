@@ -51,7 +51,12 @@ export class JWTService {
       const decryptedToken = await verifyAsync(token, this.jwtSecret);
       userProfile = Object.assign(
         { [securityId]: '', id: '', name: '' },
-        { [securityId]: decryptedToken.id, id: decryptedToken.id, name: decryptedToken.name }
+        {
+          [securityId]: decryptedToken.id,
+          id: decryptedToken.id,
+          name: decryptedToken.name,
+          roles: decryptedToken.roles,
+        },
       );
 
     } catch (err) {

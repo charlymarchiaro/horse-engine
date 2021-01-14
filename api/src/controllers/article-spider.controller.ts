@@ -20,9 +20,13 @@ import {
 } from '@loopback/rest';
 import { ArticleSpider } from '../models';
 import { ArticleSpiderRepository } from '../repositories';
+import { authorize } from '@loopback/authorization';
+import { Role } from '../models/role.model';
+import { basicAuthorization } from '../services';
 
 
 @authenticate('jwt')
+@authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
 export class ArticleSpiderController {
   constructor(
     @repository(ArticleSpiderRepository)

@@ -7,3 +7,4 @@ export * from './jwt.service';
 // Scrapyd
 export * from './scrapyd.service';
 export * from './scrapyd-hourly-scheduler.service';
+export * from './basic-authorizer.service';
