@@ -1,53 +1,67 @@
 import { authenticate, AuthenticationBindings } from '@loopback/authentication';
 import { inject } from '@loopback/core';
-import { repository } from '@loopback/repository';
+import { model, property, repository } from '@loopback/repository';
 import { get, getJsonSchemaRef, post, requestBody } from '@loopback/rest';
-import { UserProfile } from '@loopback/security';
 import * as _ from 'lodash';
 import { PasswordHasherBindings, TokenServiceBindings, UserServiceBindings } from '../keys';
-import { User } from '../models';
 import { Credentials, UserRepository } from '../repositories';
 import { validateCredentials } from '../services';
 import { BcryptHasher } from '../services/hash-password.service';
 import { JWTService } from '../services/jwt.service';
-import { MyUserService } from '../services/user.service';
+import { MyUserService, UserExtProfile } from '../services/user.service';
 import { OPERATION_SECURITY_SPEC } from '../utils/security.spec';
+import { securityId, UserProfile } from '@loopback/security';
+import { User } from '../models/user.model';
 
+
+@model()
+export class RegisterUserRequestBody {
+  @property() email: string;
+  @property() password: string;
+  @property() firstName: string;
+  @property() lastName: string;
+}
 
 export class UserController {
+
   constructor(
-    @repository(UserRepository)
-    public userRepository: UserRepository,
-
-    @inject(PasswordHasherBindings.PASSWORD_HASHER)
-    public hasher: BcryptHasher,
-
-    @inject(UserServiceBindings.USER_SERVICE)
-    public userService: MyUserService,
-
-    @inject(TokenServiceBindings.TOKEN_SERVICE)
-    public jwtService: JWTService,
-
+    @repository(UserRepository) public userRepository: UserRepository,
+    @inject(PasswordHasherBindings.PASSWORD_HASHER) public hasher: BcryptHasher,
+    @inject(UserServiceBindings.USER_SERVICE) public userService: MyUserService,
+    @inject(TokenServiceBindings.TOKEN_SERVICE) public jwtService: JWTService,
   ) { }
 
-  @post('/signup', {
+
+  @post('/register', {
     responses: {
       '200': {
-        description: 'User',
+        description: 'User profile',
         content: {
-          schema: getJsonSchemaRef(User)
+          'application/json': {
+            schema: { 'x-ts-type': UserExtProfile },
+          },
         }
       }
     }
   })
-  async signup(@requestBody() userData: User) {
-    validateCredentials(_.pick(userData, ['email', 'password']));
-    userData.password = await this.hasher.hashPassword(userData.password)
-    const savedUser = await this.userRepository.create(userData);
-    // delete savedUser.password;
-    savedUser.password = '';
-    return savedUser;
+  async register(@requestBody() body: RegisterUserRequestBody) {
+    validateCredentials({
+      email: body.email,
+      password: body.password,
+    });
+
+    const passwordHash = await this.hasher.hashPassword(body.password)
+    const savedUser = await this.userRepository.create({
+      email: body.email,
+      enabled: false,
+      password: passwordHash,
+      roles: [],
+      firstName: body.firstName,
+      lastName: body.lastName,
+    });
+    return this.userService.convertToUserExtProfile(savedUser);
   }
+
 
   @post('/login', {
     responses: {
@@ -71,13 +85,14 @@ export class UserController {
   async login(
     @requestBody() credentials: Credentials,
   ): Promise<{ token: string }> {
-    // make sure user exist,password should be valid
+    // Make sure user exist, password should be valid
     const user = await this.userService.verifyCredentials(credentials);
-    // console.log(user);
     const userProfile = await this.userService.convertToUserProfile(user);
-    // console.log(userProfile);
-
     const token = await this.jwtService.generateToken(userProfile);
+
+    this.userRepository.updateById(user.id, {
+      lastLogin: (new Date()).toISOString(),
+    })
     return Promise.resolve({ token: token })
   }
 
@@ -90,16 +105,17 @@ export class UserController {
         description: 'The current user profile',
         content: {
           'application/json': {
-            schema: getJsonSchemaRef(User),
+            schema: { 'x-ts-type': UserExtProfile },
           },
         },
       },
     },
   })
   async me(
-    @inject(AuthenticationBindings.CURRENT_USER)
-    currentUser: UserProfile,
-  ): Promise<UserProfile> {
-    return Promise.resolve(currentUser);
+    @inject(AuthenticationBindings.CURRENT_USER) currentUser: UserProfile,
+  ): Promise<UserExtProfile> {
+    const savedUser = await this.userRepository.findById(currentUser[securityId]);
+    const userExtProfile = this.userService.convertToUserExtProfile(savedUser);
+    return Promise.resolve(userExtProfile);
   }
 }

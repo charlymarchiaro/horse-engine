@@ -13,8 +13,12 @@ export namespace AppConstants {
 
 // Security
 export namespace TokenServiceConstants {
-  export const TOKEN_SECRET_VALUE = '138asda8213';
-  export const TOKEN_EXPIRES_IN_VALUE = '7h';
+  export const TOKEN_SECRET_VALUE = process.env.JWT_SECRET || '';
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET not configured');
+  }
+  const hs = process.env.JWT_TOKEN_EXPIRATION_TIME_HS || '7';
+  export const TOKEN_EXPIRES_IN_VALUE = hs + 'h';
 }
 export namespace TokenServiceBindings {
   export const TOKEN_SECRET = BindingKey.create<string>(

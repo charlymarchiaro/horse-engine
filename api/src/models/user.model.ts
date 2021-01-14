@@ -1,4 +1,5 @@
 import { Entity, model, property } from '@loopback/repository';
+import { Role } from './role.model';
 
 @model({
   settings: {
@@ -22,30 +23,6 @@ export class User extends Entity {
     type: 'string',
     required: true,
     postgresql: {
-      columnName: 'username',
-      dataType: 'VARCHAR',
-      dataLength: 180,
-      nullable: 'NO',
-    }
-  })
-  username: string;
-
-  @property({
-    type: 'string',
-    required: true,
-    postgresql: {
-      columnName: 'username_canonical',
-      dataType: 'VARCHAR',
-      dataLength: 180,
-      nullable: 'NO',
-    }
-  })
-  usernameCanonical: string;
-
-  @property({
-    type: 'string',
-    required: true,
-    postgresql: {
       columnName: 'email',
       dataType: 'VARCHAR',
       dataLength: 180,
@@ -53,18 +30,6 @@ export class User extends Entity {
     }
   })
   email: string;
-
-  @property({
-    type: 'string',
-    required: true,
-    postgresql: {
-      columnName: 'email_canonical',
-      dataType: 'VARCHAR',
-      dataLength: 180,
-      nullable: 'NO',
-    }
-  })
-  emailCanonical: string;
 
   @property({
     type: 'boolean',
@@ -76,17 +41,6 @@ export class User extends Entity {
     }
   })
   enabled: boolean;
-
-  @property({
-    type: 'string',
-    postgresql: {
-      columnName: 'salt',
-      dataType: 'VARCHAR',
-      dataLength: 255,
-      nullable: 'YES',
-    }
-  })
-  salt?: string;
 
   @property({
     type: 'string',
@@ -133,14 +87,14 @@ export class User extends Entity {
 
   @property({
     type: 'object',
-    required: true,
+    required: false,
     postgresql: {
       columnName: 'roles',
       dataType: 'JSON',
       nullable: 'NO',
     }
   })
-  roles: object;
+  roles?: Role[];
 
   @property({
     type: 'string',

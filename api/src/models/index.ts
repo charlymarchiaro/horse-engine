@@ -15,3 +15,4 @@ export * from './article-boolean-query.model';
 export * from './article-search-scheme.model';
 export * from './article-sketch.model';
 export * from './user.model';
+export * from './role.model';
