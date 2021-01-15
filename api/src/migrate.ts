@@ -16,6 +16,7 @@ export async function migrate(args: string[]) {
     models: [
       // Auth
       'User',
+      'RefreshToken',
       // Scraper
       'ArticleSource',
       'ArticleSpider',

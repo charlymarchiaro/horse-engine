@@ -13,6 +13,8 @@ import { OPERATION_SECURITY_SPEC } from '../utils/security.spec';
 import { securityId, UserProfile } from '@loopback/security';
 import { authorize } from '@loopback/authorization';
 import { Role } from '../models';
+import { TokenObject } from '../types';
+import { RefreshtokenService, RefreshTokenServiceBindings } from '@loopback/authentication-jwt';
 
 
 
@@ -24,6 +26,24 @@ export class RegisterUserRequestBody {
   @property() lastName: string;
 }
 
+@model()
+export class RefreshLoginResponse {
+  @property() accessToken: string;
+  @property() refreshToken: string;
+}
+
+@model()
+export class RefreshRequestBody {
+  @property() refreshToken: string;
+}
+
+@model()
+export class RefreshResponse {
+  @property() accessToken: string;
+  @property() refreshToken: string;
+}
+
+
 export class UserController {
 
   constructor(
@@ -31,6 +51,7 @@ export class UserController {
     @inject(PasswordHasherBindings.PASSWORD_HASHER) public hasher: BcryptHasher,
     @inject(UserServiceBindings.USER_SERVICE) public userService: MyUserService,
     @inject(TokenServiceBindings.TOKEN_SERVICE) public jwtService: JWTService,
+    @inject(RefreshTokenServiceBindings.REFRESH_TOKEN_SERVICE) public refreshService: RefreshtokenService,
   ) { }
 
 
@@ -102,6 +123,55 @@ export class UserController {
       lastLogin: (new Date()).toISOString(),
     })
     return Promise.resolve({ token: token })
+  }
+
+
+  @post('/refresh-login', {
+    responses: {
+      '200': {
+        description: 'Tokens',
+        content: {
+          'application/json': {
+            schema: { 'x-ts-type': RefreshLoginResponse },
+          },
+        }
+      }
+    }
+  })
+  async refreshLogin(
+    @requestBody() credentials: Credentials,
+  ): Promise<TokenObject> {
+    // ensure the user exists, and the password is correct
+    const user = await this.userService.verifyCredentials(credentials);
+    // convert a User object into a UserProfile object (reduced set of properties)
+    const userProfile: UserProfile = this.userService.convertToUserProfile(
+      user,
+    );
+    const accessToken = await this.jwtService.generateToken(userProfile);
+    const tokens = await this.refreshService.generateToken(
+      userProfile,
+      accessToken,
+    );
+    return tokens;
+  }
+
+
+  @post('/refresh', {
+    responses: {
+      '200': {
+        description: 'Token',
+        content: {
+          'application/json': {
+            schema: { 'x-ts-type': RefreshResponse },
+          },
+        },
+      },
+    },
+  })
+  async refresh(
+    @requestBody() refreshGrant: RefreshRequestBody,
+  ): Promise<TokenObject> {
+    return this.refreshService.refreshToken(refreshGrant.refreshToken);
   }
 
 

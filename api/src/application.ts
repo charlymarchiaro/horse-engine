@@ -7,16 +7,33 @@ import {
 import { RepositoryMixin } from '@loopback/repository';
 import { RestApplication } from '@loopback/rest';
 import { ServiceMixin } from '@loopback/service-proxy';
-import path from 'path';
-import { MySequence } from './sequence';
-import { BcryptHasher } from './services/hash-password.service';
-import { MyUserService } from './services/user.service';
-import { JWTService } from './services/jwt.service';
-import { PasswordHasherBindings, TokenServiceBindings, TokenServiceConstants, UserServiceBindings } from './keys';
 import { AuthenticationComponent, registerAuthenticationStrategy } from '@loopback/authentication';
-import { JWTStrategy } from './authentication-strategies/jwt.strategies';
 import { SECURITY_SCHEME_SPEC } from '@loopback/authentication-jwt';
 import { AuthorizationComponent } from '@loopback/authorization';
+
+import path from 'path';
+
+import { MySequence } from './sequence';
+
+import {
+  BcryptHasher,
+  MyUserService,
+  JWTService,
+  RefreshTokenService,
+} from './services';
+
+import {
+  PasswordHasherBindings,
+  TokenServiceBindings,
+  TokenServiceConstants,
+  UserServiceBindings,
+  RefreshTokenConstants,
+  RefreshTokenServiceBindings,
+} from './keys';
+
+import { JWTStrategy } from './authentication-strategies/jwt.strategies';
+
+import { RefreshTokenRepository } from './repositories';
 
 export { ApplicationConfig };
 
@@ -69,6 +86,16 @@ export class ApiApplication extends BootMixin(
     this.bind(TokenServiceBindings.TOKEN_SERVICE).toClass(JWTService);
     this.bind(TokenServiceBindings.TOKEN_SECRET).to(TokenServiceConstants.TOKEN_SECRET_VALUE)
     this.bind(TokenServiceBindings.TOKEN_EXPIRES_IN).to(TokenServiceConstants.TOKEN_EXPIRES_IN_VALUE);
+
+    /// Refresh bindings
+    this.bind(RefreshTokenServiceBindings.REFRESH_TOKEN_SERVICE).toClass(RefreshTokenService);
+
+    //  Refresh token bindings
+    this.bind(RefreshTokenServiceBindings.REFRESH_SECRET).to(RefreshTokenConstants.REFRESH_SECRET_VALUE);
+    this.bind(RefreshTokenServiceBindings.REFRESH_EXPIRES_IN).to(RefreshTokenConstants.REFRESH_EXPIRES_IN_VALUE);
+    this.bind(RefreshTokenServiceBindings.REFRESH_ISSUER).to(RefreshTokenConstants.REFRESH_ISSUER_VALUE);
+    // Refresh token repository binding
+    this.bind(RefreshTokenServiceBindings.REFRESH_REPOSITORY).toClass(RefreshTokenRepository);
   }
 
 

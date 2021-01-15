@@ -11,8 +11,7 @@ import { JWTService } from '../services/jwt.service';
 
 export class JWTStrategy implements AuthenticationStrategy {
   name: string = 'jwt';
-  @inject(TokenServiceBindings.TOKEN_SERVICE)
-  public jwtService: JWTService;
+  @inject(TokenServiceBindings.TOKEN_SERVICE) public jwtService: JWTService;
 
   async authenticate(request: Request<ParamsDictionary, any, any, ParsedQs>):
     Promise<UserProfile | RedirectRoute | undefined> {

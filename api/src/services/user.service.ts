@@ -4,10 +4,9 @@ import { model, repository, property } from '@loopback/repository';
 import { HttpErrors } from '@loopback/rest';
 import { securityId, UserProfile } from '@loopback/security';
 import { PasswordHasherBindings } from '../keys';
-import { User } from '../models';
+import { User, UserWithRelations, Role } from '../models';
 import { Credentials, UserRepository } from '../repositories/user.repository';
 import { BcryptHasher } from './hash-password.service';
-import { Role } from '../models/role.model';
 
 
 @model()
@@ -69,5 +68,19 @@ export class MyUserService implements UserService<User, Credentials>{
       lastLogin: user.lastLogin,
       passwordRequestedAt: user.passwordRequestedAt,
     }
+  }
+
+
+  //function to find user by id
+  async findUserById(id: string): Promise<User & UserWithRelations> {
+    const userNotfound = 'invalid User';
+    const foundUser = await this.userRepository.findOne({
+      where: { id: id },
+    });
+
+    if (!foundUser) {
+      throw new HttpErrors.Unauthorized(userNotfound);
+    }
+    return foundUser;
   }
 }

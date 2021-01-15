@@ -16,3 +16,4 @@ export * from './article-search-scheme.model';
 export * from './article-sketch.model';
 export * from './user.model';
 export * from './role.model';
+export * from './refresh-token.model';
