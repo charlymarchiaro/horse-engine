@@ -100,7 +100,7 @@ export class AppHammerConfig extends HammerGestureConfig {
     pgListViewModule,
     pgCardModule,
     pgCardSocialModule,
-    RouterModule.forRoot(AppRoutes),
+    RouterModule.forRoot(AppRoutes, { relativeLinkResolution: 'legacy' }),
     BsDropdownModule.forRoot(),
     AccordionModule.forRoot(),
     AlertModule.forRoot(),
