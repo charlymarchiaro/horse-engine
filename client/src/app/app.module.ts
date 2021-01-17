@@ -4,7 +4,6 @@ import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angu
 import { NgModule, Injectable } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
@@ -30,18 +29,17 @@ import { pgCardModule } from './@pages/components/card/card.module';
 import { pgCardSocialModule } from './@pages/components/card-social/card-social.module';
 
 // Basic Bootstrap Modules
-import {
-  BsDropdownModule,
-  AccordionModule,
-  AlertModule,
-  ButtonsModule,
-  CollapseModule,
-  ModalModule,
-  ProgressbarModule,
-  TabsModule,
-  TooltipModule,
-  TypeaheadModule,
-} from 'ngx-bootstrap';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { AccordionModule } from 'ngx-bootstrap/accordion';
+import { AlertModule } from 'ngx-bootstrap/alert';
+import { ButtonsModule } from 'ngx-bootstrap/buttons';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+
 
 // Pages Globaly required Components - Optional
 import { pgTabsModule } from './@pages/components/tabs/tabs.module';
@@ -92,7 +90,6 @@ export class AppHammerConfig extends HammerGestureConfig {
     BrowserAnimationsModule,
     CommonModule,
     FormsModule,
-    HttpModule,
     HttpClientModule,
     SharedModule,
     MaterialComponentsModule,
