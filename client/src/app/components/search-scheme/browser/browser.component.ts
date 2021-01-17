@@ -4,7 +4,7 @@ import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { SearchSchemeService } from '../search-scheme.service';
 import { LoadState, LoadStatus } from '../../../services/utils/load-status';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { normalizeString } from '../../../services/utils/utils';
 import { SearchService } from '../../search/search.service';
 import { SearchState } from '../../../model/search.model';

@@ -3,7 +3,7 @@
  * https://medium.com/@amandeepkochhar/angular-material-datepicker-set-custom-date-in-dd-mm-yyyy-format-5c0f4340e57
  */
 
-import { NativeDateAdapter } from '@angular/material';
+import { NativeDateAdapter } from '@angular/material/core';
 import { MatDateFormats } from '@angular/material/core';
 import { formatDate } from '@angular/common';
 import { Injectable } from "@angular/core";

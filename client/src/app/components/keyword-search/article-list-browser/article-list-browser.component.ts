@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { Article } from '../../../model/article.model';
-import { PageEvent } from '@angular/material';
+import { PageEvent } from '@angular/material/paginator';
 import { DatePipe } from '@angular/common';
 import { ArticleFilteringScheme, DateSpan } from '../model';
 import { ColInfo } from 'xlsx/types';
