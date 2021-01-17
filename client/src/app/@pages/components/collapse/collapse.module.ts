@@ -11,7 +11,7 @@ export const PG_COLLAPSE_DIRECTIVES = [pgCollapsesetComponent, pgCollapseCompone
   imports: [CommonModule]
 })
 export class pgCollapseModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<pgCollapseModule> {
     return {
       ngModule: pgCollapseModule
     };

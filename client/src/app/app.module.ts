@@ -1,7 +1,7 @@
 // Angular Core
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, Injectable } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
@@ -73,6 +73,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 
 // Hammer Config Overide
 // https://github.com/angular/angular/issues/10541
+@Injectable()
 export class AppHammerConfig extends HammerGestureConfig {
   overrides = <any>{
     'pinch': { enable: false },
