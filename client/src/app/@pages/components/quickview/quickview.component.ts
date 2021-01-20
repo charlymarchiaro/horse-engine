@@ -48,23 +48,23 @@ export class QuickviewComponent implements OnInit, OnDestroy {
   }
   ngOnInit() {
     // Retrieve posts from the API
-    this.subscriptions.push(
-      this._service.getNotes().subscribe(notes => {
-        this.noteList = notes;
-      })
-    );
+    // this.subscriptions.push(
+    //   this._service.getNotes().subscribe(notes => {
+    //     this.noteList = notes;
+    //   })
+    // );
 
-    this.subscriptions.push(
-      this._service.getUsers().subscribe(users => {
-        this.userList = users;
-      })
-    );
+    // this.subscriptions.push(
+    //   this._service.getUsers().subscribe(users => {
+    //     this.userList = users;
+    //   })
+    // );
 
-    this.subscriptions.push(
-      this._service.getChatMessages().subscribe(messages => {
-        this.chatHistory = messages;
-      })
-    );
+    // this.subscriptions.push(
+    //   this._service.getChatMessages().subscribe(messages => {
+    //     this.chatHistory = messages;
+    //   })
+    // );
   }
   toggle() {
     if (this.isOpen) {

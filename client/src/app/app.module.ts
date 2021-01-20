@@ -27,6 +27,7 @@ import { SharedModule } from './@pages/components/shared.module';
 import { pgListViewModule } from './@pages/components/list-view/list-view.module';
 import { pgCardModule } from './@pages/components/card/card.module';
 import { pgCardSocialModule } from './@pages/components/card-social/card-social.module';
+import { TreeModule } from '@circlon/angular-tree-component';
 
 // Basic Bootstrap Modules
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -97,6 +98,7 @@ export class AppHammerConfig extends HammerGestureConfig {
     pgListViewModule,
     pgCardModule,
     pgCardSocialModule,
+    TreeModule,
     RouterModule.forRoot(AppRoutes, { relativeLinkResolution: 'legacy' }),
     BsDropdownModule.forRoot(),
     AccordionModule.forRoot(),
