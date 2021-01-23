@@ -66,6 +66,7 @@
 
         <!-- START User Info -->
         <div
+          *ngIf="user"
           class="dropdown pull-right d-lg-block d-none"
           dropdown>
           <button
@@ -76,11 +77,9 @@
             aria-label="profile dropdown">
             <span class="thumbnail-wrapper d32 circular inline">
               <img
-                src="assets/img/profiles/avatar.jpg"
+                [src]="user.avatarImgUrl"
                 alt
                 pgRetina
-                src1x="assets/img/profiles/avatar.jpg"
-                src2x="assets/img/profiles/avatar_small2x.jpg"
                 width="32"
                 height="32">
             </span>
@@ -89,61 +88,37 @@
             class="dropdown-menu dropdown-menu-right profile-dropdown"
             *dropdownMenu
             role="menu">
-            <a
-              href="#"
-              class="dropdown-item">
-              <span>Signed in as <br><b>David Aunsberg</b></span>
+            <a class="dropdown-item">
+              <span>Signed in as <br><b>{{user.firstName}} {{user.lastName}}</b></span>
             </a>
             <div class="dropdown-divider"></div>
             <a
-              href="#"
-              class="dropdown-item">
-              Your Profile
+              class="dropdown-item"
+              (click)="onUserProfileClick()">
+              User profile
             </a>
             <a
-              href="#"
-              class="dropdown-item">
-              Your Activity
-            </a>
-            <a
-              href="#"
-              class="dropdown-item">
-              Your Archive
-            </a>
-            <div class="dropdown-divider"></div>
-            <a
-              href="#"
-              class="dropdown-item">
-              Features
-            </a>
-            <a
-              href="#"
-              class="dropdown-item">
-              Help
-            </a>
-            <a
-              href="#"
-              class="dropdown-item">
-              Settings
-            </a>
-            <a
-              href="#"
-              class="dropdown-item">
+              class="dropdown-item"
+              (click)="onLogoutClick()">
               Logout
             </a>
             <div class="dropdown-divider"></div>
-            <span class="dropdown-item fs-12 hint-text">Last edited by David<br>on Friday at 5:27PM</span>
+            <span class="dropdown-item fs-12 hint-text">Last login:<br>{{user.lastLogin |date: 'MMM d, y, h:mm a'}}</span>
           </div>
         </div>
         <!-- END User Info -->
+
       </div>
     </pg-header>
+
     <div class="page-content-wrapper {{_pageContainerClass}}">
+
       <!-- START PAGE CONTENT -->
       <div class="content {{_contentClass}}">
         <router-outlet></router-outlet>
       </div>
       <!-- END PAGE CONTENT -->
+
       <!-- START COPYRIGHT -->
       <ng-template [ngIf]="_footer">
         <div class="container-fluid container-fixed-lg footer">
@@ -172,6 +147,7 @@
         </div>
         <!-- END COPYRIGHT -->
       </ng-template>
+
     </div>
   </page-container>
 </ng-template>

@@ -41,7 +41,7 @@ export class RootLayout implements OnInit, OnDestroy {
   @Input()
   public footer: boolean = true;
 
-  constructor(public toggler: pagesToggleService, private router: Router) {
+  constructor(public toggler: pagesToggleService, protected router: Router) {
     if (this.layoutState) {
       pg.addClass(document.body, this.layoutState);
     }

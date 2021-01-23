@@ -8,6 +8,7 @@ import { LoginComponent } from './components/auth/login/login.component';
 import { CondensedComponent } from './@pages/layouts';
 
 // App components
+import { UserProfileComponent } from './components/auth/user-profile/user-profile.component';
 import { MainComponent as ScrapingMonitor } from './components/scraping-monitor/main.component';
 import { MainComponent as KeywordSearch } from './components/keyword-search/main.component';
 import { MainComponent as Search } from './components/search/main.component';
@@ -23,6 +24,7 @@ export const AppRoutes: Routes = [
     component: CondensedComponent,
     canActivate: [AuthGuardService],
     children: [
+      { path: 'user/profile', component: UserProfileComponent },
       { path: 'dashboard', component: Dashboard },
       { path: 'scraping-monitor', component: ScrapingMonitor },
       { path: 'keyword-search', component: KeywordSearch },

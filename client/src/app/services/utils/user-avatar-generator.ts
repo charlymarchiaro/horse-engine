@@ -1,5 +1,5 @@
 
-export const generateAvatarImageUrl = (firstName: string, lastName: string): string => {
+export const generateAvatarImageUrl = (firstName: string, lastName: string, size: number = 32): string => {
 
   let nameString = '';
 
@@ -17,7 +17,7 @@ export const generateAvatarImageUrl = (firstName: string, lastName: string): str
     + '?background=0a84db'
     + '&color=fff'
     + '&rounded=true'
-    + '&size=64'
+    + '&size=' + size
     + '&bold=true'
     + '&length=2'
     + '&font-size=0.4'
