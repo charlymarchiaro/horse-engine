@@ -1,0 +1,48 @@
+#container {
+    padding: 15px 35px 0;
+
+    #content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        pgcard {
+        }
+
+        #body {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            min-height: 70vh;
+            padding: 32px 50px 40px;
+
+            mat-error {
+                width: 100%;
+            }
+
+            #preview {
+                min-width: 60vw;
+                max-width: 60vw;
+
+                .source-name {
+                    font-size: 17px;
+                    margin: 0 12px 0px;
+                }
+
+                .article-title {
+                    font-size: 30px;
+                    line-height: 35px;
+                    margin: 0 12px 32px;
+                }
+
+                ngx-json-viewer {
+                    max-width: 60vw;
+
+                    ::ng-deep span {
+                        font-family: "Roboto Mono";
+                    }
+                }
+            }
+        }
+    }
+}

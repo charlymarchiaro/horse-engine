@@ -1,0 +1,40 @@
+<div id="container">
+  <div id="content">
+
+    <pgcard
+      [ShowMessage]="false"
+      [Message]
+      [Close]="false"
+      [Maximize]="false"
+      [Refresh]="false"
+      [Toggle]="false">
+      <ng-template #CardTitle>Article - id: {{articleId}}</ng-template>
+
+      <div id="body">
+
+        <!-- Loader -->
+        <div
+          id="loader"
+          *ngIf="loading">
+          <mat-spinner [diameter]="30"></mat-spinner>
+        </div>
+
+        <mat-error *ngIf="errorMessage">{{errorMessage}}</mat-error>
+
+        <div id="preview">
+          <h2
+            class="source-name"
+            *ngIf="article && article.articleSource">{{article.articleSource.name || ''}}</h2>
+
+          <h1
+            class="article-title"
+            *ngIf="article">{{article.title || '(Untitled article)'}}</h1>
+
+          <ngx-json-viewer
+            *ngIf="article"
+            [json]="article"></ngx-json-viewer>
+        </div>
+      </div>
+    </pgcard>
+  </div>
+</div>

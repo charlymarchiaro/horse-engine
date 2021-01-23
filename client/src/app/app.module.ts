@@ -53,6 +53,8 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 
+// NgxJsonViewer
+import { NgxJsonViewerModule } from 'ngx-json-viewer';
 
 // App modules
 import { AppServicesModule } from './services/app-services.module';
@@ -117,6 +119,8 @@ export class AppHammerConfig extends HammerGestureConfig {
     PerfectScrollbarModule,
     pgSwitchModule,
     QuillModule.forRoot(),
+
+    NgxJsonViewerModule,
 
     // App modules
     AppServicesModule,
