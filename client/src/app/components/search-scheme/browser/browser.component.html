@@ -35,6 +35,8 @@
         Make a copy
       </button>
 
+      <div class="separator"></div>
+
       <button
         class="btn btn-default"
         type="button"
@@ -42,6 +44,8 @@
         [disabled]="selected.length === 0">
         Delete
       </button>
+
+      <div class="separator"></div>
 
       <div class="form-check form-check-inline switch switch-lg warning">
         <input
@@ -61,7 +65,7 @@
         [headerHeight]="30"
         [footerHeight]="32"
         [rowHeight]="26"
-        [limit]="5"
+        [limit]="10"
         [selectionType]="'single'"
         [selected]="selected"
         [sorts]="sorts"

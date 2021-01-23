@@ -30,6 +30,12 @@
     label {
         font-size: 12px;
     }
+
+    .separator {
+        width: 100%;
+        border-top: 1px solid #ececec;
+        margin: 17px 0px 7px;
+    }
 }
 
 .table-item-label {
@@ -49,7 +55,7 @@
 }
 
 :host ::ng-deep .datatable-body {
-    height: 155px !important;
+    height: 285px !important;
 }
 
 :host ::ng-deep .datatable-footer {
