@@ -1,7 +1,7 @@
 import { authenticate, AuthenticationBindings } from '@loopback/authentication';
 import { inject } from '@loopback/core';
 import { model, property, repository } from '@loopback/repository';
-import { get, post, requestBody, HttpErrors } from '@loopback/rest';
+import { get, post, requestBody, HttpErrors, api } from '@loopback/rest';
 import * as _ from 'lodash';
 import { PasswordHasherBindings, TokenServiceBindings, UserServiceBindings } from '../keys';
 import { Credentials, UserRepository } from '../repositories';
@@ -44,6 +44,7 @@ export class RefreshResponse {
 }
 
 
+@api({ basePath: 'auth' })
 export class UserController {
 
   constructor(
