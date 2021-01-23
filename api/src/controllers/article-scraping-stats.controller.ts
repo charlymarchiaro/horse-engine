@@ -21,8 +21,6 @@ export class ArticleScrapingFullStatsResponse {
 }
 
 
-@authenticate('jwt')
-@authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
 @api({ basePath: 'article-stats' })
 export class ArticleScrapingStatsController {
   constructor(
@@ -40,6 +38,10 @@ export class ArticleScrapingStatsController {
   }
 
 
+  /**
+   * Public endpoint. 
+   * TODO: implement cronjobs authentication
+   */
   @get('/update-stats-tables', {
     responses: {
       '200': {
@@ -59,6 +61,8 @@ export class ArticleScrapingStatsController {
   }
 
 
+  @authenticate('jwt')
+  @authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
   @get('/full-stats', {
     responses: {
       '200': {

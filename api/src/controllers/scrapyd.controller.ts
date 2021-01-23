@@ -38,8 +38,6 @@ import { Role } from '../models/role.model';
 import { basicAuthorization } from '../services';
 
 
-@authenticate('jwt')
-@authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
 @api({ basePath: 'scrapyd' })
 export class ScrapydController {
 
@@ -53,6 +51,8 @@ export class ScrapydController {
   ) { }
 
 
+  @authenticate('jwt')
+  @authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
   @get('/list-scrapyd-nodes', {
     responses: {
       '200': {
@@ -69,6 +69,8 @@ export class ScrapydController {
   }
 
 
+  @authenticate('jwt')
+  @authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
   @get('/list-spiders', {
     responses: {
       '200': {
@@ -87,6 +89,8 @@ export class ScrapydController {
   }
 
 
+  @authenticate('jwt')
+  @authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
   @post('/schedule-spider', {
     responses: {
       '200': {
@@ -115,6 +119,8 @@ export class ScrapydController {
   }
 
 
+  @authenticate('jwt')
+  @authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
   @post('/schedule-all-spiders', {
     responses: {
       '200': {
@@ -171,7 +177,10 @@ export class ScrapydController {
     return { items }
   }
 
-
+  /**
+   * Public endpoint. 
+   * TODO: implement cronjobs authentication
+   */
   @get('/hourly-spiders-schedule', {
     responses: {
       '200': {
@@ -191,6 +200,10 @@ export class ScrapydController {
   }
 
 
+  /**
+   * Public endpoint. 
+   * TODO: implement cronjobs authentication
+   */
   @post('/schedule-spiders-hourly', {
     responses: {
       '200': {
@@ -226,6 +239,8 @@ export class ScrapydController {
   }
 
 
+  @authenticate('jwt')
+  @authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
   @get('/list-jobs', {
     responses: {
       '200': {
@@ -245,6 +260,8 @@ export class ScrapydController {
   }
 
 
+  @authenticate('jwt')
+  @authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
   @post('/cancel-job', {
     responses: {
       '200': {
