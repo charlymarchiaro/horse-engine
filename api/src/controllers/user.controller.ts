@@ -157,6 +157,10 @@ export class UserController {
       userProfile,
       accessToken,
     );
+
+    this.userRepository.updateById(user.id, {
+      lastLogin: (new Date()).toISOString(),
+    })
     return tokens;
   }
 
