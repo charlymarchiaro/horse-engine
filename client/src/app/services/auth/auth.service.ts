@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, of, BehaviorSubject } from 'rxjs';
 import { mapTo, tap, catchError, filter } from 'rxjs/operators';
 import jwt_decode from 'jwt-decode';
 import { generateAvatarImageUrl } from '../utils/user-avatar-generator';
+import { Router } from '@angular/router';
 
 
 export interface Tokens {
@@ -38,11 +39,14 @@ export class AuthService {
 
   private readonly JWT_TOKEN = 'JWT_TOKEN';
   private readonly REFRESH_TOKEN = 'REFRESH_TOKEN';
-  private loggedUser: User;
+
+  private loggedUserSubject = new BehaviorSubject<User>(null);
+  public loggedUser$ = this.loggedUserSubject.asObservable();
 
 
   constructor(
     private http: HttpClient,
+    private router: Router,
   ) { }
 
 
@@ -108,13 +112,58 @@ export class AuthService {
   }
 
 
+  changePassword(newPassword: string) {
+    const params = JSON.stringify({
+      newPassword
+    });
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    return this.http.post<any>(
+      '/api/auth/change-password',
+      params,
+      { headers },
+    )
+      .pipe(
+        mapTo(true),
+        catchError(error => {
+          return of(false);
+        }));
+  }
+
+
   getJwtToken() {
     return localStorage.getItem(this.JWT_TOKEN);
   }
 
 
   getUser() {
-    return this.loggedUser;
+    return this.loggedUserSubject.getValue();
+  }
+
+
+  updateUser() {
+    if (!this.isLoggedIn()) {
+      this.loggedUserSubject.next(null);
+      return;
+    }
+
+    this.http.get<any>('/api/auth/users/me', {})
+      .pipe(filter(r => !!r))
+      .subscribe(
+        r => {
+          this.loggedUserSubject.next({
+            id: r.id,
+            email: r.email,
+            firstName: r.firstName,
+            lastName: r.lastName,
+            enabled: r.enabled,
+            roles: r.roles,
+            lastLogin: r.lastLogin ? new Date(r.lastLogin) : null,
+            passwordRequestedAt: r.passwordRequestedAt ? new Date(r.passwordRequestedAt) : null,
+            avatarImgUrl: generateAvatarImageUrl(r.firstName, r.lastName),
+          });
+        }
+      );
   }
 
 
@@ -127,6 +176,7 @@ export class AuthService {
   private doLogoutUser() {
     this.removeTokens();
     this.updateUser();
+    this.router.navigate(['auth/login']);
   }
 
 
@@ -149,33 +199,5 @@ export class AuthService {
   private removeTokens() {
     localStorage.removeItem(this.JWT_TOKEN);
     localStorage.removeItem(this.REFRESH_TOKEN);
-  }
-
-
-  private updateUser() {
-    if (!this.isLoggedIn()) {
-      this.loggedUser = null;
-      console.log(this.loggedUser);
-      return;
-    }
-
-    this.http.get<any>('/api/auth/users/me', {})
-      .pipe(filter(r => !!r))
-      .subscribe(
-        r => {
-          this.loggedUser = {
-            id: r.id,
-            email: r.email,
-            firstName: r.firstName,
-            lastName: r.lastName,
-            enabled: r.enabled,
-            roles: r.roles,
-            lastLogin: r.lastLogin ? new Date(r.lastLogin) : null,
-            passwordRequestedAt: r.passwordRequestedAt ? new Date(r.passwordRequestedAt) : null,
-            avatarImgUrl: generateAvatarImageUrl(r.firstName, r.lastName),
-          };
-          console.log(this.loggedUser);
-        }
-      );
   }
 }
