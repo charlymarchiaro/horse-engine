@@ -30,6 +30,7 @@
           </th>
           <th>Title</th>
           <th [width]="80">Link</th>
+          <th [width]="80">Details</th>
         </thead>
 
         <tbody>
@@ -48,6 +49,14 @@
               (click)="window.open(article.article.articleSource.url.split(':')[0] + '://' + article.article.url, '_blank')">
               <span>
                 Source
+                <mat-icon>open_in_new</mat-icon>
+              </span>
+            </td>
+            <td
+              class="no-wrap link"
+              (click)="window.open('/article-preview/' + article.article.id, '_blank')">
+              <span>
+                Details
                 <mat-icon>open_in_new</mat-icon>
               </span>
             </td>
