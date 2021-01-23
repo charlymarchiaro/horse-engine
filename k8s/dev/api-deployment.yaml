@@ -43,9 +43,9 @@ spec:
                   name: api-jwt-secret
                   key: API_JWT_SECRET
             - name: JWT_TOKEN_EXPIRATION_TIME_S
-              value: "60"
+              value: "900" # 15 min
             - name: JWT_REFRESH_TOKEN_EXPIRATION_TIME_S
-              value: "216000"
+              value: "2592000" # 30 days
             - name: PG_HOST
               value: postgres-cluster-ip-service
             - name: PG_PORT
