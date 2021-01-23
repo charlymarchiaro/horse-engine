@@ -1,0 +1,36 @@
+#container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 25vh 0;
+    font-family: "Roboto", "Helvetica Neue", sans-serif;
+
+    h1 {
+        font-size: 25px;
+        margin: 15px 0;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+
+        mat-form-field {
+            width: 300px;
+            padding-top: 1em;
+        }
+
+        .error-label {
+            height: 30px;
+
+            mat-error {
+                text-align: center;
+                font-size: 14px;
+            }
+        }
+
+        button {
+            width: 300px;
+            margin-top: 5px;
+        }
+    }
+}

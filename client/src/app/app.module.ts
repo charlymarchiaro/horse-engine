@@ -4,7 +4,7 @@ import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angu
 import { NgModule, Injectable } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 // Routing
@@ -59,6 +59,8 @@ import { AppServicesModule } from './services/app-services.module';
 import { DirectivesModule } from './directives/directives.module';
 import { MaterialComponentsModule } from './material-components.module';
 import { SharedModule as AppSharedModule } from './components/shared/shared.module';
+import { AuthModule } from './components/auth/auth.module';
+import { TokenInterceptor } from './services/interceptors/token.interceptor';
 import { ScrapingMonitorModule } from './components/scraping-monitor/scraping-monitor.module';
 import { KeywordSearchModule } from './components/keyword-search/keyword-search.module';
 import { SearchModule } from './components/search/search.module';
@@ -93,6 +95,7 @@ export class AppHammerConfig extends HammerGestureConfig {
     FormsModule,
     HttpClientModule,
     SharedModule,
+    AuthModule,
     MaterialComponentsModule,
     ProgressModule,
     pgListViewModule,
@@ -126,10 +129,18 @@ export class AppHammerConfig extends HammerGestureConfig {
     DashboardModule,
     ArticleScrapingStatsModule,
   ],
-  providers: [QuickviewService, pagesToggleService, {
-    provide: PERFECT_SCROLLBAR_CONFIG,
-    useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
-  },
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    },
+    QuickviewService,
+    pagesToggleService,
+    {
+      provide: PERFECT_SCROLLBAR_CONFIG,
+      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
+    },
     {
       provide: HAMMER_GESTURE_CONFIG,
       useClass: AppHammerConfig
