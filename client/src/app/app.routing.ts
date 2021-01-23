@@ -21,7 +21,7 @@ export const AppRoutes: Routes = [
     path: '',
     data: { breadcrumb: 'Home' },
     component: CondensedComponent,
-    // canActivate: [AuthGuardService],
+    canActivate: [AuthGuardService],
     children: [
       { path: 'dashboard', component: Dashboard },
       { path: 'scraping-monitor', component: ScrapingMonitor },

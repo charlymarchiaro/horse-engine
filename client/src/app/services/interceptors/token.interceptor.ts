@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { AuthService, Tokens } from '../auth/auth.service';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, switchMap, filter, take } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 
 @Injectable()
@@ -14,6 +15,7 @@ export class TokenInterceptor implements HttpInterceptor {
 
   constructor(
     public authService: AuthService,
+    private router: Router,
   ) { }
 
 
@@ -44,6 +46,16 @@ export class TokenInterceptor implements HttpInterceptor {
 
 
   private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
+    if (request.url === '/api/auth/refresh') {
+      this.authService.logout();
+
+      this.isRefreshing = true;
+      this.refreshTokenSubject.next(null);
+
+      this.router.navigate(['auth/login']);
+      return next.handle(request);
+    }
+
     if (!this.isRefreshing) {
       // Start refresh
       this.isRefreshing = true;

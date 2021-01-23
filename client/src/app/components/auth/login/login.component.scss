@@ -2,8 +2,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100vw;
+    height: 100vh;
     padding: 25vh 0;
     font-family: "Roboto", "Helvetica Neue", sans-serif;
+    background-color: #fff;
 
     h1 {
         font-size: 25px;

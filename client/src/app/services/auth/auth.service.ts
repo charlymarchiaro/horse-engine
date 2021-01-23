@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { mapTo, tap, catchError, filter } from 'rxjs/operators';
 import jwt_decode from 'jwt-decode';
@@ -64,6 +64,8 @@ export class AuthService {
 
 
   logout() {
+    this.doLogoutUser();
+
     const params = JSON.stringify({
       refreshToken: this.getRefreshToken()
     });
@@ -75,10 +77,8 @@ export class AuthService {
       { headers },
     )
       .pipe(
-        tap(() => this.doLogoutUser()),
         mapTo(true),
         catchError(error => {
-          alert(error.error);
           return of(false);
         }));
   }
@@ -103,7 +103,7 @@ export class AuthService {
       { headers },
     )
       .pipe(
-        tap(tokens => this.storeJwtToken(tokens.accessToken))
+        tap(tokens => this.storeJwtToken(tokens.accessToken)),
       );
   }
 
