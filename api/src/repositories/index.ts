@@ -8,3 +8,5 @@ export * from './article-search.repository';
 export * from './article-search-scheme.repository';
 export * from './article-summary.repository';
 export * from './article-sketch.repository';
+export * from './user.repository';
+export * from './refresh-token.repository';

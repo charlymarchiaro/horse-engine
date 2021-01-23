@@ -1,3 +1,5 @@
+import { authenticate } from '@loopback/authentication';
+
 import {
   Count,
   CountSchema,
@@ -16,20 +18,26 @@ import {
   del,
   requestBody,
 } from '@loopback/rest';
-import {ArticleSearchScheme} from '../models';
-import {ArticleSearchSchemeRepository} from '../repositories';
+import { ArticleSearchScheme } from '../models';
+import { ArticleSearchSchemeRepository } from '../repositories';
+import { authorize } from '@loopback/authorization';
+import { Role } from '../models/role.model';
+import { basicAuthorization } from '../services';
 
+
+@authenticate('jwt')
+@authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
 export class ArticleSearchSchemeController {
   constructor(
     @repository(ArticleSearchSchemeRepository)
-    public articleSearchSchemeRepository : ArticleSearchSchemeRepository,
-  ) {}
+    public articleSearchSchemeRepository: ArticleSearchSchemeRepository,
+  ) { }
 
   @post('/article-search-schemes', {
     responses: {
       '200': {
         description: 'ArticleSearchScheme model instance',
-        content: {'application/json': {schema: getModelSchemaRef(ArticleSearchScheme)}},
+        content: { 'application/json': { schema: getModelSchemaRef(ArticleSearchScheme) } },
       },
     },
   })
@@ -53,7 +61,7 @@ export class ArticleSearchSchemeController {
     responses: {
       '200': {
         description: 'ArticleSearchScheme model count',
-        content: {'application/json': {schema: CountSchema}},
+        content: { 'application/json': { schema: CountSchema } },
       },
     },
   })
@@ -71,7 +79,7 @@ export class ArticleSearchSchemeController {
           'application/json': {
             schema: {
               type: 'array',
-              items: getModelSchemaRef(ArticleSearchScheme, {includeRelations: true}),
+              items: getModelSchemaRef(ArticleSearchScheme, { includeRelations: true }),
             },
           },
         },
@@ -88,7 +96,7 @@ export class ArticleSearchSchemeController {
     responses: {
       '200': {
         description: 'ArticleSearchScheme PATCH success count',
-        content: {'application/json': {schema: CountSchema}},
+        content: { 'application/json': { schema: CountSchema } },
       },
     },
   })
@@ -96,7 +104,7 @@ export class ArticleSearchSchemeController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(ArticleSearchScheme, {partial: true}),
+          schema: getModelSchemaRef(ArticleSearchScheme, { partial: true }),
         },
       },
     })
@@ -112,7 +120,7 @@ export class ArticleSearchSchemeController {
         description: 'ArticleSearchScheme model instance',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(ArticleSearchScheme, {includeRelations: true}),
+            schema: getModelSchemaRef(ArticleSearchScheme, { includeRelations: true }),
           },
         },
       },
@@ -120,7 +128,7 @@ export class ArticleSearchSchemeController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(ArticleSearchScheme, {exclude: 'where'}) filter?: FilterExcludingWhere<ArticleSearchScheme>
+    @param.filter(ArticleSearchScheme, { exclude: 'where' }) filter?: FilterExcludingWhere<ArticleSearchScheme>
   ): Promise<ArticleSearchScheme> {
     return this.articleSearchSchemeRepository.findById(id, filter);
   }
@@ -137,7 +145,7 @@ export class ArticleSearchSchemeController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(ArticleSearchScheme, {partial: true}),
+          schema: getModelSchemaRef(ArticleSearchScheme, { partial: true }),
         },
       },
     })

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CasualComponent } from './casual.component';
 
@@ -6,7 +6,7 @@ describe('CasualComponent', () => {
   let component: CasualComponent;
   let fixture: ComponentFixture<CasualComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [CasualComponent]
     }).compileComponents();

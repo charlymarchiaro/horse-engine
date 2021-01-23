@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SearchOverlayComponent } from './search-overlay.component';
 
@@ -6,7 +6,7 @@ describe('SearchOverlayComponent', () => {
   let component: SearchOverlayComponent;
   let fixture: ComponentFixture<SearchOverlayComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [SearchOverlayComponent]
     }).compileComponents();

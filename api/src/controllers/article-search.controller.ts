@@ -1,3 +1,5 @@
+import { authenticate } from '@loopback/authentication';
+
 import { inject } from '@loopback/core';
 import { repository, Filter } from '@loopback/repository';
 import { get, post, requestBody, api, HttpErrors, RestBindings, Response } from '@loopback/rest';
@@ -6,7 +8,9 @@ import { ArticleSearchRepository } from '../repositories/article-search.reposito
 import { ArticleBooleanQuery } from '../models';
 import { SearchDateSpan } from '../models/search-date-span.model';
 import { AppConstants } from '../keys';
-import { SimpleApiResponse } from '../globals';
+import { authorize } from '@loopback/authorization';
+import { Role } from '../models/role.model';
+import { basicAuthorization } from '../services';
 
 
 @model()
@@ -30,6 +34,8 @@ export class CancelSearchResponse {
 }
 
 
+@authenticate('jwt')
+@authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
 @api({ basePath: 'article-search' })
 export class ArticleSearchController {
   constructor(

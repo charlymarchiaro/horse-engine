@@ -1,11 +1,10 @@
 // Angular Core
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, Injectable } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 // Routing
@@ -28,20 +27,20 @@ import { SharedModule } from './@pages/components/shared.module';
 import { pgListViewModule } from './@pages/components/list-view/list-view.module';
 import { pgCardModule } from './@pages/components/card/card.module';
 import { pgCardSocialModule } from './@pages/components/card-social/card-social.module';
+import { TreeModule } from '@circlon/angular-tree-component';
 
 // Basic Bootstrap Modules
-import {
-  BsDropdownModule,
-  AccordionModule,
-  AlertModule,
-  ButtonsModule,
-  CollapseModule,
-  ModalModule,
-  ProgressbarModule,
-  TabsModule,
-  TooltipModule,
-  TypeaheadModule,
-} from 'ngx-bootstrap';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { AccordionModule } from 'ngx-bootstrap/accordion';
+import { AlertModule } from 'ngx-bootstrap/alert';
+import { ButtonsModule } from 'ngx-bootstrap/buttons';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+
 
 // Pages Globaly required Components - Optional
 import { pgTabsModule } from './@pages/components/tabs/tabs.module';
@@ -60,6 +59,8 @@ import { AppServicesModule } from './services/app-services.module';
 import { DirectivesModule } from './directives/directives.module';
 import { MaterialComponentsModule } from './material-components.module';
 import { SharedModule as AppSharedModule } from './components/shared/shared.module';
+import { AuthModule } from './components/auth/auth.module';
+import { TokenInterceptor } from './services/interceptors/token.interceptor';
 import { ScrapingMonitorModule } from './components/scraping-monitor/scraping-monitor.module';
 import { KeywordSearchModule } from './components/keyword-search/keyword-search.module';
 import { SearchModule } from './components/search/search.module';
@@ -73,6 +74,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 
 // Hammer Config Overide
 // https://github.com/angular/angular/issues/10541
+@Injectable()
 export class AppHammerConfig extends HammerGestureConfig {
   overrides = <any>{
     'pinch': { enable: false },
@@ -91,15 +93,16 @@ export class AppHammerConfig extends HammerGestureConfig {
     BrowserAnimationsModule,
     CommonModule,
     FormsModule,
-    HttpModule,
     HttpClientModule,
     SharedModule,
+    AuthModule,
     MaterialComponentsModule,
     ProgressModule,
     pgListViewModule,
     pgCardModule,
     pgCardSocialModule,
-    RouterModule.forRoot(AppRoutes),
+    TreeModule,
+    RouterModule.forRoot(AppRoutes, { relativeLinkResolution: 'legacy' }),
     BsDropdownModule.forRoot(),
     AccordionModule.forRoot(),
     AlertModule.forRoot(),
@@ -126,10 +129,18 @@ export class AppHammerConfig extends HammerGestureConfig {
     DashboardModule,
     ArticleScrapingStatsModule,
   ],
-  providers: [QuickviewService, pagesToggleService, {
-    provide: PERFECT_SCROLLBAR_CONFIG,
-    useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
-  },
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    },
+    QuickviewService,
+    pagesToggleService,
+    {
+      provide: PERFECT_SCROLLBAR_CONFIG,
+      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
+    },
     {
       provide: HAMMER_GESTURE_CONFIG,
       useClass: AppHammerConfig

@@ -14,6 +14,9 @@ export async function migrate(args: string[]) {
     // For PostgreSQL connector, it does not create tables in the
     // right order.  Therefore, this change is needed.
     models: [
+      // Auth
+      'User',
+      'RefreshToken',
       // Scraper
       'ArticleSource',
       'ArticleSpider',

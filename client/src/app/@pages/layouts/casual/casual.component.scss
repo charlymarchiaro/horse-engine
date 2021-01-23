@@ -2,8 +2,8 @@
 @import 'core.scss';
 @import 'themes/modern/_var.scss';
 
-$base-img-url: "../../assets/images" ;
-$assets-url: "../../assets" ;
+$base-img-url: "/assets/images" ;
+$assets-url: "/assets" ;
 
 @import "modules/_layout.scss";
 @import "modules/_horizontal_menu.scss";

@@ -7,7 +7,7 @@ import { ArticleSpiderResponse, ArticleSpider, ArticleScrapingStatsFullResponse,
 import { ArticleResponse, Article } from '../model/article.model';
 import { SearchScheme, SearchSchemeKind, SearchSchemePayload } from '../model/search-scheme.model';
 import { ArticleSearchBooleanQueryPayload, ArticleSearchBooleanQueryResponse, ArticleSearchBooleanQueryResult, CancelSearchResponse } from '../model/search.model';
-import { Observable, of } from 'rxjs';
+import 'rxjs/Rx';
 
 
 @Injectable({

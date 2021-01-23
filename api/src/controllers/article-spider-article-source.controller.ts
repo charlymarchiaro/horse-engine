@@ -1,3 +1,5 @@
+import { authenticate } from '@loopback/authentication';
+
 import {
   repository,
 } from '@loopback/repository';
@@ -10,8 +12,14 @@ import {
   ArticleSpider,
   ArticleSource,
 } from '../models';
-import {ArticleSpiderRepository} from '../repositories';
+import { ArticleSpiderRepository } from '../repositories';
+import { authorize } from '@loopback/authorization';
+import { Role } from '../models/role.model';
+import { basicAuthorization } from '../services';
 
+
+@authenticate('jwt')
+@authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
 export class ArticleSpiderArticleSourceController {
   constructor(
     @repository(ArticleSpiderRepository)
@@ -24,7 +32,7 @@ export class ArticleSpiderArticleSourceController {
         description: 'ArticleSource belonging to ArticleSpider',
         content: {
           'application/json': {
-            schema: {type: 'array', items: getModelSchemaRef(ArticleSource)},
+            schema: { type: 'array', items: getModelSchemaRef(ArticleSource) },
           },
         },
       },

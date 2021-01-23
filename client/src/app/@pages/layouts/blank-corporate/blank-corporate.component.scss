@@ -1,7 +1,7 @@
-@import 'core.scss';
-@import 'themes/corporate/_var.scss';
-$base-img-url: "../../assets/images" ;
-$assets-url: "../../assets" ;
+@import "core.scss";
+@import "themes/corporate/_var.scss";
+$base-img-url: "/assets/images";
+$assets-url: "/assets";
 
 @import "modules/_layout.scss";
 

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SscdSourceStatsComponent } from './sscd-source-stats.component';
 
@@ -6,7 +6,7 @@ describe('SscdSourceStatsComponent', () => {
   let component: SscdSourceStatsComponent;
   let fixture: ComponentFixture<SscdSourceStatsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SscdSourceStatsComponent ]
     })

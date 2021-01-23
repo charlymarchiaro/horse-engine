@@ -6,7 +6,7 @@
  */
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { TooltipModule } from 'ngx-bootstrap';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { pgSliderHandleComponent } from './slider-handle.component';
 import { pgSliderMarksComponent } from './slider-marks.component';
 import { pgSliderStepComponent } from './slider-step.component';
@@ -20,4 +20,4 @@ import { SliderService } from './slider.service';
   imports: [CommonModule, TooltipModule],
   providers: [SliderService]
 })
-export class pgSliderModule {}
+export class pgSliderModule { }

@@ -3,7 +3,9 @@ import { SearchScheme, SearchSchemeKind, ArticleSearchSchemeImpl, ArticlePart, M
 import { Subscription } from 'rxjs';
 import { SearchSchemeService } from '../search-scheme.service';
 import { AbstractControl, FormBuilder, FormGroup, FormArray, ValidationErrors, Validators, FormControl } from '@angular/forms';
-import { MatAutocompleteSelectedEvent, MatChipInputEvent, MatSnackBar } from '@angular/material';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { startWith, map, filter } from 'rxjs/operators';
 import { normalizeString, onlyUnique } from '../../../services/utils/utils';

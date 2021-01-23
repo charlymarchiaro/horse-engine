@@ -1,0 +1,115 @@
+<div id="container">
+  <div id="content">
+
+    <pgcard
+      *ngIf="user"
+      [ShowMessage]="false"
+      [Message]
+      [Close]="false"
+      [Maximize]="false"
+      [Refresh]="false"
+      [Toggle]="false">
+      <ng-template #CardTitle>User profile</ng-template>
+
+      <div id="body">
+
+        <div id="first-column">
+
+          <img
+            class="avatar"
+            [src]="avatarImgUrl">
+
+          <!-- Name -->
+          <div class="item">
+            <div class="name">Name:</div>
+            <div class="value">{{user.firstName}} {{user.lastName}}</div>
+          </div>
+
+          <!-- Email -->
+          <div class="item">
+            <div class="name">Email:</div>
+            <div class="value">{{user.email}}</div>
+          </div>
+
+          <!-- Enabled -->
+          <div class="item">
+            <div class="name">Enabled:</div>
+            <div class="value">{{user.enabled ? 'Yes' : 'No'}}</div>
+          </div>
+
+          <!-- Roles -->
+          <div class="item">
+            <div class="name">Roles:</div>
+            <div class="value">
+              {{user.roles && user.roles.length > 0 ? user.roles.join(', ') : '—'}}
+            </div>
+          </div>
+
+          <!-- Last login -->
+          <div class="item">
+            <div class="name">Last login:</div>
+            <div class="value">
+              {{user.lastLogin ? (user.lastLogin | date: 'MMM d, y, h:mm a') : '—'}}
+            </div>
+          </div>
+
+          <!-- Password requested at -->
+          <div class="item">
+            <div class="name">Password requested at:</div>
+            <div class="value">
+              {{user.passwordRequestedAt ? (user.passwordRequestedAt | date: 'MMM d, y, h:mm a') : '—'}}
+            </div>
+          </div>
+
+        </div>
+
+        <div id="second-column">
+          <h2>Change password:</h2>
+
+          <form [formGroup]="changePasswordForm">
+
+            <mat-form-field>
+              <input
+                type="password"
+                matInput
+                placeholder="New password"
+                formControlName="password1"
+                autocomplete="new-password"
+                required>
+              <mat-error *ngIf="password1.invalid">
+                <div *ngIf="password1.errors.required">Enter your new password</div>
+                <div *ngIf="password1.errors.minlength">
+                  The password must have 8 characters or more
+                </div>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+              <input
+                type="password"
+                matInput
+                placeholder="Repeat password"
+                formControlName="password2"
+                autocomplete="new-password">
+              <mat-error *ngIf="password2.invalid">Passwords don't match</mat-error>
+            </mat-form-field>
+
+            <div class="error-label">
+              <mat-error *ngIf="changePasswordErrorMessage">{{changePasswordErrorMessage}}</mat-error>
+            </div>
+
+            <button
+              mat-flat-button
+              color="primary"
+              [disabled]="changePasswordForm.invalid || isChangingPassword"
+              (click)="submitPasswordChange()">
+              Submit
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </pgcard>
+
+  </div>
+</div>

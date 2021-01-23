@@ -1,3 +1,5 @@
+import { authenticate } from '@loopback/authentication';
+
 import { inject } from '@loopback/core';
 import { repository, Filter } from '@loopback/repository';
 import { get, post, requestBody, api, param } from '@loopback/rest';
@@ -31,8 +33,13 @@ export class CancelJobRequestBody {
   @property() scrapydNodeId: string;
   @property() job: string;
 }
+import { authorize } from '@loopback/authorization';
+import { Role } from '../models/role.model';
+import { basicAuthorization } from '../services';
 
 
+@authenticate('jwt')
+@authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
 @api({ basePath: 'scrapyd' })
 export class ScrapydController {
 

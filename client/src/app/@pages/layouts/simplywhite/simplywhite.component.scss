@@ -1,8 +1,8 @@
 @import 'core.scss';
 @import 'themes/light/_var.scss';
 
-$base-img-url: "../../assets/images" ;
-$assets-url: "../../assets" ;
+$base-img-url: "/assets/images" ;
+$assets-url: "/assets" ;
 
 @import "modules/_layout.scss";
 @import "modules/_sidebar.scss";

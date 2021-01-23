@@ -2,8 +2,8 @@
 @import 'themes/corporate/_var.scss';
 @import 'themes/corporate/_custom.scss';
 
-$base-img-url: "../../assets/images" ;
-$assets-url: "../../assets" ;
+$base-img-url: "/assets/images" ;
+$assets-url: "/assets" ;
 
 @import "modules/_layout.scss";
 @import "modules/_sidebar.scss";

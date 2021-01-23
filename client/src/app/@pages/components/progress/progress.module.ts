@@ -10,7 +10,7 @@ import { ProgressConfig } from './progress.config';
   exports: [ProgressComponent]
 })
 export class ProgressModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<ProgressModule> {
     return { ngModule: ProgressModule, providers: [ProgressConfig] };
   }
 }

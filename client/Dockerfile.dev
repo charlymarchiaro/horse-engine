@@ -15,10 +15,14 @@ ENV PATH /app/node_modules/.bin:$PATH
 # install and cache app dependencies
 COPY package.json /app/package.json
 RUN npm install --force
-RUN npm install -g @angular/cli@7.3.9
+RUN npm install -g @angular/cli
+
+# added to cache compiled packages, as suggested here: 
+# https://medium.com/@nicolas.tresegnie/angular-docker-speed-up-your-builds-with-ngcc-b4f5b0987f46
+RUN ngcc
 
 # add app
 COPY . /app
 
 # start app
-CMD ng serve --host 0.0.0.0
+CMD npm run docker-ng-serve

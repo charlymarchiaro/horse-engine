@@ -1,5 +1,10 @@
 import { Component, OnInit, OnDestroy, ViewChild, HostListener, AfterViewInit, Input, ViewEncapsulation } from '@angular/core';
 import { RootLayout } from '../root/root.component';
+import { pagesToggleService } from '../../services/toggler.service';
+import { Router } from '@angular/router';
+import { AuthService, User } from '../../../services/auth/auth.service';
+import { Subscription } from 'rxjs';
+
 
 @Component({
   selector: 'condensed-layout',
@@ -7,8 +12,13 @@ import { RootLayout } from '../root/root.component';
   styleUrls: ['./condensed.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class CondensedComponent extends RootLayout implements OnInit {
-  menuLinks = [
+export class CondensedComponent extends RootLayout implements OnInit, OnDestroy {
+
+
+  public user: User;
+
+
+  public menuLinks = [
     {
       label: 'Dashboard',
       routerLink: '/dashboard',
@@ -29,5 +39,38 @@ export class CondensedComponent extends RootLayout implements OnInit {
     },
   ];
 
-  ngOnInit() { }
+
+  private subscription = new Subscription();
+
+
+  constructor(
+    toggler: pagesToggleService,
+    router: Router,
+    public authService: AuthService,
+  ) {
+    super(toggler, router);
+
+    this.subscription.add(
+      authService.loggedUser$.subscribe(u => this.user = u)
+    );
+  }
+
+  ngOnInit() {
+    this.authService.updateUser();
+  }
+
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+
+  onUserProfileClick() {
+    this.router.navigate(['user/profile']);
+  }
+
+
+  onLogoutClick() {
+    this.authService.logout();
+  }
 }

@@ -1,0 +1,82 @@
+#container {
+    padding: 15px 35px 0;
+
+    #content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        pgcard {
+            min-width: 960px;
+        }
+
+        #body {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 45px 15px 30px;
+
+            #first-column {
+                padding-bottom: 30px;
+
+                .avatar {
+                    margin-bottom: 20px;
+                }
+
+                .item {
+                    display: flex;
+                    line-height: 28px;
+
+                    .name {
+                        width: 200px;
+                        font-weight: bold;
+                    }
+
+                    .value {
+                        width: 300px;
+                    }
+                }
+            }
+
+            #second-column {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 300px;
+
+                font-family: "Roboto", "Helvetica Neue", sans-serif;
+                background-color: #fff;
+
+                h2 {
+                    width: 100%;
+                    margin: 0;
+                    font-size: 18px;
+                }
+
+                form {
+                    display: flex;
+                    flex-direction: column;
+
+                    mat-form-field {
+                        width: 300px;
+                        padding-top: 1em;
+                    }
+
+                    .error-label {
+                        height: 30px;
+
+                        mat-error {
+                            text-align: center;
+                            font-size: 14px;
+                        }
+                    }
+
+                    button {
+                        width: 300px;
+                        margin-top: 5px;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,3 +1,5 @@
+import { authenticate } from '@loopback/authentication';
+
 import {
   Count,
   CountSchema,
@@ -16,20 +18,26 @@ import {
   del,
   requestBody,
 } from '@loopback/rest';
-import {ArticleSource} from '../models';
-import {ArticleSourceRepository} from '../repositories';
+import { ArticleSource } from '../models';
+import { ArticleSourceRepository } from '../repositories';
+import { authorize } from '@loopback/authorization';
+import { Role } from '../models/role.model';
+import { basicAuthorization } from '../services';
 
+
+@authenticate('jwt')
+@authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
 export class ArticleSourceController {
   constructor(
     @repository(ArticleSourceRepository)
-    public articleSourceRepository : ArticleSourceRepository,
-  ) {}
+    public articleSourceRepository: ArticleSourceRepository,
+  ) { }
 
   @post('/article-sources', {
     responses: {
       '200': {
         description: 'ArticleSource model instance',
-        content: {'application/json': {schema: getModelSchemaRef(ArticleSource)}},
+        content: { 'application/json': { schema: getModelSchemaRef(ArticleSource) } },
       },
     },
   })
@@ -53,7 +61,7 @@ export class ArticleSourceController {
     responses: {
       '200': {
         description: 'ArticleSource model count',
-        content: {'application/json': {schema: CountSchema}},
+        content: { 'application/json': { schema: CountSchema } },
       },
     },
   })
@@ -71,7 +79,7 @@ export class ArticleSourceController {
           'application/json': {
             schema: {
               type: 'array',
-              items: getModelSchemaRef(ArticleSource, {includeRelations: true}),
+              items: getModelSchemaRef(ArticleSource, { includeRelations: true }),
             },
           },
         },
@@ -88,7 +96,7 @@ export class ArticleSourceController {
     responses: {
       '200': {
         description: 'ArticleSource PATCH success count',
-        content: {'application/json': {schema: CountSchema}},
+        content: { 'application/json': { schema: CountSchema } },
       },
     },
   })
@@ -96,7 +104,7 @@ export class ArticleSourceController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(ArticleSource, {partial: true}),
+          schema: getModelSchemaRef(ArticleSource, { partial: true }),
         },
       },
     })
@@ -112,7 +120,7 @@ export class ArticleSourceController {
         description: 'ArticleSource model instance',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(ArticleSource, {includeRelations: true}),
+            schema: getModelSchemaRef(ArticleSource, { includeRelations: true }),
           },
         },
       },
@@ -120,7 +128,7 @@ export class ArticleSourceController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(ArticleSource, {exclude: 'where'}) filter?: FilterExcludingWhere<ArticleSource>
+    @param.filter(ArticleSource, { exclude: 'where' }) filter?: FilterExcludingWhere<ArticleSource>
   ): Promise<ArticleSource> {
     return this.articleSourceRepository.findById(id, filter);
   }
@@ -137,7 +145,7 @@ export class ArticleSourceController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(ArticleSource, {partial: true}),
+          schema: getModelSchemaRef(ArticleSource, { partial: true }),
         },
       },
     })

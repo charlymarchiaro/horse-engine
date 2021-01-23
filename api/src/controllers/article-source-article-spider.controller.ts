@@ -1,3 +1,5 @@
+import { authenticate } from '@loopback/authentication';
+
 import {
   Count,
   CountSchema,
@@ -19,8 +21,14 @@ import {
   ArticleSource,
   ArticleSpider,
 } from '../models';
-import {ArticleSourceRepository} from '../repositories';
+import { ArticleSourceRepository } from '../repositories';
+import { authorize } from '@loopback/authorization';
+import { Role } from '../models/role.model';
+import { basicAuthorization } from '../services';
 
+
+@authenticate('jwt')
+@authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
 export class ArticleSourceArticleSpiderController {
   constructor(
     @repository(ArticleSourceRepository) protected articleSourceRepository: ArticleSourceRepository,
@@ -32,7 +40,7 @@ export class ArticleSourceArticleSpiderController {
         description: 'Array of ArticleSource has many ArticleSpider',
         content: {
           'application/json': {
-            schema: {type: 'array', items: getModelSchemaRef(ArticleSpider)},
+            schema: { type: 'array', items: getModelSchemaRef(ArticleSpider) },
           },
         },
       },
@@ -49,7 +57,7 @@ export class ArticleSourceArticleSpiderController {
     responses: {
       '200': {
         description: 'ArticleSource model instance',
-        content: {'application/json': {schema: getModelSchemaRef(ArticleSpider)}},
+        content: { 'application/json': { schema: getModelSchemaRef(ArticleSpider) } },
       },
     },
   })
@@ -74,7 +82,7 @@ export class ArticleSourceArticleSpiderController {
     responses: {
       '200': {
         description: 'ArticleSource.ArticleSpider PATCH success count',
-        content: {'application/json': {schema: CountSchema}},
+        content: { 'application/json': { schema: CountSchema } },
       },
     },
   })
@@ -83,7 +91,7 @@ export class ArticleSourceArticleSpiderController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(ArticleSpider, {partial: true}),
+          schema: getModelSchemaRef(ArticleSpider, { partial: true }),
         },
       },
     })
@@ -97,7 +105,7 @@ export class ArticleSourceArticleSpiderController {
     responses: {
       '200': {
         description: 'ArticleSource.ArticleSpider DELETE success count',
-        content: {'application/json': {schema: CountSchema}},
+        content: { 'application/json': { schema: CountSchema } },
       },
     },
   })

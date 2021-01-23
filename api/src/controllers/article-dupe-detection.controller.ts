@@ -1,3 +1,5 @@
+import { authenticate } from '@loopback/authentication';
+
 import {
   Count,
   CountSchema,
@@ -18,7 +20,13 @@ import {
 } from '@loopback/rest';
 import { ArticleSketch } from '../models';
 import { ArticleSketchRepository } from '../repositories';
+import { authorize } from '@loopback/authorization';
+import { Role } from '../models/role.model';
+import { basicAuthorization } from '../services';
 
+
+@authenticate('jwt')
+@authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
 export class ArticleDupeDetectionController {
   constructor(
     @repository(ArticleSketchRepository)

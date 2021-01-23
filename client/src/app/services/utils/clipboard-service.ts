@@ -2,7 +2,7 @@
 import { DOCUMENT } from '@angular/common';
 import { Inject } from '@angular/core';
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 const MAX_LABEL_LENGTH = 30;

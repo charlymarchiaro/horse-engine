@@ -7,7 +7,7 @@ import { pgPost } from './post.component';
   imports: [CommonModule]
 })
 export class pgPostModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<pgPostModule> {
     return {
       ngModule: pgPostModule
     };

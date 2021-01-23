@@ -1,7 +1,7 @@
 @import "core.scss";
 
-$base-img-url: "../../assets/images";
-$assets-url: "../../assets";
+$base-img-url: "/assets/images";
+$assets-url: "/assets";
 
 @import "modules/_layout.scss";
 @import "modules/_sidebar.scss";
@@ -115,8 +115,18 @@ $assets-url: "../../assets";
 }
 
 #sidebar-header {
-    padding: 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
     white-space: nowrap;
+    padding: 0;
+    line-height: 60px;
+    height: 60px;
+
+    .sidebar-header-controls {
+        display: flex;
+        margin-left: 7px;
+    }
 }
 
 .page-sidebar .sidebar-menu .menu-items > li > a > .title {

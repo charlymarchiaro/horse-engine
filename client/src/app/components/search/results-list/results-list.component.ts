@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { PageEvent } from '@angular/material';
+import { PageEvent } from '@angular/material/paginator';
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { BackendService } from '../../../services/backend.service';
 import { SearchService } from '../search.service';
