@@ -30,7 +30,15 @@ export class TokenInterceptor implements HttpInterceptor {
         if (error instanceof HttpErrorResponse && error.status === 401) {
           return this.handle401Error(request, next);
         } else {
-          return throwError(error);
+          // If not logged in, redirect to login on any error
+          if (!this.authService.isLoggedIn()) {
+            this.isRefreshing = false;
+            this.refreshTokenSubject.next(null);
+
+            this.router.navigate(['auth/login']);
+
+            return throwError(error);
+          }
         }
       }));
   }
@@ -49,7 +57,7 @@ export class TokenInterceptor implements HttpInterceptor {
     if (request.url === '/api/auth/refresh') {
       this.authService.logout();
 
-      this.isRefreshing = true;
+      this.isRefreshing = false;
       this.refreshTokenSubject.next(null);
 
       this.router.navigate(['auth/login']);

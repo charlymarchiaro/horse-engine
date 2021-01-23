@@ -3,9 +3,9 @@ import { inject } from '@loopback/core';
 import { model, property, repository } from '@loopback/repository';
 import { get, post, requestBody, HttpErrors, api } from '@loopback/rest';
 import * as _ from 'lodash';
-import { PasswordHasherBindings, TokenServiceBindings, UserServiceBindings } from '../keys';
+import { PasswordHasherBindings, TokenServiceBindings, UserServiceBindings, RefreshTokenServiceBindings } from '../keys';
 import { Credentials, UserRepository } from '../repositories';
-import { basicAuthorization, validateCredentials } from '../services';
+import { basicAuthorization, validateCredentials, RefreshTokenService } from '../services';
 import { BcryptHasher } from '../services/hash-password.service';
 import { JWTService } from '../services/jwt.service';
 import { MyUserService, UserExtProfile } from '../services/user.service';
@@ -14,7 +14,6 @@ import { securityId, UserProfile } from '@loopback/security';
 import { authorize } from '@loopback/authorization';
 import { Role } from '../models';
 import { TokenObject } from '../types';
-import { RefreshtokenService, RefreshTokenServiceBindings } from '@loopback/authentication-jwt';
 
 
 
@@ -43,6 +42,11 @@ export class RefreshResponse {
   @property() refreshToken: string;
 }
 
+@model()
+export class ChangePasswordRequestBody {
+  @property() newPassword: string;
+}
+
 
 @api({ basePath: 'auth' })
 export class UserController {
@@ -52,7 +56,7 @@ export class UserController {
     @inject(PasswordHasherBindings.PASSWORD_HASHER) public hasher: BcryptHasher,
     @inject(UserServiceBindings.USER_SERVICE) public userService: MyUserService,
     @inject(TokenServiceBindings.TOKEN_SERVICE) public jwtService: JWTService,
-    @inject(RefreshTokenServiceBindings.REFRESH_TOKEN_SERVICE) public refreshService: RefreshtokenService,
+    @inject(RefreshTokenServiceBindings.REFRESH_TOKEN_SERVICE) public refreshService: RefreshTokenService,
   ) { }
 
 
@@ -173,6 +177,78 @@ export class UserController {
     @requestBody() refreshGrant: RefreshRequestBody,
   ): Promise<TokenObject> {
     return this.refreshService.refreshToken(refreshGrant.refreshToken);
+  }
+
+
+  @authenticate('jwt')
+  @authorize({ allowedRoles: [], voters: [basicAuthorization] })
+  @post('/logout', {
+    responses: {
+      '200': {
+        description: 'Token',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                status: {
+                  type: 'string'
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  })
+  async logout(
+    @inject(AuthenticationBindings.CURRENT_USER) currentUser: UserProfile,
+  ): Promise<{ status: string }> {
+    const savedUser = await this.userRepository.findById(currentUser[securityId]);
+    await this.refreshService.revokeUserTokens(savedUser);
+    return Promise.resolve({ status: 'success' })
+  }
+
+
+  @authenticate('jwt')
+  @authorize({ allowedRoles: [], voters: [basicAuthorization] })
+  @post('/change-password', {
+    responses: {
+      '200': {
+        description: 'Token',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                status: {
+                  type: 'string'
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  })
+  async changePassword(
+    @requestBody() body: ChangePasswordRequestBody,
+    @inject(AuthenticationBindings.CURRENT_USER) currentUser: UserProfile,
+  ): Promise<{ status: string }> {
+    const savedUser = await this.userRepository.findById(currentUser[securityId]);
+
+    validateCredentials({
+      email: savedUser.email,
+      password: body.newPassword,
+    });
+
+    const passwordHash = await this.hasher.hashPassword(body.newPassword);
+
+    await this.userRepository.updateById(savedUser.id, {
+      password: passwordHash,
+    });
+
+    return Promise.resolve({ status: 'success' })
   }
 
 

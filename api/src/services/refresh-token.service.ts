@@ -9,11 +9,13 @@ import {
   TokenServiceBindings,
   UserServiceBindings,
 } from '../keys';
-import { RefreshToken, RefreshTokenRelations } from '../models';
+import { User, RefreshToken, RefreshTokenRelations } from '../models';
 import { RefreshTokenRepository } from '../repositories';
 import { TokenObject } from '../types';
 import { JWTService } from './jwt.service';
 import { MyUserService } from './user.service';
+import { UserRepository } from '../repositories/user.repository';
+
 const jwt = require('jsonwebtoken');
 const signAsync = promisify(jwt.sign);
 const verifyAsync = promisify(jwt.verify);
@@ -25,6 +27,7 @@ export class RefreshTokenService {
     @inject(RefreshTokenServiceBindings.REFRESH_EXPIRES_IN) private refreshExpiresIn: string,
     @inject(RefreshTokenServiceBindings.REFRESH_ISSUER) private refreshIssure: string,
     @repository(RefreshTokenRepository) public refreshTokenRepository: RefreshTokenRepository,
+    @repository(UserRepository) public userRepository: UserRepository,
     @inject(UserServiceBindings.USER_SERVICE) public userService: MyUserService,
     @inject(TokenServiceBindings.TOKEN_SERVICE) public jwtService: JWTService,
   ) { }
@@ -39,6 +42,10 @@ export class RefreshTokenService {
     const data = {
       token: uuidv4(),
     };
+
+    const user = await this.userRepository.findById(userProfile[securityId]);
+    await this.revokeUserTokens(user);
+
     const refreshToken = await signAsync(data, this.refreshSecret, {
       expiresIn: Number(this.refreshExpiresIn),
       issuer: this.refreshIssure,
@@ -54,7 +61,7 @@ export class RefreshTokenService {
     return result;
   }
 
-  /*
+  /**
    * Refresh the access token bound with the given refresh token.
    */
   async refreshToken(refreshToken: string): Promise<TokenObject> {
@@ -72,6 +79,7 @@ export class RefreshTokenService {
       const userProfile: UserProfile = this.userService.convertToUserProfile(
         user,
       );
+
       // create a JSON Web Token based on the user profile
       const token = await this.jwtService.generateToken(userProfile);
 
@@ -85,7 +93,7 @@ export class RefreshTokenService {
     }
   }
 
-  /*
+  /**
    * [TODO] test and endpoint
    */
   async revokeToken(refreshToken: string) {
@@ -96,6 +104,15 @@ export class RefreshTokenService {
     } catch (e) {
       // ignore
     }
+  }
+
+  /**
+   * Delete all stored tokens of the user 
+   */
+  async revokeUserTokens(user: User) {
+    await this.refreshTokenRepository.deleteAll({
+      userId: user.id
+    });
   }
 
   /**
