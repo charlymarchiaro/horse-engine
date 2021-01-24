@@ -10,10 +10,9 @@ import { CondensedComponent } from './@pages/layouts';
 // App components
 import { UserProfileComponent } from './components/auth/user-profile/user-profile.component';
 import { MainComponent as ScrapingMonitor } from './components/scraping-monitor/main.component';
-import { MainComponent as KeywordSearch } from './components/keyword-search/main.component';
 import { MainComponent as Search } from './components/search/main.component';
 import { MainComponent as Dashboard } from './components/dashboard/main.component';
-import { ArticlePreviewComponent } from './components/scraping-monitor/article-preview/article-preview.component';
+import { ArticlePreviewComponent } from './components/article-preview/article-preview.component';
 
 export const AppRoutes: Routes = [
   {
@@ -29,7 +28,6 @@ export const AppRoutes: Routes = [
       { path: 'dashboard', component: Dashboard },
       { path: 'scraping-monitor', component: ScrapingMonitor },
       { path: 'article-preview/:articleId', component: ArticlePreviewComponent },
-      { path: 'keyword-search', component: KeywordSearch },
       { path: 'search', component: Search },
       { path: '**', redirectTo: 'dashboard' },
     ]

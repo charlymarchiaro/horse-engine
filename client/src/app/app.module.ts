@@ -64,11 +64,11 @@ import { SharedModule as AppSharedModule } from './components/shared/shared.modu
 import { AuthModule } from './components/auth/auth.module';
 import { TokenInterceptor } from './services/interceptors/token.interceptor';
 import { ScrapingMonitorModule } from './components/scraping-monitor/scraping-monitor.module';
-import { KeywordSearchModule } from './components/keyword-search/keyword-search.module';
 import { SearchModule } from './components/search/search.module';
 import { SearchSchemeModule } from './components/search-scheme/search-scheme.module';
 import { DashboardModule } from './components/dashboard/dashboard.module';
 import { ArticleScrapingStatsModule } from './components/article-scraping-stats/article-scraping-stats.module';
+import { ArticlePreviewComponent } from './components/article-preview/article-preview.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -88,7 +88,13 @@ export class AppHammerConfig extends HammerGestureConfig {
   declarations: [
     AppComponent,
     CondensedComponent,
-    SidebarComponent, QuickviewComponent, SearchOverlayComponent, HeaderComponent, HorizontalMenuComponent,
+    SidebarComponent,
+    QuickviewComponent,
+    SearchOverlayComponent,
+    HeaderComponent,
+    HorizontalMenuComponent,
+
+    ArticlePreviewComponent,
   ],
   imports: [
     BrowserModule,
@@ -127,7 +133,6 @@ export class AppHammerConfig extends HammerGestureConfig {
     DirectivesModule,
     AppSharedModule,
     ScrapingMonitorModule,
-    KeywordSearchModule,
     SearchModule,
     SearchSchemeModule,
     DashboardModule,

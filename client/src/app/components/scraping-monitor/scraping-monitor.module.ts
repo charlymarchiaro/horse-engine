@@ -5,7 +5,6 @@ import { JobInfoComponent } from './scrapyd/job-info/job-info.component';
 import { DatabaseQueryResultsComponent } from './scrapyd/database-query-results/database-query-results.component';
 import { MaterialComponentsModule } from '../../material-components.module';
 import { FormsModule } from '@angular/forms';
-import { ArticlePreviewComponent } from './article-preview/article-preview.component';
 import { pgCardModule } from '../../@pages/components/card/card.module';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 
@@ -16,7 +15,6 @@ import { NgxJsonViewerModule } from 'ngx-json-viewer';
     MainComponent,
     JobInfoComponent,
     DatabaseQueryResultsComponent,
-    ArticlePreviewComponent,
   ],
   imports: [
     CommonModule,
