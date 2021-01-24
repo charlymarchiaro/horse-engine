@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Routes, RouterModule } from '@angular/router';
 import { MainComponent } from './main.component';
 import { SearchService } from './search.service';
 import { SearchSchemeModule } from '../search-scheme/search-scheme.module';
@@ -18,9 +19,19 @@ import { DownloadJobsPreviewComponent } from './download-jobs-preview/download-j
 
 
 
+const routes: Routes = [
+  {
+    path: '',
+    component: MainComponent
+  }
+];
+
+
+
 @NgModule({
   declarations: [MainComponent, LauncherComponent, ResultsComponent, ResultsListComponent, DocumentPreviewComponent, DownloadJobsPreviewComponent],
   imports: [
+    RouterModule.forChild(routes),
     CommonModule,
     SharedModule,
     FormsModule,
@@ -30,6 +41,7 @@ import { DownloadJobsPreviewComponent } from './download-jobs-preview/download-j
     DirectivesModule,
   ],
   exports: [
+    RouterModule,
     MainComponent,
   ],
   providers: [

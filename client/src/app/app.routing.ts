@@ -9,9 +9,6 @@ import { CondensedComponent } from './@pages/layouts';
 
 // App components
 import { UserProfileComponent } from './components/auth/user-profile/user-profile.component';
-import { MainComponent as ScrapingMonitor } from './components/scraping-monitor/main.component';
-import { MainComponent as Search } from './components/search/main.component';
-import { MainComponent as Dashboard } from './components/dashboard/main.component';
 import { ArticlePreviewComponent } from './components/article-preview/article-preview.component';
 
 export const AppRoutes: Routes = [
@@ -24,12 +21,31 @@ export const AppRoutes: Routes = [
     component: CondensedComponent,
     canActivate: [AuthGuardService],
     children: [
-      { path: 'user/profile', component: UserProfileComponent },
-      { path: 'dashboard', component: Dashboard },
-      { path: 'scraping-monitor', component: ScrapingMonitor },
-      { path: 'article-preview/:articleId', component: ArticlePreviewComponent },
-      { path: 'search', component: Search },
-      { path: '**', redirectTo: 'dashboard' },
+      {
+        path: 'user/profile',
+        component: UserProfileComponent
+      },
+      {
+        path: 'dashboard',
+        loadChildren: () => import('./components/dashboard/dashboard.module').then(m => m.DashboardModule)
+      },
+      {
+        path: 'scraping-monitor',
+        loadChildren: () => import('./components/scraping-monitor/scraping-monitor.module').then(m => m.ScrapingMonitorModule)
+      },
+      {
+        path: 'article-preview/:articleId',
+        component: ArticlePreviewComponent
+      },
+      {
+        path: 'search',
+        loadChildren: () => import('./components/search/search.module').then(m => m.SearchModule)
+      },
+      {
+        // Redirect
+        path: '**',
+        redirectTo: 'dashboard'
+      },
     ]
   }
 ];
