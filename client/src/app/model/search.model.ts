@@ -14,6 +14,7 @@ export interface ArticleSearchBooleanQueryPayload {
   pidTag: string;
   matchConditions: ArticleMatchConditionSet;
   secondaryMatchConditions: ArticleSecondaryMatchCondition[];
+  titleMatchKeywords: string[];
   dateSpan: DateSpan;
   excludeDuplicates: boolean;
 }

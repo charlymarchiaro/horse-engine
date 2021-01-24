@@ -15,6 +15,29 @@ export class ArticleMatchConditionSet {
   or: ArticleMatchConditionOrGroup[]
 }
 
+// Results stats
+export namespace ArticleBooleanQueryResultsStats {
+
+  @model()
+  export class CategoryStats {
+    @property(String) articleSourceId?: string;
+    @property(Number) matchCount: number;
+    @property(Number) titleMatchCount: number;
+  }
+
+  @model()
+  export class DailyStats {
+    @property(String) date: string;
+    @property.array(CategoryStats) articleSources: CategoryStats[];
+    @property(CategoryStats) total: CategoryStats;
+  }
+
+  @model()
+  export class Stats {
+    @property.array(DailyStats) dates: DailyStats[];
+  }
+}
+
 
 @model()
 export class ArticleBooleanQuery extends Model {
@@ -31,6 +54,9 @@ export class ArticleBooleanQuery extends Model {
 
   @property.array(ArticleSecondaryMatchCondition)
   secondaryMatchConditions: ArticleSecondaryMatchCondition[];
+
+  @property.array(String)
+  titleMatchKeywords: string[];
 
   @property(SearchDateSpan)
   dateSpan: SearchDateSpan;

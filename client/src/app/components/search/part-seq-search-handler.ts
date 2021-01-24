@@ -59,6 +59,7 @@ export class PartSeqSearchHandler {
             pidTag,
             matchConditions: this.scheme.scheme.matchConditions,
             secondaryMatchConditions: this.scheme.scheme.secondaryMatchConditions,
+            titleMatchKeywords: this.scheme.scheme.titleMatchKeywords,
             dateSpan,
             excludeDuplicates,
           }).toPromise();
