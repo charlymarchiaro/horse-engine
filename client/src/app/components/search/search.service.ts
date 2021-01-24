@@ -1,6 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { BackendService } from '../../services/backend.service';
-import { DateSpan } from '../keyword-search/model';
+import { DateSpan } from '../../model/search.model';
 import { SearchScheme } from '../../model/search-scheme.model';
 import { SearchState, SearchResults, DEFAULT_DAYS_PER_PART, SearchResultsPart, ResultInfo, ResultStatus, TimeElapsedInfo, SearchParams } from '../../model/search.model';
 import { BehaviorSubject, Subscription } from 'rxjs';

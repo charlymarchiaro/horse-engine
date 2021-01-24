@@ -1,5 +1,4 @@
 import { ArticleMatchConditionSet, ArticleSecondaryMatchCondition, SearchSchemeKind, SearchScheme, ArticleSearchSchemeImpl } from './search-scheme.model';
-import { DateSpan } from '../components/keyword-search/model';
 import { BehaviorSubject } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { Article } from './article.model';
@@ -8,6 +7,12 @@ import { replaceAll } from '../services/utils/utils';
 
 export const DEFAULT_DAYS_PER_PART = 7;
 export const PART_SEARCH_NUMBER_OF_TRIES = 3;
+
+
+export interface DateSpan {
+  fromDateIncl: Date;
+  toDateIncl: Date;
+}
 
 
 export interface ArticleSearchBooleanQueryPayload {

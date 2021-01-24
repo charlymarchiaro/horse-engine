@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { JobsListInfo, JobScheduleInfo, SpidersListInfo, ScrapydNodeListInfo } from '../model/scrapyd.model';
-import { ArticleFilteringScheme, DateSpan, getArticleFilteringSchemeWhereCondition } from '../components/keyword-search/model';
-
 import { ArticleSpiderResponse, ArticleSpider, ArticleScrapingStatsFullResponse, ArticleScrapingStatsFull, ArticleSourceResponse, ArticleSource, ArticleSummaryResponse, ArticleSummary } from '../model/article.model';
 import { ArticleResponse, Article } from '../model/article.model';
 import { SearchScheme, SearchSchemeKind, SearchSchemePayload } from '../model/search-scheme.model';
@@ -148,45 +146,6 @@ export class BackendService {
     return this.http.get<ArticleSummaryResponse[]>(
       '/api/last-scraped-articles', { params }
     ).map(r => r.map(i => new ArticleSummary(i)));
-  }
-
-
-  // Keyword search
-  public searchArticles(scheme: ArticleFilteringScheme, dateSpan: DateSpan) {
-
-    // Copy the object
-    const startDate = new Date(dateSpan.fromDateIncl);
-    startDate.setHours(0, 0, 0, 0);
-
-    // Copy the object
-    const endDate = new Date(dateSpan.toDateIncl);
-    endDate.setHours(0, 0, 0, 0);
-    endDate.setDate(endDate.getDate() + 1);
-
-    const schemeWhereConditions = getArticleFilteringSchemeWhereCondition(scheme);
-
-    const params = {
-      filter: JSON.stringify({
-        order: [
-          'lastUpdated'
-        ],
-        where: {
-          and: [
-            { lastUpdated: { gt: startDate } },
-            { lastUpdated: { lt: endDate } },
-            schemeWhereConditions
-          ]
-        },
-        include: [
-          { relation: 'articleSpider' },
-          { relation: 'articleSource' }
-        ]
-      })
-    };
-
-    return this.http.get<ArticleResponse[]>(
-      '/api/articles', { params },
-    ).map(r => r.map(i => new Article(i)));
   }
 
 

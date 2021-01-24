@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, OnChanges, SimpleChanges, Input, Output, EventEmitter } from '@angular/core';
 import { SearchScheme } from '../../../model/search-scheme.model';
-import { DateSpan } from '../../keyword-search/model';
+import { DateSpan } from '../../../model/search.model';
 import { getDatePart, addDays } from '../../../services/utils/utils';
 import { SearchService } from '../search.service';
 import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';

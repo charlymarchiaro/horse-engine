@@ -1,5 +1,5 @@
-import { SearchScheme } from '../../model/search-scheme.model';
-import { DateSpan } from '../keyword-search/model';
+import { SearchScheme, } from '../../model/search-scheme.model';
+import { DateSpan } from '../../model/search.model';
 import { BackendService } from '../../services/backend.service';
 import { EventEmitter } from '@angular/core';
 import { generatePidTag } from '../../services/utils/utils';
