@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators, FormGroupDirective, NgForm, ValidationErrors } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService, User } from '../../../services/auth/auth.service';
 import { generateAvatarImageUrl } from '../../../services/utils/user-avatar-generator';
@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs';
 
 // custom validator to check that two fields match
 export function MustMatch(controlName: string, matchingControlName: string) {
-  return (formGroup: FormGroup) => {
+  return (formGroup: FormGroup): null | ValidationErrors => {
     const control = formGroup.controls[controlName];
     const matchingControl = formGroup.controls[matchingControlName];
 
