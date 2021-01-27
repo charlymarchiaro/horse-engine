@@ -1,0 +1,130 @@
+<pgcard
+  [ShowMessage]="false"
+  [Close]="false"
+  [Maximize]="false"
+  [Refresh]="false"
+  [Toggle]="false">
+  <ng-template #CardTitle>Results stats</ng-template>
+  <div id="content">
+    <div
+      id="chart"
+      [chart]="chart"></div>
+
+    <!-- Series aggregation -->
+    <div id="control-panel">
+      <div class="dropdown-button">
+        <mat-label>Series aggregation:</mat-label>
+        <button
+          mat-button
+          [matMenuTriggerFor]="seriesAggrMenu">
+          <strong>{{selectedSeriesAggr.label}}</strong>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+      </div>
+      <mat-menu
+        #seriesAggrMenu="matMenu"
+        class="dropdown-mat-menu">
+        <button
+          mat-menu-item
+          *ngFor="let choice of seriesAggrChoices"
+          (click)="onSeriesAggrSelect(choice)">
+          {{choice.label}}
+        </button>
+      </mat-menu>
+
+      <!-- Time aggregation -->
+      <div class="dropdown-button">
+        <mat-label>Time aggregation:</mat-label>
+        <button
+          mat-button
+          [matMenuTriggerFor]="timeAggrMenu">
+          <strong>{{selectedTimeAggr.label}}</strong>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+      </div>
+      <mat-menu
+        #timeAggrMenu="matMenu"
+        class="dropdown-mat-menu">
+        <button
+          mat-menu-item
+          *ngFor="let choice of timeAggrChoices"
+          (click)="onTimeAggrSelect(choice)">
+          {{choice.label}}
+        </button>
+      </mat-menu>
+
+      <!-- Summary -->
+      <div id="summary">
+        <h2>Summary</h2>
+        <hr>
+        <div class="field">
+          <div class="field-label">Results:</div>
+          {{summary.resultsCount}}
+        </div>
+        <div class="field">
+          <div class="field-label">Title mentions:</div>
+          {{summary.titleMentionsCount}}
+        </div>
+      </div>
+
+      <!-- Report -->
+      <div id="report">
+        <h2>Report</h2>
+        <hr>
+
+        <div class="body">
+          <div class="column-1">
+            <mat-label>Series aggregation:</mat-label>
+            <mat-checkbox
+              color="primary"
+              [disabled]="true"
+              [(ngModel)]="params.reportOptions.seriesAggrTotal"
+              (change)="onReportParamChange()">
+              Total
+            </mat-checkbox>
+            <mat-checkbox
+              color="primary"
+              [(ngModel)]="params.reportOptions.seriesAggrPerSource"
+              (change)="onReportParamChange()">
+              Per source
+            </mat-checkbox>
+
+            <div class="separator"></div>
+
+            <mat-label>Time aggregation:</mat-label>
+            <mat-checkbox
+              color="primary"
+              [(ngModel)]="params.reportOptions.timeAggrDay"
+              (change)="onReportParamChange()">
+              Day
+            </mat-checkbox>
+            <mat-checkbox
+              color="primary"
+              [(ngModel)]="params.reportOptions.timeAggrWeek"
+              (change)="onReportParamChange()">
+              Week
+            </mat-checkbox>
+            <mat-checkbox
+              color="primary"
+              [(ngModel)]="params.reportOptions.timeAggrMonth"
+              (change)="onReportParamChange()">
+              Month
+            </mat-checkbox>
+          </div>
+
+          <div class="column-2">
+            <button
+              class="export-to-excel-button"
+              mat-icon-button
+              (click)="onExportToExcelButtonClick()"
+              [disabled]="!canGenerateReport">
+              <mat-icon matTooltip="Export to Excel">library_books</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</pgcard>

@@ -5,7 +5,7 @@ import { BrowserComponent } from '../search-scheme/browser/browser.component';
 import { EditorComponent } from '../search-scheme/editor/editor.component';
 
 @Component({
-  selector: 'app-main',
+  selector: 'app-search',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })

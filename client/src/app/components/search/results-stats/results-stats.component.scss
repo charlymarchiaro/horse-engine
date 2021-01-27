@@ -1,0 +1,125 @@
+@import "./abstracts/variables";
+
+#content {
+    display: flex;
+    padding: 0 0 0 10px;
+
+    hr {
+        margin: 0 0 3px;
+    }
+
+    #chart {
+        width: calc(100vw - 450px);
+        height: 450px;
+
+        ::ng-deep text {
+            font-family: $base-font-family;
+        }
+    }
+
+    #control-panel {
+        display: flex;
+        flex-direction: column;
+        margin-left: 15px;
+
+        .dropdown-button {
+            display: flex;
+            align-items: center;
+
+            button {
+                height: 28px;
+                line-height: 28px;
+            }
+
+            mat-label {
+                width: 120px;
+                font-size: 12px;
+            }
+
+            button {
+                width: 100px;
+                font-size: 12px;
+                text-align: left;
+            }
+        }
+
+        ::ng-deep h2 {
+            font-size: 18px;
+            margin: 10px 0 0px;
+        }
+
+        ::ng-deep .field {
+            display: flex;
+            font-size: 13px;
+            line-height: 30px;
+            padding: 0 1px;
+
+            .field-label {
+                width: 115px;
+                font-weight: bold;
+            }
+        }
+
+        ::ng-deep mat-label {
+            font-size: 12px;
+        }
+
+        ::ng-deep .mat-checkbox {
+            line-height: 20px;
+            height: 20px;
+            align-items: center;
+            margin-left: 10px;
+
+            label {
+                font-size: 12px;
+            }
+        }
+
+        #summary {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #report {
+            display: flex;
+            flex-direction: column;
+
+            .body {
+                display: flex;
+
+                .column-1 {
+                    display: flex;
+                    flex-direction: column;
+                    flex-grow: 1;
+                    padding: 0 0 10px;
+
+                    mat-label {
+                        margin: 7px 0 1px;
+                    }
+
+                    .separator {
+                        height: 6px;
+                    }
+                }
+
+                .column-2 {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-end;
+                    padding: 0px 10px;
+
+                    .export-to-excel-button {
+                    }
+                }
+            }
+        }
+    }
+}
+
+::ng-deep .dropdown-mat-menu {
+    button {
+        line-height: 35px;
+        height: 35px;
+        font-size: 12px;
+    }
+}

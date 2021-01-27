@@ -68,6 +68,7 @@ export class PartSeqSearchHandler {
             partIndex,
             dateSpan: result.dateSpan,
             itemIds: result.articleIds,
+            stats: result.stats,
           });
 
           // Success --> search next part

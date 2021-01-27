@@ -21,6 +21,7 @@ export class SearchService {
 
   private searchParamsSubject = new BehaviorSubject<SearchParams>(null);
   public searchParams$ = this.searchParamsSubject.asObservable();
+  public get searchParams(): SearchParams { return this.searchParamsSubject.getValue(); }
 
   public searchResults = new SearchResults();
 
@@ -124,7 +125,11 @@ export class SearchService {
 
     this.handlerSubscription.add(
       this.handler.partRetrieved.subscribe(
-        (part: SearchResultsPart) => this.searchResults.addPart(part.dateSpan, part.itemIds)
+        (part: SearchResultsPart) => this.searchResults.addPart(
+          part.dateSpan,
+          part.itemIds,
+          part.stats,
+        )
       )
     );
 

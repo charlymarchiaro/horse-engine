@@ -11,7 +11,7 @@ export const NUMBER_OF_DISPLAYED_ARTICLES = 10;
 
 
 @Component({
-  selector: 'app-main',
+  selector: 'app-scraping-monitor',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })

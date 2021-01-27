@@ -27,11 +27,15 @@ export const AppRoutes: Routes = [
       },
       {
         path: 'dashboard',
-        loadChildren: () => import('./components/dashboard/dashboard.module').then(m => m.DashboardModule)
+        loadChildren: () => import(
+          './components/dashboard/dashboard.module'
+        ).then(m => m.DashboardModule)
       },
       {
         path: 'scraping-monitor',
-        loadChildren: () => import('./components/scraping-monitor/scraping-monitor.module').then(m => m.ScrapingMonitorModule)
+        loadChildren: () => import(
+          './components/scraping-monitor/scraping-monitor.module'
+        ).then(m => m.ScrapingMonitorModule)
       },
       {
         path: 'article-preview/:articleId',
@@ -39,12 +43,15 @@ export const AppRoutes: Routes = [
       },
       {
         path: 'search',
-        loadChildren: () => import('./components/search/search.module').then(m => m.SearchModule)
+        loadChildren: () => import(
+          './components/search/search.module'
+        ).then(m => m.SearchModule)
       },
       {
         // Redirect
         path: '**',
-        redirectTo: 'dashboard'
+        redirectTo: 'dashboard',
+        pathMatch: 'full',
       },
     ]
   }

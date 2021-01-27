@@ -4,7 +4,7 @@ $main-colors: (
   "foreground": #000,
   "grayed": #ccc,
   "default-text-color": rgba(0, 0, 0, 0.87),
-  "invalid-text-color": #da0606
+  "invalid-text-color": #da0606,
 );
 $main-sidebar-colors: (
   "background-normal": #2a2f3a,
@@ -14,16 +14,16 @@ $main-sidebar-colors: (
   "foreground-normal": #a6a8ad,
   "foreground-checked": #fefefe,
   "foreground-disabled": black,
-  "foreground-hover": #fefefe
+  "foreground-hover": #fefefe,
 );
 $main-map-sidenav-colors: (
   "header-background": #0a84db,
   "header-text": #ffffff,
   "tab-text": rgba(0, 0, 0, 0.87),
-  "data-field-text": rgba(0, 0, 0, 0.77)
+  "data-field-text": rgba(0, 0, 0, 0.77),
 );
 $site-data-section-colors: (
-  "tab-text": rgba(0, 0, 0, 0.87)
+  "tab-text": rgba(0, 0, 0, 0.87),
 );
 
 // === Animations ===
@@ -37,51 +37,15 @@ $site-data-section-colors: (
   }
 }
 
-// === Lengths ===
-// Main sidebar
-$main-sidebar-width: 53px;
-$main-sidebar-item-height: 48px;
-// App content
-$app-content-width: calc(100vw - #{$main-sidebar-width});
-// Auth
-$auth-section-left-padding-width: 68px;
-// Map search toolbar
-$map-search-toolbar-left-margin: 15px;
-$map-search-toolbar-top-margin: 8px;
-// Map filter toolbar
-$map-filter-toolbar-width: 180px;
-$map-filter-toolbar-height: 218px;
-$map-filter-toolbar-restore-button-width: 26px;
-$map-filter-toolbar-restore-button-height: 26px;
-$map-filter-toolbar-right-margin: 6px;
-$map-filter-toolbar-bottom-margin: 128px;
-// Map type control
-$map-type-control-width: 70px;
-$map-type-control-height: 25px;
-$map-type-control-right-margin: 40px;
-$map-type-control-bottom-margin: 20px;
-// User profile
-$map-user-profile-width: 35px;
-$map-user-profile-height: 45px;
-$map-user-profile-right-margin: 8px;
-$map-user-profile-top-margin: 10px;
-// Map main sidenav
-$map-main-sidenav-width: 314px;
-$map-main-sidenav-top-padding: 60px;
-// Site info
-$site-info-summary-height: 60px;
-// Site data section
-$site-data-section-header-height: 60px;
-$site-data-section-left-padding-width: 68px;
-// Reports section
-$reports-section-header-height: 60px;
-$reports-section-left-padding-width: 68px;
-// Aggr kpi section
-$aggr-kpi-section-header-height: 60px;
-$aggr-kpi-section-left-padding-width: 68px;
-// Tools section
-$tools-section-header-height: 60px;
-$tools-section-left-padding-width: 68px;
-// Shared table group manager tool
-$shared-table-group-manager-tool-header-height: 60px;
-$shared-table-group-manager-tool-left-padding-width: 68px;
+// ==================== FONTS ========================
+$base-font-family: "Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
+  "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+$interface-font-family: "Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+  "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+$secondary-font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+  "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+$force-mac-font-family: -apple-system, BlinkMacSystemFont, "Inter UI", "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+  "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+
+$body-font-family: $base-font-family;
+$body-font-size: 13px;

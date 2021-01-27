@@ -56,6 +56,9 @@ import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 // NgxJsonViewer
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 
+// ChartModule
+import { ChartModule } from 'angular-highcharts';
+
 // App modules
 import { AppServicesModule } from './services/app-services.module';
 import { DirectivesModule } from './directives/directives.module';
@@ -128,15 +131,12 @@ export class AppHammerConfig extends HammerGestureConfig {
 
     NgxJsonViewerModule,
 
+    ChartModule,
+
     // App modules
     AppServicesModule,
     DirectivesModule,
     AppSharedModule,
-    ScrapingMonitorModule,
-    SearchModule,
-    SearchSchemeModule,
-    DashboardModule,
-    ArticleScrapingStatsModule,
   ],
   providers: [
     {
