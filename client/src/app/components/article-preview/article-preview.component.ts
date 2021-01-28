@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Article } from '../../../model/article.model';
-import { BackendService } from '../../../services/backend.service';
+import { Article } from '../../model/article.model';
+import { BackendService } from '../../services/backend.service';
 
 
 

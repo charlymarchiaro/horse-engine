@@ -1,19 +1,59 @@
 import { ArticleMatchConditionSet, ArticleSecondaryMatchCondition, SearchSchemeKind, SearchScheme, ArticleSearchSchemeImpl } from './search-scheme.model';
-import { DateSpan } from '../components/keyword-search/model';
 import { BehaviorSubject } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { Article } from './article.model';
-import { replaceAll } from '../services/utils/utils';
+import { addDays, getDateDiffDays, replaceAll } from '../services/utils/utils';
 
 
 export const DEFAULT_DAYS_PER_PART = 7;
 export const PART_SEARCH_NUMBER_OF_TRIES = 3;
 
 
+export interface DateSpan {
+  fromDateIncl: Date;
+  toDateIncl: Date;
+}
+
+
+export const getDateSpanDates = (dateSpan: DateSpan): Date[] => {
+  const date1 = dateSpan.fromDateIncl;
+  const date2 = dateSpan.toDateIncl;
+
+  const dateDiff = getDateDiffDays(date1, date2);
+  const dates: Date[] = [];
+
+  for (let i = 0; i < dateDiff + 1; i++) {
+    dates.push(addDays(date1, i));
+  }
+  return dates;
+};
+
+
+
+export namespace ArticleBooleanQueryResultsStats {
+  export class CategoryStats {
+    articleSourceId?: string;
+    matchCount: number;
+    titleMatchCount: number;
+  }
+
+  export class DailyStats {
+    date: string;
+    articleSources: CategoryStats[];
+    total: CategoryStats;
+  }
+
+  export class Stats {
+    dates: DailyStats[];
+  }
+}
+
+
 export interface ArticleSearchBooleanQueryPayload {
   pidTag: string;
   matchConditions: ArticleMatchConditionSet;
   secondaryMatchConditions: ArticleSecondaryMatchCondition[];
+  titleMatchKeywords: string[];
   dateSpan: DateSpan;
   excludeDuplicates: boolean;
 }
@@ -25,6 +65,7 @@ export interface ArticleSearchBooleanQueryResponse {
     toDateIncl: string;
   };
   articleIds: string[];
+  stats: ArticleBooleanQueryResultsStats.Stats;
 }
 
 
@@ -32,6 +73,7 @@ export class ArticleSearchBooleanQueryResult {
   pidTag: string;
   dateSpan: DateSpan;
   articleIds: string[];
+  stats: ArticleBooleanQueryResultsStats.Stats;
 
   constructor(r: ArticleSearchBooleanQueryResponse) {
     this.pidTag = r.pidTag;
@@ -40,6 +82,7 @@ export class ArticleSearchBooleanQueryResult {
       toDateIncl: new Date(r.dateSpan.toDateIncl),
     };
     this.articleIds = r.articleIds;
+    this.stats = r.stats;
   }
 }
 
@@ -97,6 +140,7 @@ export interface SearchResultsPart {
   partIndex: number;
   dateSpan: DateSpan;
   itemIds: string[];
+  stats: ArticleBooleanQueryResultsStats.Stats;
 }
 
 
@@ -125,7 +169,10 @@ export class SearchResults {
   public kind$ = this.kindSubject.asObservable();
 
   private partsSubject = new BehaviorSubject<SearchResultsPart[]>([]);
-  public part$ = this.partsSubject.asObservable();
+  public parts$ = this.partsSubject.asObservable();
+
+  private newPartSubject = new BehaviorSubject<SearchResultsPart>(null);
+  public newPart$ = this.newPartSubject.asObservable();
 
   private daysPerPartSubject = new BehaviorSubject<number>(null);
   public daysPerPart$ = this.daysPerPartSubject.asObservable();
@@ -157,6 +204,14 @@ export class SearchResults {
     );
   }
 
+  get stats(): ArticleBooleanQueryResultsStats.Stats {
+    return {
+      dates: this.partsSubject.getValue()
+        .map(p => p.stats.dates)
+        .reduce((list, part) => [...list, ...part], [])
+    };
+  }
+
   get progressPercent() { return this.progressPercentSubject.getValue(); }
 
 
@@ -168,6 +223,7 @@ export class SearchResults {
     this.kindSubject.next(kind);
     this.daysPerPartSubject.next(daysPerPart);
     this.partsSubject.next([]);
+    this.newPartSubject.next(null);
     this.totalPartsCountSubject.next(totalPartsCount);
     this.progressPercentSubject.next(0);
   }
@@ -176,20 +232,33 @@ export class SearchResults {
     this.kindSubject.next(null);
     this.daysPerPartSubject.next(null);
     this.partsSubject.next([]);
+    this.newPartSubject.next(null);
     this.totalPartsCountSubject.next(0);
     this.progressPercentSubject.next(0);
     this.totalItemsCountSubject.next(0);
   }
 
-  public addPart(dateSpan: DateSpan, itemIds: string[]) {
+  public addPart(
+    dateSpan: DateSpan,
+    itemIds: string[],
+    stats: ArticleBooleanQueryResultsStats.Stats
+  ) {
     this.partsSubject.next([
       ...this.partsSubject.getValue(),
       ({
         partIndex: this.retrievedPartsCount,
         dateSpan,
         itemIds,
+        stats,
       })
     ]);
+
+    this.newPartSubject.next({
+      partIndex: this.retrievedPartsCount,
+      dateSpan,
+      itemIds,
+      stats,
+    });
 
     const totalPartsCount = this.totalPartsCountSubject.getValue();
     this.totalItemsCountSubject.next(this.totalItemsCount);

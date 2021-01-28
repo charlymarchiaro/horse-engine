@@ -210,17 +210,20 @@ export class DownloadJobHandler {
     this.excelExport.export({
       moduleLabel: 'Search results export',
       fileName,
-      data: [{
+      sheets: [{
         name: 'Results',
         headerData: {
-          'Esquema de búsqueda': this._params.searchParams.scheme.name,
-          'Palabras clave': titleMatchKeywordsStr,
-          'Período': period,
-          'Universo': ''
+          'Esquema de búsqueda:': this._params.searchParams.scheme.name,
+          'Palabras clave:': titleMatchKeywordsStr,
+          'Período:': period,
+          'Universo:': ''
         },
-        bodyData: data
+        colsConfig,
+        bodyData: data,
+        settings: {
+          enableFilter: true,
+        }
       }],
-      colsConfig
     });
   }
 

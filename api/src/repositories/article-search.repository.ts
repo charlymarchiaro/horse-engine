@@ -1,5 +1,5 @@
 import { DefaultTransactionalRepository } from '@loopback/repository';
-import { ArticleBooleanQuery, ArticleSearchResultInfo, ArticleSearchResultInfoRelations } from '../models';
+import { ArticleBooleanQuery, ArticleBooleanQueryResultsStats as ResultsStats, ArticleSearchResultInfo, ArticleSearchResultInfoRelations } from '../models';
 import { DbDataSource } from '../datasources';
 import { inject } from '@loopback/core';
 import { ArticleMatchCondition, ArticlePart, MatchCondition } from '../models/article-match-condition.model';
@@ -7,6 +7,16 @@ import { ArticleSecondaryMatchCondition, Condition } from '../models/article-sec
 import { getYYYYMMDD, getDateDiffDays, addDays } from '../utils';
 import { ArticleSearchResponse, CancelSearchRequest, CancelSearchResponse } from '../controllers/article-search.controller';
 import { SearchDateSpan } from '../models/search-date-span.model';
+
+
+
+interface Row {
+  article_id: string;
+  article_source_id: string;
+  title: string;
+  date: Date;
+}
+
 
 export class ArticleSearchRepository extends DefaultTransactionalRepository<
   ArticleSearchResultInfo,
@@ -82,7 +92,10 @@ export class ArticleSearchRepository extends DefaultTransactionalRepository<
       `
       WITH pid_tag (pid_tag) AS (values (${query.pidTag}))
       SELECT
-          article.id AS article_id
+          article.id AS article_id,
+          article.article_source_id AS article_source_id,
+          article.title AS title,
+          article.date AS date
       FROM
           scraper.article AS article
           INNER JOIN scraper.article_source AS source
@@ -98,7 +111,7 @@ export class ArticleSearchRepository extends DefaultTransactionalRepository<
           article.last_updated
       `;
 
-    const result = await this.execute(sql, []) as { article_id: string }[];
+    const rows = await this.execute(sql, []) as Row[];
 
     return {
       pidTag: query.pidTag,
@@ -106,7 +119,8 @@ export class ArticleSearchRepository extends DefaultTransactionalRepository<
         fromDateIncl: fromDate,
         toDateIncl: toDate,
       }),
-      articleIds: result.map(i => i.article_id)
+      articleIds: rows.map(i => i.article_id),
+      stats: this.calcStats(rows, query.titleMatchKeywords),
     };
   }
 
@@ -222,5 +236,106 @@ export class ArticleSearchRepository extends DefaultTransactionalRepository<
       default:
         throw 'Invalid condition: ' + condition.condition;
     }
+  }
+
+
+  private calcStats(rows: Row[], titleMatchKeywords: string[]): ResultsStats.Stats {
+
+    const dict: {
+      [date: string]: {
+        articleSources: {
+          [articleSourceId: string]: {
+            matchCount: number;
+            titleMatchCount: number;
+          }
+        },
+        total: {
+          matchCount: number;
+          titleMatchCount: number;
+        }
+      }
+    } = {};
+
+    for (const row of rows) {
+      const articleSourceId = row.article_source_id;
+      const date = row.date.toISOString().split('T')[0];
+      const titleMatch = this.checkTitleMatch(row.title, titleMatchKeywords);
+
+      // Date not listed --> create key
+      if (date in dict === false) {
+        dict[date] = {
+          articleSources: {
+            [articleSourceId]: {
+              matchCount: 0,
+              titleMatchCount: 0,
+            }
+          },
+          total: {
+            matchCount: 0,
+            titleMatchCount: 0,
+          }
+        }
+      }
+
+      // Article source id not listed --> create key
+      if (articleSourceId in dict[date].articleSources === false) {
+        dict[date].articleSources[articleSourceId] = {
+          matchCount: 0,
+          titleMatchCount: 0,
+        }
+      }
+
+      dict[date].articleSources[articleSourceId].matchCount++;
+      dict[date].total.matchCount++;
+
+      if (titleMatch) {
+        dict[date].articleSources[articleSourceId].titleMatchCount++;
+        dict[date].total.titleMatchCount++;
+      }
+    }
+
+    // Reduce the dict removing the keys
+    return {
+      dates: Object.keys(dict).reduce((dates, date) => {
+
+        const articleSources: ResultsStats.CategoryStats[]
+          = Object.keys(dict[date].articleSources)
+            .reduce((articleSources, articleSourceId) => {
+
+              const stats = dict[date].articleSources[articleSourceId];
+
+              const categStats: ResultsStats.CategoryStats = {
+                articleSourceId,
+                matchCount: stats.matchCount,
+                titleMatchCount: stats.titleMatchCount,
+              };
+
+              articleSources.push(categStats);
+              return articleSources;
+            },
+              [] as ResultsStats.CategoryStats[]
+            );
+
+        const dailyStats: ResultsStats.DailyStats = {
+          date,
+          articleSources,
+          total: dict[date].total
+        };
+        dates.push(dailyStats);
+        return dates;
+      },
+        [] as ResultsStats.DailyStats[]
+      )
+    }
+  }
+
+
+  private checkTitleMatch(title: string, titleMatchKeywords: string[]): boolean {
+    for (const kw of titleMatchKeywords) {
+      if (title.includes(kw)) {
+        return true;
+      }
+    }
+    return false;
   }
 }

@@ -35,6 +35,10 @@ export function getYYYYMMDD(date: Date) {
 }
 
 
+export function getISOStringDatePart(date: Date) {
+  return date.toISOString().split('T')[0];
+}
+
 
 export function secondsToHMS(secs: number) {
   const hours = Math.floor(secs / 3600);

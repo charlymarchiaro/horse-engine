@@ -1,5 +1,5 @@
-import { SearchScheme } from '../../model/search-scheme.model';
-import { DateSpan } from '../keyword-search/model';
+import { SearchScheme, } from '../../model/search-scheme.model';
+import { DateSpan } from '../../model/search.model';
 import { BackendService } from '../../services/backend.service';
 import { EventEmitter } from '@angular/core';
 import { generatePidTag } from '../../services/utils/utils';
@@ -59,6 +59,7 @@ export class PartSeqSearchHandler {
             pidTag,
             matchConditions: this.scheme.scheme.matchConditions,
             secondaryMatchConditions: this.scheme.scheme.secondaryMatchConditions,
+            titleMatchKeywords: this.scheme.scheme.titleMatchKeywords,
             dateSpan,
             excludeDuplicates,
           }).toPromise();
@@ -67,6 +68,7 @@ export class PartSeqSearchHandler {
             partIndex,
             dateSpan: result.dateSpan,
             itemIds: result.articleIds,
+            stats: result.stats,
           });
 
           // Success --> search next part

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Routes, RouterModule } from '@angular/router';
 import { MainComponent } from './main.component';
 import { SearchService } from './search.service';
 import { SearchSchemeModule } from '../search-scheme/search-scheme.module';
@@ -15,12 +16,24 @@ import { DirectivesModule } from '../../directives/directives.module';
 import { SharedModule } from '../shared/shared.module';
 import { ResultsDownloaderService } from './results-downloader/results-downloader.service';
 import { DownloadJobsPreviewComponent } from './download-jobs-preview/download-jobs-preview.component';
+import { ResultsStatsComponent } from './results-stats/results-stats.component';
+import { ChartModule } from 'angular-highcharts';
+import { ResultsStatsService } from './results-stats/results-stats.service';
+
+
+const routes: Routes = [
+  {
+    path: '',
+    component: MainComponent
+  }
+];
 
 
 
 @NgModule({
-  declarations: [MainComponent, LauncherComponent, ResultsComponent, ResultsListComponent, DocumentPreviewComponent, DownloadJobsPreviewComponent],
+  declarations: [MainComponent, LauncherComponent, ResultsComponent, ResultsListComponent, DocumentPreviewComponent, DownloadJobsPreviewComponent, ResultsStatsComponent],
   imports: [
+    RouterModule.forChild(routes),
     CommonModule,
     SharedModule,
     FormsModule,
@@ -28,14 +41,17 @@ import { DownloadJobsPreviewComponent } from './download-jobs-preview/download-j
     pgCardModule,
     SearchSchemeModule,
     DirectivesModule,
+    ChartModule,
   ],
   exports: [
+    RouterModule,
     MainComponent,
   ],
   providers: [
     SearchService,
     ResultsListService,
     ResultsDownloaderService,
+    ResultsStatsService,
   ]
 })
 export class SearchModule { }

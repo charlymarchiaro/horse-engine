@@ -11,6 +11,7 @@ import { AppConstants } from '../keys';
 import { authorize } from '@loopback/authorization';
 import { Role } from '../models/role.model';
 import { basicAuthorization } from '../services';
+import { ArticleBooleanQueryResultsStats as ResultsStats } from '../models/article-boolean-query.model';
 
 
 @model()
@@ -18,6 +19,7 @@ export class ArticleSearchResponse {
   @property(String) pidTag: string;
   @property(SearchDateSpan) dateSpan: SearchDateSpan;
   @property.array(String) articleIds: string[];
+  @property(ResultsStats.Stats) stats: ResultsStats.Stats;
 }
 
 
