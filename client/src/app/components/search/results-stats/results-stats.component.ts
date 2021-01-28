@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { Chart } from 'angular-highcharts';
 import { Params, DropdownItem, SeriesAggr, TimeAggr, TIME_AGGR_CHOICES, SERIES_AGGR_CHOICES, ResultsStatsService, ChartData, CHART_COLORS, Summary } from './results-stats.service';
 import { SeriesOptionsType } from 'highcharts';
+import { formatNumber, formatPercent } from '@angular/common';
 
 
 
@@ -19,6 +20,7 @@ export class ResultsStatsComponent implements OnInit, OnDestroy {
   public chart: Chart;
 
   public summary: Summary;
+  public ratio: string;
 
   public seriesAggrChoices = SERIES_AGGR_CHOICES;
   public selectedSeriesAggr: DropdownItem<SeriesAggr>;
@@ -47,7 +49,16 @@ export class ResultsStatsComponent implements OnInit, OnDestroy {
     );
     this.subscription.add(
       resultsStatsService.summary$.subscribe(
-        s => this.summary = s
+        s => {
+          this.summary = s;
+          this.ratio = s.resultsCount > 0
+            ? formatNumber(
+              100 * s.titleMentionsCount / s.resultsCount,
+              'en-US',
+              '1.2-2'
+            ) + '%'
+            : '—';
+        }
       )
     );
     this.subscription.add(

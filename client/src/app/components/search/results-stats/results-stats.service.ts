@@ -9,7 +9,8 @@ import { ArticleSource } from 'app/model/article.model';
 import { DateTime } from 'luxon';
 import pSBC from 'shade-blend-color';
 import { SearchState } from '../../../model/search.model';
-import { ExcelExportService, SheetData } from '../../../services/utils/excel-export.service';
+import { ExcelExportService, SheetData, ColConfig } from '../../../services/utils/excel-export.service';
+import { DatePipe, formatNumber } from '@angular/common';
 
 
 
@@ -48,10 +49,12 @@ export interface Params {
 
 
 export interface ChartSeriesData {
+  seriesBaseName: string;
   label: string;
   data: number[];
   colorIndex: number;
   dashStyle: DashStyleValue;
+  seriesType: 'results' | 'titleMentions' | 'ratioPerc';
 }
 
 
@@ -148,6 +151,7 @@ export class ResultsStatsService {
     private searchService: SearchService,
     private backendService: BackendService,
     private excelExportService: ExcelExportService,
+    private datePipe: DatePipe,
   ) {
     this.init();
   }
@@ -263,7 +267,7 @@ export class ResultsStatsService {
   }
 
 
-  private generateChartData(seriesAggr: SeriesAggr, timeAggr: TimeAggr): ChartData {
+  private generateChartData(seriesAggr: SeriesAggr, timeAggr: TimeAggr, includeRatio = false): ChartData {
     const isTotalAggr = seriesAggr === 'total';
 
     const seriesBaseIds = isTotalAggr ? ['Total'] : this.getSeriesSourceIds();
@@ -311,17 +315,39 @@ export class ResultsStatsService {
       const titleMatchesData = Object.values(dataDict).map(d => d[seriesBaseId].titleMatches);
 
       series.push({
+        seriesBaseName,
         label: seriesBaseName + ' - Results',
         data: matchesData,
         dashStyle: 'Solid',
         colorIndex,
+        seriesType: 'results',
       });
       series.push({
+        seriesBaseName,
         label: seriesBaseName + ' - Title mentions',
         data: titleMatchesData,
         dashStyle: 'Dash',
         colorIndex,
+        seriesType: 'titleMentions',
       });
+
+      // Ratio
+      if (includeRatio) {
+        const data = matchesData.map(
+          (matchesCount, i) => matchesCount > 0
+            ? 100 * titleMatchesData[i] / matchesCount
+            : 0
+        );
+
+        series.push({
+          seriesBaseName,
+          label: seriesBaseName + ' - Ratio %',
+          data,
+          dashStyle: 'LongDashDot',
+          colorIndex,
+          seriesType: 'ratioPerc',
+        });
+      }
     });
 
     return {
@@ -408,6 +434,7 @@ export class ResultsStatsService {
    */
   private doGenerateReport() {
 
+    const summary = this.summarySubject.getValue();
     const reportOptions = this.paramsSubject.getValue().reportOptions;
 
     const seriesAggrList: SeriesAggr[] = [];
@@ -420,15 +447,120 @@ export class ResultsStatsService {
     if (reportOptions.timeAggrMonth) { timeAggrList.push('month'); }
 
 
-    const data: SheetData[] = [];
+    const sheets: SheetData[] = [];
+
+    const searchParams = this.searchService.searchParams;
+    const fileName = 'Stats - '
+      + searchParams.scheme.name
+      + ' - '
+      + this.datePipe.transform(Date.now(), 'dd-MM-yyyy')
+      + '.xlsx';
+
+    const startDate = this.datePipe.transform(
+      searchParams.dateSpan.fromDateIncl,
+      'dd/MM/yyyy'
+    );
+
+    const endDate = this.datePipe.transform(
+      searchParams.dateSpan.toDateIncl,
+      'dd/MM/yyyy'
+    );
+
+    const period = `Desde: ${startDate} - Hasta: ${endDate}`;
+    const titleMatchKeywords = searchParams.scheme.scheme.titleMatchKeywords;
+    const titleMatchKeywordsStr = titleMatchKeywords.join(', ');
+
+    const ratio = summary.resultsCount > 0
+      ? 100 * summary.titleMentionsCount / summary.resultsCount
+      : '—';
+
+    /**
+     * Summary
+     */
+    sheets.push({
+      name: 'Results',
+      headerData: {
+        'Esquema de búsqueda:': searchParams.scheme.name,
+        'Palabras clave:': titleMatchKeywordsStr,
+        'Período:': period,
+        'Universo:': '',
+        '': '',
+        'Estadísticas generales': '',
+        'Resultados:': summary.resultsCount,
+        'Menciones en título:': summary.titleMentionsCount,
+        'Ratio protagonismo [%]:': ratio,
+      },
+      colsConfig: [{ colInfo: { width: 20 } }],
+      bodyData: [],
+      settings: {
+        enableFilter: false,
+      }
+    });
 
     for (const seriesAggr of seriesAggrList) {
       for (const timeAggr of timeAggrList) {
 
-        const chartData = this.generateChartData(seriesAggr, timeAggr);
+        const chartData = this.generateChartData(seriesAggr, timeAggr, true);
+        const timeAggrChoice = TIME_AGGR_CHOICES.find(ch => ch.value === timeAggr);
+        const seriesAggrChoice = SERIES_AGGR_CHOICES.find(ch => ch.value === seriesAggr);
 
-        console.log(chartData)
+        const colsConfig = [
+          // Series name
+          { colInfo: { width: 30 } },
+
+          // Source name
+          { colInfo: { width: 20 } },
+
+          // Series type
+          { colInfo: { width: 15 } },
+
+          // Time categories
+          ...chartData.categories.map(c => ({ colInfo: { width: 12 } })),
+        ];
+
+        const bodyData = [
+          ['Serie', 'Medio', 'Tipo de indicador', ...chartData.categories],
+          ...chartData.series.map(s => {
+
+            return [
+              // Series name
+              s.label,
+
+              // Source name
+              s.seriesBaseName,
+
+              // Series type
+              s.seriesType === 'results'
+                ? 'Resultados'
+                : s.seriesType === 'titleMentions'
+                  ? 'Menciones título'
+                  : 'Ratio %',
+
+              // Values
+              ...s.data
+            ];
+          }),
+        ];
+
+        sheets.push({
+          name: `${timeAggrChoice.label}-${seriesAggrChoice.label}`,
+          headerData: {
+            'Agregación temporal:': timeAggrChoice.label,
+            'Agregación de series:': seriesAggrChoice.label,
+          },
+          colsConfig,
+          bodyData,
+          settings: {
+            enableFilter: true,
+          }
+        });
       }
     }
+
+    this.excelExportService.export({
+      moduleLabel: 'Search results export',
+      fileName,
+      sheets,
+    });
   }
 }

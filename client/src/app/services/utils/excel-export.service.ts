@@ -9,7 +9,11 @@ import { getXLSXCellObject } from '../../services/utils/utils';
 export interface SheetData {
   name: string;
   headerData: { [key: string]: any };
+  colsConfig: ColConfig[];
   bodyData: any[][];
+  settings: {
+    enableFilter: boolean;
+  };
 }
 
 
@@ -22,8 +26,7 @@ export interface ColConfig {
 export interface ExportArgs {
   moduleLabel: string;
   fileName: string;
-  data: SheetData[];
-  colsConfig: ColConfig[];
+  sheets: SheetData[];
 }
 
 
@@ -50,40 +53,44 @@ export class ExcelExportService {
 
       const wb = XLSX.utils.book_new();
 
-      const sheet = args.data[0];
+      for (const sheet of args.sheets) {
 
-      let sheetData: any[][] = [];
+        let sheetData: any[][] = [];
 
-      // Empty line
-      sheetData.push([]);
+        // Empty line
+        sheetData.push([]);
 
-      Object.keys(sheet.headerData).forEach(key => {
-        sheetData.push(
-          [key + ':', sheet.headerData[key]]
-        );
-      });
+        Object.keys(sheet.headerData).forEach(key => {
+          sheetData.push(
+            [key, sheet.headerData[key]]
+          );
+        });
 
-      // Empty line
-      sheetData.push([]);
+        // Empty line
+        sheetData.push([]);
 
-      sheetData = [...sheetData, ...sheet.bodyData];
+        sheetData = [...sheetData, ...sheet.bodyData];
 
 
-      const ws = XLSX.utils.aoa_to_sheet(sheetData);
+        const ws = XLSX.utils.aoa_to_sheet(sheetData);
 
-      // Add cols info
-      ws['!cols'] = args.colsConfig.map(i => i.colInfo);
+        // Add cols info
+        ws['!cols'] = sheet.colsConfig.map(i => i.colInfo);
 
-      // Add autofilter
-      const autofilterRow = Object.keys(sheet.headerData).length + 3;
-      const autofilterEndCol = sheet.bodyData.length > 0
-        ? XLSX.utils.encode_col(sheet.bodyData[0].length - 1)
-        : 'A';
+        // Add autofilter
+        if (sheet.settings.enableFilter) {
+          const autofilterRow = Object.keys(sheet.headerData).length + 3;
+          const autofilterEndCol = sheet.bodyData.length > 0
+            ? XLSX.utils.encode_col(sheet.bodyData[0].length - 1)
+            : 'A';
 
-      const ref = `A${autofilterRow}:${autofilterEndCol}${autofilterRow}`;
-      ws['!autofilter'] = { ref };
+          const ref = `A${autofilterRow}:${autofilterEndCol}${autofilterRow}`;
+          ws['!autofilter'] = { ref };
+        }
 
-      XLSX.utils.book_append_sheet(wb, ws, sheet.name);
+        XLSX.utils.book_append_sheet(wb, ws, sheet.name);
+      }
+
 
       XLSX.writeFile(wb, args.fileName, {
         cellStyles: true
