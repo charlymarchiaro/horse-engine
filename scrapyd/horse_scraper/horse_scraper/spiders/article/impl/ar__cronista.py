@@ -23,12 +23,7 @@ from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 class Params(BaseArticleSpiderParams):
     def _after_initialize(self) -> None:
-        self.date_allow_str = self.get_date_allow_str(
-            year_format="04",
-            month_format="02",
-            day_format="02",
-            concat_fn=lambda year, month, day: f"{year}{month}{day}",
-        )
+        pass
 
     # Common params
     def _get_spider_base_name(self) -> str:
@@ -42,25 +37,27 @@ class Params(BaseArticleSpiderParams):
     def get_crawl_start_urls(self) -> List[str]:
         return [
             "https://www.cronista.com/",
+            "https://www.cronista.com/economia-politica/",
+            "https://www.cronista.com/finanzas-mercados/",
+            "https://www.cronista.com/columnistas/",
+            "https://www.cronista.com/financial-times/",
+            "https://www.cronista.com/internacionales/",
+            "https://www.cronista.com/apertura-negocio/",
+            "https://www.cronista.com/clase/",
+            "https://www.cronista.com/rpm/",
+            "https://www.cronista.com/pyme/",
+            "https://www.cronista.com/suplemento/transport-cargo/",
+            "https://www.cronista.com/suplemento/especiales/",
+            "https://www.cronista.com/cronista-global/",
         ]
 
     def get_url_filter(self) -> UrlFilter:
-        return UrlFilter(
-            allow_re=[f"({self.date_allow_str}).*htm.*"], deny_re=[".*\/-ve\d+.html"]
-        )
+        return UrlFilter(allow_re=[f"cronista.com\/.+\/.+\/$"], deny_re=["\/autor\/"])
 
     # Sitemap params
 
     def get_sitemap_urls(self) -> List[str]:
-        return [
-            "https://www.cronista.com/sitemaps/v3/sitemaps-index.xml",
-            "https://www.cronista.com/sitemaps/v3/news-daily-apertura.xml",
-            "https://www.cronista.com/sitemaps/v3/news-daily-clase.xml",
-            "https://www.cronista.com/sitemaps/v3/news-daily-cronista.xml",
-            "https://www.cronista.com/sitemaps/v3/news-daily-pyme.xml",
-            "https://www.cronista.com/sitemaps/v3/news-daily-rpm.xml",
-            "https://www.cronista.com/sitemaps/v3/gnews-cronista.xml",
-        ]
+        return []
 
     def get_sitemap_follow(self) -> List[str]:
         return [".*"]
@@ -81,9 +78,30 @@ class Params(BaseArticleSpiderParams):
             self.parser_1,
             self.parser_2,
             self.parser_3,
+            self.parser_4,
         ]
 
     def parser_1(self, response):
+        article_data = self.get_default_parser_results(response)
+
+        title = article_data.title
+        last_updated = article_data.last_updated
+
+        # text ----------
+        text = extract_all_text(
+            response,
+            root_xpath='//div[@id="vsmcontent"]',
+            exclude_list=[
+                (AttributeType.NAME, "script"),
+                (AttributeType.NAME, "style"),
+                (AttributeType.CLASS, "moreinfo"),
+                (AttributeType.CLASS, "item"),
+            ],
+        )
+
+        return ArticleData(title, text, last_updated)
+
+    def parser_2(self, response):
 
         # Datos artículo (json) ----------
         script_datos_articulo_json = response.xpath(
@@ -118,7 +136,7 @@ class Params(BaseArticleSpiderParams):
 
         return ArticleData(title, text, last_updated)
 
-    def parser_2(self, response):
+    def parser_3(self, response):
 
         # Datos artículo (json) ----------
         script_datos_articulo_json = response.xpath(
@@ -154,7 +172,7 @@ class Params(BaseArticleSpiderParams):
         return ArticleData(title, text, last_updated)
 
     # Nota video
-    def parser_3(self, response):
+    def parser_4(self, response):
 
         article_data = self.get_default_parser_results(response)
 
