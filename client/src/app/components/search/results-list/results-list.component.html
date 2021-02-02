@@ -39,7 +39,9 @@
             [ngClass]="{'selected': article.article.id === selectedArticleId}"
             (click)="onArticleSelect(article)">
             <td class="no-wrap">{{article.article.articleSource.name}}</td>
-            <td class="no-wrap">{{article.article.lastUpdated | date}}</td>
+            <td class="no-wrap">
+              {{article.article.date | date:'longDate':'+0000'}}
+            </td>
             <td class="no-wrap">
               {{article.article.isDuplicate ? '(d)' : article.article.isDuplicate === false ? '' : '(?)'}}
             </td>
