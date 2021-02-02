@@ -225,6 +225,7 @@ def get_publishing_date(
         },
         {"attribute": "property", "value": "datePublished", "content": "content"},
         {"attribute": "itemprop", "value": "datePublished", "content": "content"},
+        {"attribute": "name", "value": "cXenseParse:publishtime", "content": "content"},
     ]
 
     doc = article.doc
