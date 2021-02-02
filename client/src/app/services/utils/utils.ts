@@ -22,14 +22,14 @@ export function getDateDiffMilisec(date1: Date, date2: Date): number {
 
 
 export function getDateDiffDays(date1: Date, date2: Date) {
-  const d1 = new Date(getYYYYMMDD(date1));
-  const d2 = new Date(getYYYYMMDD(date2));
+  const d1 = new Date(getYyyyMmDd(date1));
+  const d2 = new Date(getYyyyMmDd(date2));
 
   return Math.round((d2.getTime() - d1.getTime()) / (1000 * 3600 * 24));
 }
 
 
-export function getYYYYMMDD(date: Date) {
+export function getYyyyMmDd(date: Date) {
   return new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000)
     .toISOString().split('T')[0];
 }
@@ -37,6 +37,33 @@ export function getYYYYMMDD(date: Date) {
 
 export function getISOStringDatePart(date: Date) {
   return date.toISOString().split('T')[0];
+}
+
+
+export function convertYyyyMmDdToUtc(dateStr: string): Date {
+  const parts = dateStr.split('-');
+  const year = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10);
+  const day = parseInt(parts[2], 10);
+  const result = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
+  return result;
+}
+
+
+export function convertDateToUtc(date: Date): Date {
+  const result = convertYyyyMmDdToUtc(getISOStringDatePart(date));
+  return result;
+}
+
+
+export function convertDateToDdMmYyyy(date: Date, separator: string = '/'): string {
+  const dateStr = getISOStringDatePart(date);
+  const parts = dateStr.split('-');
+  const year = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10);
+  const day = parseInt(parts[2], 10);
+  const result = `${day}${separator}${month}${separator}${year}`;
+  return result;
 }
 
 

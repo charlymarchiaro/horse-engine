@@ -1,5 +1,5 @@
 import { DownloadRequestParams } from './results-downloader.service';
-import { generatePidTag } from '../../../services/utils/utils';
+import { generatePidTag, convertDateToUtc, getISOStringDatePart, convertDateToDdMmYyyy } from '../../../services/utils/utils';
 import { BehaviorSubject } from 'rxjs';
 import { EventEmitter } from '@angular/core';
 import { BackendService } from '../../../services/backend.service';
@@ -177,7 +177,7 @@ export class DownloadJobHandler {
         a.articleSource.tier,
         a.articleSource.region,
         a.articleSource.redCircle ? 'SI' : 'NO',
-        a.date,
+        convertDateToDdMmYyyy(a.date),
         titleMatch(a.title || '', titleMatchKeywords) ? 'SI' : 'NO',
         a.title,
         // Excel characters limit

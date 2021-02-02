@@ -19,7 +19,7 @@
       id="header"
       class="card-header separator">
       <div class="card-title">
-        Last updated: {{article.article.lastUpdated | date:'fullDate'}}
+        Last updated: {{article.article.date | date:'fullDate':'+0000'}}
       </div>
     </div>
 

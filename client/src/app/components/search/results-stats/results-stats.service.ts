@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { SearchService } from '../search.service';
-import { ArticleBooleanQueryResultsStats as ResultsStats, getDateSpanDates, SearchParams, SearchResultsPart } from 'app/model/search.model';
-import { addDays, getISOStringDatePart, getYYYYMMDD } from 'app/services/utils/utils';
-import { DashStyleValue, numberFormat, seriesType } from 'highcharts';
+import { ArticleBooleanQueryResultsStats as ResultsStats, getDateSpanDates, SearchParams } from 'app/model/search.model';
+import { getISOStringDatePart } from 'app/services/utils/utils';
+import { DashStyleValue } from 'highcharts';
 import { BackendService } from 'app/services/backend.service';
 import { ArticleSource } from 'app/model/article.model';
 import { DateTime } from 'luxon';
-import pSBC from 'shade-blend-color';
 import { SearchState } from '../../../model/search.model';
-import { ExcelExportService, SheetData, ColConfig } from '../../../services/utils/excel-export.service';
-import { DatePipe, formatNumber } from '@angular/common';
+import { ExcelExportService, SheetData } from '../../../services/utils/excel-export.service';
+import pSBC from 'shade-blend-color';
+import { DatePipe } from '@angular/common';
+import { convertYyyyMmDdToUtc, convertDateToUtc } from '../../../services/utils/utils';
 
 
 
@@ -192,8 +193,8 @@ export class ResultsStatsService {
           // start and ends on the current part end
           this.chartDates = p
             ? getDateSpanDates({
-              fromDateIncl: addDays(this.searchService.searchParams.dateSpan.fromDateIncl, -1),
-              toDateIncl: addDays(p.dateSpan.toDateIncl, 1),
+              fromDateIncl: convertDateToUtc(this.searchService.searchParams.dateSpan.fromDateIncl),
+              toDateIncl: convertDateToUtc(p.dateSpan.toDateIncl),
             })
             : [];
 
@@ -277,7 +278,10 @@ export class ResultsStatsService {
 
     // Iterate dates
     for (const ds of Object.values(this.statsDict)) {
-      const timeSampleId = this.mapDateToTimeSampleId(new Date(ds.date), timeAggr);
+      const timeSampleId = this.mapDateToTimeSampleId(
+        convertYyyyMmDdToUtc(ds.date),
+        timeAggr
+      );
 
       if (isTotalAggr) {
         // Total aggregation
@@ -383,22 +387,24 @@ export class ResultsStatsService {
 
   private mapDateToTimeSampleId(date: Date, timeAggr: TimeAggr): string {
 
+    const isoDate = getISOStringDatePart(date);
+
     // Day
     if (timeAggr === 'day') {
-      return getISOStringDatePart(date);
+      return isoDate;
     }
 
     // Week
     if (timeAggr === 'week') {
-      const isoWeekDate = DateTime.fromJSDate(date).toISOWeekDate();
+      const isoWeekDate = DateTime.fromISO(isoDate).toISOWeekDate();
       const parts = isoWeekDate.split('-');
       return `${parts[0]}-${parts[1]}`;
     }
 
     // Month
     if (timeAggr === 'month') {
-      const year = DateTime.fromJSDate(date).year;
-      const month = DateTime.fromJSDate(date).monthShort;
+      const year = DateTime.fromISO(isoDate).year;
+      const month = DateTime.fromISO(isoDate).monthShort;
       return `${month} ${year}`;
     }
   }
