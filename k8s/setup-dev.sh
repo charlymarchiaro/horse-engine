@@ -6,6 +6,7 @@ kubectl apply -f ingress-service.yaml
 
 kubectl apply -f load-balancers/postgres-load-balancer.yaml
 kubectl apply -f load-balancers/splash-load-balancer.yaml
+kubectl apply -f load-balancers/spacy-load-balancer.yaml
 
 kubectl apply -f dev/database-pvc.yaml
 
@@ -20,6 +21,8 @@ kubectl apply -f splash-cluster-ip-service.yaml
 kubectl apply -f dev/splash-deployment.yaml
 kubectl apply -f postgres-cluster-ip-service.yaml
 kubectl apply -f dev/postgres-deployment.yaml
+kubectl apply -f spacy-cluster-ip-service.yaml
+kubectl apply -f dev/spacy-deployment.yaml
 
 # Dashboard
 kubectl apply -f dashboard/dashboard.yaml
