@@ -28,12 +28,7 @@ from ..base_article_sitemap_spider import BaseArticleSitemapSpider
 
 class Params(BaseArticleSpiderParams):
     def _after_initialize(self) -> None:
-        self.date_allow_str = self.get_date_allow_str(
-            year_format="04",
-            month_format="02",
-            day_format="02",
-            concat_fn=lambda year, month, day: f"{year}/{month}/{day}",
-        )
+        pass
 
     # Common params
     def _get_spider_base_name(self) -> str:
@@ -53,6 +48,8 @@ class Params(BaseArticleSpiderParams):
         return UrlFilter(
             allow_re=["^[^\?]{55,}.*$"],
             deny_re=[
+                "urgente24.com\/.+\/.+\/.+\/.+",
+                "\?",
                 ".*\?page=",
                 ".*taxonomy\/",
                 ".*archivo.urgente24.*",
@@ -72,6 +69,8 @@ class Params(BaseArticleSpiderParams):
                 ".*user\/login",
                 ".*user\/logout",
                 ".*user\/reset",
+                "\/ajax\/",
+                "\/dinamicos\/",
             ],
         )
 
