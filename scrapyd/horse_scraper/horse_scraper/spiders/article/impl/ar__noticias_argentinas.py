@@ -35,22 +35,48 @@ class Params(BaseArticleSpiderParams):
         return "ar__noticias_argentinas"
 
     def get_allowed_domains(self) -> List[str]:
-        return ["noticiasargentinas.com.ar"]
+        return ["noticiasargentinas.com"]
 
     # Crawl params
 
     def get_crawl_start_urls(self) -> List[str]:
         return [
-            "https://www.noticiasargentinas.com.ar/",
+            "https://www.noticiasargentinas.com/",
+            "https://www.noticiasargentinas.com/cultura",
+            "https://www.noticiasargentinas.com/deportes",
+            "https://www.noticiasargentinas.com/espectaculos",
+            "https://www.noticiasargentinas.com/economia",
+            "https://www.noticiasargentinas.com/impublicables",
+            "https://www.noticiasargentinas.com/internacionales",
+            "https://www.noticiasargentinas.com/nacionales",
+            "https://www.noticiasargentinas.com/politica",
+            "https://www.noticiasargentinas.com/sociedad",
         ]
 
     def get_url_filter(self) -> UrlFilter:
-        return UrlFilter(allow_re=[".+-n\d{4,}$"], deny_re=[])
+        return UrlFilter(
+            allow_re=["noticiasargentinas.com\/.+\/.+"],
+            deny_re=[
+                "noticiasargentinas.com\/.+\/.+\/.+",
+                "\/etiqueta\/",
+                "\/administrator\/",
+                "\/bin\/",
+                "\/cache\/",
+                "\/cli\/",
+                "\/includes\/",
+                "\/installation\/",
+                "\/language\/",
+                "\/layouts\/",
+                "\/libraries\/",
+                "\/logs\/",
+                "\/tmp\/",
+            ],
+        )
 
     # Sitemap params
 
     def get_sitemap_urls(self) -> List[str]:
-        return ["https://www.noticiasargentinas.com.ar/sitemap.xml"]
+        return []
 
     def get_sitemap_follow(self) -> List[str]:
         return [".*"]
