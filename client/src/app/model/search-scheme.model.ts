@@ -1,3 +1,4 @@
+import { UserSummary } from "app/services/auth/auth.service";
 import { FieldInfo } from "../services/utils/shared.model";
 
 export enum SearchSchemeKind {
@@ -10,6 +11,7 @@ export class SearchScheme {
   name: string;
   description: string;
   version: string;
+  user?: UserSummary;
   createdAt: Date;
   updatedAt: Date;
   kind: SearchSchemeKind;
@@ -21,6 +23,7 @@ export class SearchScheme {
     this.name = r.name;
     this.description = r.description;
     this.version = r.version;
+    this.user = r.user;
     this.createdAt = r.createdAt ? new Date(r.createdAt) : null;
     this.updatedAt = r.updatedAt ? new Date(r.updatedAt) : null;
     this.enabled = r.enabled;
@@ -35,6 +38,7 @@ export interface SearchSchemePayload {
   name: string;
   description: string;
   version: string;
+  user?: UserSummary;
   createdAt?: string;
   updatedAt?: string;
   scheme: any;

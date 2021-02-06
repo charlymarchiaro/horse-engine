@@ -195,7 +195,13 @@ export class BackendService {
 
   // Search scheme
   public getArticleSearchSchemes() {
-    const params = {};
+    const params = {
+      filter: JSON.stringify({
+        include: [
+          { relation: 'user' }
+        ]
+      })
+    };
 
     return this.http.get<SearchSchemePayload[]>(
       '/api/article-search-schemes', { params }

@@ -14,6 +14,13 @@ import { pgCard } from '../../../@pages/components/card/card.component';
 import { BrowserService } from './browser.service';
 import { filter } from 'rxjs/operators';
 
+
+type Row = SearchScheme & {
+  userName: string;
+  canEdit: boolean;
+};
+
+
 @Component({
   selector: 'app-search-scheme-browser',
   templateUrl: './browser.component.html',
@@ -28,8 +35,12 @@ export class BrowserComponent implements OnInit, OnDestroy {
   public isError: boolean;
 
   public selected: SearchScheme[] = [];
+
+  public canCurrentUserEditScheme: boolean;
+
   public schemes: SearchScheme[];
-  public visibleRows: SearchScheme[] = [];
+  public rows: Row[] = [];
+  public visibleRows: Row[] = [];
   public sorts: { [field: string]: any }[];
 
   public searchKeyword: string;
@@ -93,7 +104,7 @@ export class BrowserComponent implements OnInit, OnDestroy {
     ];
 
     this.table.select.subscribe(
-      () => this.emitSelectionChange()
+      () => this.onSchemeSelect()
     );
 
     this.updateSchemesList();
@@ -154,6 +165,14 @@ export class BrowserComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.rows = schemes.map<Row>(sch => ({
+      ...sch,
+      userName: sch.user
+        ? `${sch.user.firstName} ${sch.user.lastName}`
+        : '—',
+      canEdit: this.searchSchemeService.canCurrentUserEditScheme(sch),
+    }))
+
     // Update selected scheme, keeping the same id
     if (this.selected && this.selected.length > 0 && this.selected[0]) {
       const match = schemes.find(s => s.id === this.selected[0].id);
@@ -171,11 +190,11 @@ export class BrowserComponent implements OnInit, OnDestroy {
     }
 
     // Show a copy of the entire array
-    this.visibleRows = [...this.schemes];
+    this.visibleRows = [...this.rows];
 
     this.searchKeyword = null;
 
-    this.emitSelectionChange();
+    this.onSchemeSelect();
   }
 
 
@@ -183,7 +202,7 @@ export class BrowserComponent implements OnInit, OnDestroy {
     const val = normalizeString(event.target.value.toLowerCase());
 
     // Filter our data
-    const temp = this.schemes.filter(function (s) {
+    const temp = this.rows.filter(function (s) {
       return (
         normalizeString(s.name).toLowerCase().indexOf(val) !== -1
         || normalizeString(s.description).toLowerCase().indexOf(val) !== -1
@@ -209,7 +228,7 @@ export class BrowserComponent implements OnInit, OnDestroy {
           { prop: 'updatedAt', dir: 'desc' },
         ];
         this.selected = [this.schemes.find(s => s.id === result.id)];
-        this.emitSelectionChange();
+        this.onSchemeSelect();
         this.setEditionActive(true);
 
         this.snackBar.open(
@@ -238,7 +257,7 @@ export class BrowserComponent implements OnInit, OnDestroy {
           { prop: 'updatedAt', dir: 'desc' },
         ];
         this.selected = [this.schemes.find(s => s.id === result.id)];
-        this.emitSelectionChange();
+        this.onSchemeSelect();
         this.setEditionActive(true);
 
         this.snackBar.open(
@@ -274,7 +293,7 @@ export class BrowserComponent implements OnInit, OnDestroy {
             this.searchSchemeService.deleteScheme(selected).then(
               result => {
                 this.selected = [];
-                this.emitSelectionChange();
+                this.onSchemeSelect();
 
                 this.snackBar.open(
                   `Search scheme deleted`,
@@ -293,9 +312,14 @@ export class BrowserComponent implements OnInit, OnDestroy {
   }
 
 
-  private emitSelectionChange() {
-    this.selectionChange.emit(
-      this.selected.length > 0 ? this.selected[0] : null
-    );
+  private onSchemeSelect() {
+
+    const selectedScheme = this.selected.length > 0 ? this.selected[0] : null;
+
+    this.canCurrentUserEditScheme = selectedScheme
+      ? this.searchSchemeService.canCurrentUserEditScheme(selectedScheme)
+      : false;
+
+    this.selectionChange.emit(selectedScheme);
   }
 }

@@ -4,6 +4,9 @@ import { BackendService } from '../../services/backend.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { LoadStateHandler } from '../../services/utils/load-status';
 import { ArticleSource } from '../../model/article.model';
+import { AuthService, User } from 'app/services/auth/auth.service';
+import { Role } from '../../services/auth/auth.service';
+
 
 
 const DEFAULT_SCHEME_VERSION = '1';
@@ -32,8 +35,12 @@ export class SearchSchemeService {
   public keepEditorOpen$ = this.keepEditorOpenSubject.asObservable();
 
 
+  private user: User;
+
+
   constructor(
     private backendService: BackendService,
+    private authService: AuthService,
   ) {
     this.refreshArticleSourcesList();
   }
@@ -43,6 +50,21 @@ export class SearchSchemeService {
     this.backendService.getArticleSources().subscribe(
       response => this.articleSourcesSubject.next(response)
     );
+    this.authService.loggedUser$.subscribe(
+      u => this.user = u
+    )
+  }
+
+
+  public canCurrentUserEditScheme(scheme: SearchScheme): boolean {
+    if (
+      this.user.roles.includes(Role.ROLE_ADMIN)
+      || this.user.roles.includes(Role.ROLE_POWER_USER)
+    ) {
+      return true;
+    }
+
+    return (!!scheme.user && scheme.user.id === this.user.id);
   }
 
 
