@@ -6,7 +6,7 @@ import { UserSummaryWithRelations } from './user-summary.model';
   settings: {
     postgresql: { schema: 'search', table: 'article_search_scheme' },
     foreignKeys: {
-      fk__article__article_source: {
+      fk__article_search_scheme__user: {
         name: 'fk__article_search_scheme__user',
         entity: 'User',
         entityKey: 'id',
