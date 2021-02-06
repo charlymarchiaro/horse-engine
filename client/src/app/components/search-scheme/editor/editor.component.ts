@@ -31,6 +31,8 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
   public isSchemeSelected: boolean;
   public currentScheme: SearchScheme;
 
+  public canCurrentUserEditScheme: boolean;
+
   public searchState: SearchState;
   public isDisabled = false;
 
@@ -79,8 +81,10 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
   ) {
-    searchSchemeService.articleSources.subscribe(
-      sources => this.onArticleSourcesRefresh(sources)
+    this.subscription.add(
+      searchSchemeService.articleSources.subscribe(
+        sources => this.onArticleSourcesRefresh(sources)
+      )
     );
 
     this.resetForm();
@@ -317,10 +321,14 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
       : null;
 
     if (!this.currentScheme) {
+      this.canCurrentUserEditScheme = false;
       return;
     }
 
     this.isSchemeSelected = true;
+
+    this.canCurrentUserEditScheme = this.searchSchemeService
+      .canCurrentUserEditScheme(this.currentScheme);
 
     // Reset form
     this.resetForm();
@@ -361,6 +369,13 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
 
     // titleMatchKeywords
     this.titleMatchKeywordsList = this.currentScheme.scheme.titleMatchKeywords || [];
+
+    // Update form controls enable state
+    if (this.canCurrentUserEditScheme) {
+      this.form.enable();
+    } else {
+      this.form.disable();
+    }
   }
 
 

@@ -113,7 +113,8 @@
             class="btn btn-default field-match-condition-remove-button"
             type="button"
             matTooltip="Remove condition"
-            (click)="onRemovePrimaryConditionClick(andGroupIndex, conditionIndex)">
+            (click)="onRemovePrimaryConditionClick(andGroupIndex, conditionIndex)"
+            [disabled]="!canCurrentUserEditScheme">
             <mat-icon>clear</mat-icon>
           </button>
         </div>
@@ -121,7 +122,8 @@
         <button
           class="btn btn-default field-match-condition-add-button"
           type="button"
-          (click)="onAddPrimaryConditionClick(andGroupIndex)">
+          (click)="onAddPrimaryConditionClick(andGroupIndex)"
+          [disabled]="!canCurrentUserEditScheme">
           + AND
         </button>
 
@@ -129,7 +131,8 @@
           *ngIf="andGroupIndex === andGroupsCount-1"
           class="btn btn-default field-match-condition-add-button"
           type="button"
-          (click)="onAddPrimaryConditionAndGroupClick()">
+          (click)="onAddPrimaryConditionAndGroupClick()"
+          [disabled]="!canCurrentUserEditScheme">
           + OR
         </button>
 
@@ -188,7 +191,9 @@
                  ].options.numberOfParams === 'unlimited'">
           <mat-label>List</mat-label>
           <mat-error>Please enter valid items</mat-error>
-          <mat-chip-list #paramsList>
+          <mat-chip-list
+            #paramsList
+            [disabled]="!canCurrentUserEditScheme">
             <mat-chip
               *ngFor="let item of secCondParams[conditionIndex]; let itemIndex = index"
               removable="true"
@@ -272,7 +277,8 @@
           class="btn btn-default field-match-condition-remove-button"
           type="button"
           matTooltip="Remove condition"
-          (click)="onRemoveSecondaryConditionClick(conditionIndex)">
+          (click)="onRemoveSecondaryConditionClick(conditionIndex)"
+          [disabled]="!canCurrentUserEditScheme">
           <mat-icon>clear</mat-icon>
         </button>
       </div>
@@ -280,7 +286,8 @@
       <button
         class="btn btn-default field-match-condition-add-button"
         type="button"
-        (click)="onAddSecondaryConditionClick()">
+        (click)="onAddSecondaryConditionClick()"
+        [disabled]="!canCurrentUserEditScheme">
         Add condition
       </button>
       <br>
@@ -296,7 +303,9 @@
         <mat-form-field id="field-title-match-keywords">
           <mat-label>List</mat-label>
           <mat-error>Please enter valid items</mat-error>
-          <mat-chip-list #titleMatchKeywordsListRef>
+          <mat-chip-list
+            #titleMatchKeywordsListRef
+            [disabled]="!canCurrentUserEditScheme">
             <mat-chip
               *ngFor="let item of titleMatchKeywordsList; let itemIndex = index"
               removable="true"
@@ -324,13 +333,14 @@
         <button
           mat-stroked-button
           type="button"
-          (click)="onCancelClick()">
+          (click)="onCancelClick()"
+          [disabled]="!canCurrentUserEditScheme">
           Cancel
         </button>
 
         <!-- Save -->
         <button
-          [disabled]="!form.valid || !form.dirty"
+          [disabled]="!form.valid || !form.dirty || !canCurrentUserEditScheme"
           mat-flat-button
           color="primary"
           type="button"

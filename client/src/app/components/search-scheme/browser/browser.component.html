@@ -41,7 +41,7 @@
         class="btn btn-default"
         type="button"
         (click)="onDeleteButtonClick()"
-        [disabled]="selected.length === 0">
+        [disabled]="selected.length === 0 || canCurrentUserEditScheme === false">
         Delete
       </button>
 
@@ -85,6 +85,10 @@
             ngx-datatable-cell-template>
             <div class="table-item-label">
               <span *ngIf="!row.enabled">* </span>
+              <mat-icon *ngIf="!row.canEdit">lock</mat-icon>
+              <div
+                class="icon-placeholder"
+                *ngIf="row.canEdit"></div>
               {{ value }}
             </div>
           </ng-template>
@@ -125,6 +129,21 @@
           name="Ver"
           prop="version"
           [width]="80"
+          [resizeable]="false"
+          cellClass="align-items-center">
+          <ng-template
+            let-row="row"
+            let-value="value"
+            ngx-datatable-cell-template>
+            <div class="table-item-label">{{ value }}</div>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- user -->
+        <ngx-datatable-column
+          name="User"
+          prop="userName"
+          [width]="200"
           [resizeable]="false"
           cellClass="align-items-center">
           <ng-template

@@ -10,8 +10,9 @@ import {
 } from '@loopback/authorization';
 
 import _ from 'lodash';
-import { Role } from '../models';
+import { User, Role } from '../models';
 import { MyUserProfile } from '../types';
+import { getReachableRoles } from '../models/role.model';
 
 // Instance level authorizer
 // Can be also registered as an authorizer, depends on users' need.
@@ -35,7 +36,7 @@ export async function basicAuthorization(
       id: user.id,
       email: user.email,
       name: user.name,
-      roles: user.roles,
+      roles: getReachableRoles(user),
     };
 
   } else {

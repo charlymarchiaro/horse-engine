@@ -14,8 +14,9 @@ export interface Tokens {
 
 
 export enum Role {
-  ROLE_USER = 'ROLE_USER',
   ROLE_ADMIN = 'ROLE_ADMIN',
+  ROLE_USER = 'ROLE_USER',
+  ROLE_POWER_USER = 'ROLE_POWER_USER',
 }
 
 
@@ -25,10 +26,17 @@ export interface User {
   firstName: string;
   lastName: string;
   enabled: boolean;
-  roles?: Role[];
+  roles: Role[];
   lastLogin?: Date;
   passwordRequestedAt?: Date;
   avatarImgUrl: string;
+}
+
+export interface UserSummary {
+  id: string;
+  firstName: string;
+  lastName: string;
+  roles: Role[];
 }
 
 
@@ -157,7 +165,7 @@ export class AuthService {
             firstName: r.firstName,
             lastName: r.lastName,
             enabled: r.enabled,
-            roles: r.roles,
+            roles: r.roles || [],
             lastLogin: r.lastLogin ? new Date(r.lastLogin) : null,
             passwordRequestedAt: r.passwordRequestedAt ? new Date(r.passwordRequestedAt) : null,
             avatarImgUrl: generateAvatarImageUrl(r.firstName, r.lastName),
