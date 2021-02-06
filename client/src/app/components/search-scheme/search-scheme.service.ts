@@ -57,13 +57,20 @@ export class SearchSchemeService {
 
 
   public canCurrentUserEditScheme(scheme: SearchScheme): boolean {
-    if (
-      this.user.roles.includes(Role.ROLE_ADMIN)
-      || this.user.roles.includes(Role.ROLE_POWER_USER)
-    ) {
+
+    if (this.user.roles.includes(Role.ROLE_ADMIN)) {
+      // User is an admin, can edit all
       return true;
     }
 
+    if (this.user.roles.includes(Role.ROLE_POWER_USER)) {
+      // User is a power user, can edit all except the items owned by an admin
+      return (!!scheme.user && scheme.user.roles.includes(Role.ROLE_ADMIN))
+        ? false
+        : true;
+    }
+
+    // Normal user, can edit only the items owned by her
     return (!!scheme.user && scheme.user.id === this.user.id);
   }
 

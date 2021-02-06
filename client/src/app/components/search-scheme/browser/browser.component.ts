@@ -34,7 +34,7 @@ export class BrowserComponent implements OnInit, OnDestroy {
   public errorMessage: string;
   public isError: boolean;
 
-  public selected: SearchScheme[] = [];
+  public selected: Row[] = [];
 
   public canCurrentUserEditScheme: boolean;
 
@@ -85,7 +85,7 @@ export class BrowserComponent implements OnInit, OnDestroy {
       this.searchService.searchParams$.pipe(
         filter(p => !!p && !!p.scheme)
       ).subscribe(p => {
-        this.selected = [this.schemes.find(s => s.id === p.scheme.id)];
+        this.selected = [this.rows.find(r => r.id === p.scheme.id)]
       })
     );
     this.subscription.add(
@@ -175,14 +175,14 @@ export class BrowserComponent implements OnInit, OnDestroy {
 
     // Update selected scheme, keeping the same id
     if (this.selected && this.selected.length > 0 && this.selected[0]) {
-      const match = schemes.find(s => s.id === this.selected[0].id);
+      const match = this.rows.find(s => s.id === this.selected[0].id);
       this.selected = match ? [match] : [];
 
     } else {
       // None selected, select the newset if there are any
       this.selected = schemes.length > 0
         ? [
-          schemes.sort((a, b) =>
+          this.rows.sort((a, b) =>
             a.updatedAt.getTime() < b.updatedAt.getTime() ? 1 : -1
           )[0]
         ]
@@ -227,7 +227,7 @@ export class BrowserComponent implements OnInit, OnDestroy {
         this.sorts = [
           { prop: 'updatedAt', dir: 'desc' },
         ];
-        this.selected = [this.schemes.find(s => s.id === result.id)];
+        this.selected = [this.rows.find(r => r.id === result.id)];
         this.onSchemeSelect();
         this.setEditionActive(true);
 
@@ -256,7 +256,7 @@ export class BrowserComponent implements OnInit, OnDestroy {
         this.sorts = [
           { prop: 'updatedAt', dir: 'desc' },
         ];
-        this.selected = [this.schemes.find(s => s.id === result.id)];
+        this.selected = [this.rows.find(r => r.id === result.id)];
         this.onSchemeSelect();
         this.setEditionActive(true);
 

@@ -13,11 +13,11 @@ import {
 import _ from 'lodash';
 import { getReachableRoles, Role } from '../models';
 import { MyUserProfile } from '../types';
-import { repository, RepositoryBindings, Where } from '@loopback/repository';
+import { relation, repository, RepositoryBindings, Where, Filter, Inclusion } from '@loopback/repository';
 import { ArticleSearchSchemeRepository } from '../repositories';
 import { inject, Provider } from '@loopback/core';
 import { ArticleSearchSchemeController } from '../controllers/article-search-scheme.controller';
-import { ArticleSearchScheme } from '../models/article-search-scheme.model';
+import { ArticleSearchScheme, ArticleSearchSchemeWithRelations } from '../models/article-search-scheme.model';
 
 export class EditionAuthorizationProvider implements Provider<Authorizer> {
 
@@ -84,13 +84,14 @@ export class EditionAuthorizationProvider implements Provider<Authorizer> {
     methodName: string,
   ): Promise<AuthorizationDecision> {
 
-    // Admin and power users can edit all
+    // Admin users can edit all
     if (
       user.roles.includes(Role.ROLE_ADMIN)
-      || user.roles.includes(Role.ROLE_POWER_USER)
     ) {
       return AuthorizationDecision.ALLOW;
     }
+
+    const isPowerUser = user.roles.includes(Role.ROLE_POWER_USER);
 
     // Verify edition methods only
     if (
@@ -105,6 +106,8 @@ export class EditionAuthorizationProvider implements Provider<Authorizer> {
       return AuthorizationDecision.ALLOW;
     }
 
+    const include: Inclusion[] = [{ relation: 'user' }];
+
     // Single entity id
     if (
       [
@@ -115,8 +118,18 @@ export class EditionAuthorizationProvider implements Provider<Authorizer> {
         .includes(methodName)
     ) {
       const id = authorizationCtx.invocationContext.args[0];
-      const scheme = await this.articleSearchSchemeRepository.findById(id);
+      const scheme = await this.articleSearchSchemeRepository
+        .findById(id, { include }) as ArticleSearchSchemeWithRelations;
 
+      if (isPowerUser) {
+        // User is not admin, but a power user. Can edit all
+        // except the entities owned by an admin
+        return scheme.user && scheme.user.roles.includes(Role.ROLE_ADMIN)
+          ? AuthorizationDecision.DENY
+          : AuthorizationDecision.ALLOW;
+      }
+
+      // Normal user
       if (!scheme || scheme.userId !== user.id) {
         return AuthorizationDecision.DENY;
       }
@@ -131,8 +144,24 @@ export class EditionAuthorizationProvider implements Provider<Authorizer> {
     ) {
       const where = authorizationCtx.invocationContext.args[1] as Where<ArticleSearchScheme>;
 
-      const schemes = await this.articleSearchSchemeRepository.find({ where });
+      const schemes = await this.articleSearchSchemeRepository
+        .find({ where, include }) as ArticleSearchSchemeWithRelations[];
 
+      if (isPowerUser) {
+        // User is not admin, but a power user. Can edit all
+        // except the entities owned by an admin
+        return (
+          schemes.length === 0
+          // At least one of the entities is owned by an admin --> deny
+          || schemes.map(
+            s => s.user && s.user.roles.includes(Role.ROLE_ADMIN)
+          ).includes(true)
+        )
+          ? AuthorizationDecision.DENY
+          : AuthorizationDecision.ALLOW;
+      }
+
+      // Normal user
       if (
         schemes.length === 0
         // At least one of the entities isn't owned by the user --> deny

@@ -1,5 +1,6 @@
 import { Entity, model, property } from '@loopback/repository';
-import { User } from './user.model';
+import { Role, User } from '../models';
+import { getReachableRoles } from './role.model';
 
 @model()
 export class UserSummary extends Entity {
@@ -22,13 +23,23 @@ export class UserSummary extends Entity {
   })
   lastName: string;
 
+  @property({
+    type: 'object',
+    required: true,
+  })
+  roles: Role[];
+
 
   constructor(data?: Partial<UserSummary>) {
+    if (data) {
+      data.roles = getReachableRoles(data);
+    }
     super(data);
   }
 
 
   static fromUser(user: User): UserSummary {
+    user.roles = getReachableRoles(user);
     return new UserSummary(user);
   }
 }
