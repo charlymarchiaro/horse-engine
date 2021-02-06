@@ -43,7 +43,7 @@ spec:
                   name: api-jwt-secret
                   key: API_JWT_SECRET
             - name: JWT_TOKEN_EXPIRATION_TIME_S
-              value: "900" # 15 min
+              value: "2592000" # 30 days (dev only!)
             - name: JWT_REFRESH_TOKEN_EXPIRATION_TIME_S
               value: "2592000" # 30 days
             - name: PG_HOST
