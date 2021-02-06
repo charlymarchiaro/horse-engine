@@ -26,13 +26,14 @@ import { basicAuthorization } from '../services';
 
 
 @authenticate('jwt')
+@authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
 export class ArticleSearchSchemeController {
   constructor(
     @repository(ArticleSearchSchemeRepository)
     public articleSearchSchemeRepository: ArticleSearchSchemeRepository,
   ) { }
 
-  @authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
+
   @post('/article-search-schemes', {
     responses: {
       '200': {
@@ -57,7 +58,6 @@ export class ArticleSearchSchemeController {
     return this.articleSearchSchemeRepository.create(articleSearchScheme);
   }
 
-  @authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
   @get('/article-search-schemes/count', {
     responses: {
       '200': {
@@ -72,7 +72,6 @@ export class ArticleSearchSchemeController {
     return this.articleSearchSchemeRepository.count(where);
   }
 
-  @authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
   @get('/article-search-schemes', {
     responses: {
       '200': {
@@ -94,7 +93,6 @@ export class ArticleSearchSchemeController {
     return this.articleSearchSchemeRepository.find(filter);
   }
 
-  @authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
   @patch('/article-search-schemes', {
     responses: {
       '200': {
@@ -117,7 +115,6 @@ export class ArticleSearchSchemeController {
     return this.articleSearchSchemeRepository.updateAll(articleSearchScheme, where);
   }
 
-  @authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
   @get('/article-search-schemes/{id}', {
     responses: {
       '200': {
@@ -137,7 +134,6 @@ export class ArticleSearchSchemeController {
     return this.articleSearchSchemeRepository.findById(id, filter);
   }
 
-  @authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
   @patch('/article-search-schemes/{id}', {
     responses: {
       '204': {
@@ -159,7 +155,6 @@ export class ArticleSearchSchemeController {
     await this.articleSearchSchemeRepository.updateById(id, articleSearchScheme);
   }
 
-  @authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization] })
   @put('/article-search-schemes/{id}', {
     responses: {
       '204': {
@@ -174,7 +169,6 @@ export class ArticleSearchSchemeController {
     await this.articleSearchSchemeRepository.replaceById(id, articleSearchScheme);
   }
 
-  @authorize({ allowedRoles: [Role.ROLE_USER], voters: [basicAuthorization,] })
   @del('/article-search-schemes/{id}', {
     responses: {
       '204': {
