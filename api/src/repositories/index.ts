@@ -11,3 +11,4 @@ export * from './article-sketch.repository';
 export * from './user.repository';
 export * from './refresh-token.repository';
 export * from './user-summary.repository';
+export * from './article-id-map.repository';
