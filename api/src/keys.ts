@@ -42,6 +42,9 @@ export namespace UserServiceBindings {
     'services.user.service',
   );
 }
+export namespace CustomAuthorizationBindings {
+  export const EDITION = 'authorizationProviders.edition';
+}
 
 /**
  * Constant values used when generating refresh token.

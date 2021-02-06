@@ -9,7 +9,8 @@ import { RestApplication } from '@loopback/rest';
 import { ServiceMixin } from '@loopback/service-proxy';
 import { AuthenticationComponent, registerAuthenticationStrategy } from '@loopback/authentication';
 import { SECURITY_SCHEME_SPEC } from '@loopback/authentication-jwt';
-import { AuthorizationComponent } from '@loopback/authorization';
+import { AuthorizationComponent, AuthorizationTags } from '@loopback/authorization';
+
 
 import path from 'path';
 
@@ -29,11 +30,13 @@ import {
   UserServiceBindings,
   RefreshTokenConstants,
   RefreshTokenServiceBindings,
+  CustomAuthorizationBindings,
 } from './keys';
 
 import { JWTStrategy } from './authentication-strategies/jwt.strategies';
 
 import { RefreshTokenRepository } from './repositories';
+import { EditionAuthorizationProvider } from './services/edition-authorizer.service';
 
 export { ApplicationConfig };
 
@@ -86,6 +89,11 @@ export class ApiApplication extends BootMixin(
     this.bind(TokenServiceBindings.TOKEN_SERVICE).toClass(JWTService);
     this.bind(TokenServiceBindings.TOKEN_SECRET).to(TokenServiceConstants.TOKEN_SECRET_VALUE)
     this.bind(TokenServiceBindings.TOKEN_EXPIRES_IN).to(TokenServiceConstants.TOKEN_EXPIRES_IN_VALUE);
+
+    // Authorizers
+    this.bind(CustomAuthorizationBindings.EDITION)
+      .toProvider(EditionAuthorizationProvider)
+      .tag(AuthorizationTags.AUTHORIZER);
 
     /// Refresh bindings
     this.bind(RefreshTokenServiceBindings.REFRESH_TOKEN_SERVICE).toClass(RefreshTokenService);

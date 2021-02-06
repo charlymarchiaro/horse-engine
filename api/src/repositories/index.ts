@@ -10,3 +10,4 @@ export * from './article-summary.repository';
 export * from './article-sketch.repository';
 export * from './user.repository';
 export * from './refresh-token.repository';
+export * from './user-summary.repository';

@@ -14,6 +14,7 @@ import { securityId, UserProfile } from '@loopback/security';
 import { authorize } from '@loopback/authorization';
 import { Role } from '../models';
 import { TokenObject } from '../types';
+import { getReachableRoles } from '../models/role.model';
 
 
 
@@ -276,6 +277,7 @@ export class UserController {
   ): Promise<UserExtProfile> {
     const savedUser = await this.userRepository.findById(currentUser[securityId]);
     const userExtProfile = this.userService.convertToUserExtProfile(savedUser);
+    userExtProfile.roles = getReachableRoles(savedUser);
     return Promise.resolve(userExtProfile);
   }
 }

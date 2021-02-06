@@ -1,8 +1,18 @@
-import { Entity, model, property } from '@loopback/repository';
+import { belongsTo, Entity, model, property } from '@loopback/repository';
+import { User, UserWithRelations } from './user.model';
+import { UserSummaryWithRelations } from './user-summary.model';
 
 @model({
   settings: {
     postgresql: { schema: 'search', table: 'article_search_scheme' },
+    foreignKeys: {
+      fk__article__article_source: {
+        name: 'fk__article_search_scheme__user',
+        entity: 'User',
+        entityKey: 'id',
+        foreignKey: 'user_id',
+      },
+    },
   },
 })
 export class ArticleSearchScheme extends Entity {
@@ -52,6 +62,15 @@ export class ArticleSearchScheme extends Entity {
     }
   })
   version: string;
+
+  @belongsTo(() => User, {}, {
+    postgresql: {
+      columnName: 'user_id',
+      dataType: 'uuid',
+      nullable: 'YES',
+    }
+  })
+  userId?: string;
 
   @property({
     type: 'date',
@@ -105,7 +124,7 @@ export class ArticleSearchScheme extends Entity {
 }
 
 export interface ArticleSearchSchemeRelations {
-  // describe navigational properties here
+  user?: UserSummaryWithRelations;
 }
 
 export type ArticleSearchSchemeWithRelations = ArticleSearchScheme & ArticleSearchSchemeRelations;
