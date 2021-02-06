@@ -17,7 +17,7 @@ export class ArticleSearchSchemeRepository extends TimeStampCrudRepository<
   constructor(
     @inject('datasources.db') dataSource: DbDataSource,
     @repository.getter('UserSummaryRepository') protected userSummaryRepositoryGetter: Getter<UserSummaryRepository>,
-    @inject(AuthenticationBindings.CURRENT_USER) protected currentUser: UserProfile,
+    @inject(AuthenticationBindings.CURRENT_USER, { optional: true }) protected currentUser: UserProfile,
   ) {
     super(ArticleSearchScheme, dataSource);
     this.user = this.createBelongsToAccessorFor('user', userSummaryRepositoryGetter);
