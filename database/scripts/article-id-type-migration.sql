@@ -75,7 +75,7 @@ SET
 ALTER SEQUENCE scraper.article_id_seq OWNED BY scraper.article.id;
 
 SELECT
-    setval('scraper.article_id_seq', COALESCE(max(id), 0))
+    setval('scraper.article_id_seq', COALESCE(max(id), 1))
 FROM
     scraper.article;
 
@@ -121,3 +121,57 @@ ALTER TABLE
 -- Rename article_int_id column
 ALTER TABLE
     scraper.article_sketch RENAME COLUMN article_int_id TO article_id;
+
+-- Delete any remaining row with null article_id so that
+-- enabling the not null constraint does not throw errors
+DELETE FROM
+    scraper.article_sketch
+WHERE
+    article_id IS NULL;
+
+--
+--
+--
+-- Update article summary table =========================================================
+-- Delete all rows (should be very few)
+DELETE FROM
+    scraper.article_summary;
+
+-- Add int_id column
+ALTER TABLE
+    scraper.article_summary
+ADD
+    COLUMN int_id BIGINT;
+
+-- Drop id column
+ALTER TABLE
+    scraper.article_summary DROP COLUMN id;
+
+-- Rename int_id column
+ALTER TABLE
+    scraper.article_summary RENAME COLUMN int_id TO id;
+
+-- Set new id as primary key and set as autoincrement
+ALTER TABLE
+    scraper.article_summary
+ADD
+    PRIMARY KEY (id);
+
+CREATE SEQUENCE scraper.article_summary_id_seq;
+
+ALTER TABLE
+    scraper.article_summary
+ALTER COLUMN
+    id
+SET
+    DEFAULT nextval('scraper.article_summary_id_seq');
+
+ALTER SEQUENCE scraper.article_summary_id_seq OWNED BY scraper.article_summary.id;
+
+SELECT
+    setval(
+        'scraper.article_summary_id_seq',
+        COALESCE(max(id), 1)
+    )
+FROM
+    scraper.article_summary;
