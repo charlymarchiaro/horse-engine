@@ -46,7 +46,7 @@ POLING_INTERVAL_MIN = 10
 
 
 class ArticleInfo(object):
-    def __init__(self, id: str, title: str, text: str, is_original: bool):
+    def __init__(self, id: int, title: str, text: str, is_original: bool):
         self.id = id
         self.title = title
         self.text = text
@@ -331,7 +331,7 @@ def process_articles():
                 # Analyze candidates
 
                 is_duplicate_str = "false"
-                original_article_id_str = article_id
+                original_article_id = article_id
 
                 # The threshold is 1 because current article's
                 # hashes has already been persisted.
@@ -379,16 +379,16 @@ def process_articles():
                                 f"   ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════╝"
                             )
                             is_duplicate_str = "true"
-                            original_article_id_str = original.id
+                            original_article_id = original.id
                         else:
                             # Original not found --> set article as original
                             is_duplicate_str = "false"
-                            original_article_id_str = article_id
+                            original_article_id = article_id
 
                 else:
                     # Candidates not found --> set article as original
                     is_duplicate_str = "false"
-                    original_article_id_str = article_id
+                    original_article_id = article_id
 
                 # Profiler ###############
                 profiler.reg_time("t8")
@@ -399,7 +399,7 @@ def process_articles():
                     cnxn2,
                     article_id,
                     is_duplicate_str,
-                    original_article_id_str,
+                    original_article_id,
                 )
 
                 # Profiler ###############
@@ -407,14 +407,14 @@ def process_articles():
 
 
 def update_article(
-    cursor, cnxn, article_id: str, is_duplicate_str: str, original_article_id_str: str
+    cursor, cnxn, article_id: int, is_duplicate_str: str, original_article_id: int
 ):
     sql = f"""
             UPDATE 
                     scraper.article
             SET 
                     is_duplicate={is_duplicate_str}, 
-                    original_article_id='{original_article_id_str}'
+                    original_article_id='{original_article_id}'
             WHERE
                     id='{article_id}'
             """
