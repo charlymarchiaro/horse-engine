@@ -44,7 +44,7 @@ export class ResultsListComponent implements OnInit, OnDestroy {
 
   private currentPageItemsIds: string[] = [];
 
-  public selectedArticleId: string;
+  public selectedArticleId: number;
 
   public currentPageArticles: HighlightedArticle[] = [];
 

@@ -53,7 +53,7 @@ export interface ArticleSourceResponse {
  */
 
 export class ArticleSummary {
-  id: string;
+  id: number;
   url: string;
   title?: string;
   text?: string;
@@ -82,7 +82,7 @@ export class ArticleSummary {
 
 
 export interface ArticleSummaryResponse {
-  id: string;
+  id: number;
   url: string;
   title?: string;
   text?: string;
@@ -102,7 +102,7 @@ export interface ArticleSummaryResponse {
  */
 
 export class Article {
-  id: string;
+  id: number;
   url: string;
   title?: string;
   text?: string;
@@ -139,7 +139,7 @@ export class Article {
 
 
 export interface ArticleResponse {
-  id: string;
+  id: number;
   url: string;
   title?: string;
   text?: string;
