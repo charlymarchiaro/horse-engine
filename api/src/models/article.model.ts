@@ -24,16 +24,16 @@ import { ArticleSpider, ArticleSpiderWithRelations } from './article-spider.mode
 })
 export class Article extends Entity {
   @property({
-    type: 'string',
+    type: 'number',
+    required: false,
     id: true,
-    generated: true,
-    useDefaultIdType: false,
     postgresql: {
       columnName: 'id',
-      dataType: 'uuid',
+      // 64 bits
+      dataType: 'BIGSERIAL',
     },
   })
-  id?: string;
+  id?: number;
 
   @property({
     type: 'string',
@@ -148,16 +148,15 @@ export class Article extends Entity {
   })
   isDuplicate?: boolean;
 
-
   @property({
-    type: 'string',
+    type: 'number',
+    required: false,
     postgresql: {
       columnName: 'original_article_id',
-      dataType: 'uuid',
-      nullable: 'YES',
+      dataType: 'BIGINT',
     }
   })
-  originalArticleId?: string;
+  originalArticleId?: number;
 
   constructor(data?: Partial<Article>) {
     super(data);

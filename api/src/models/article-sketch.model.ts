@@ -20,14 +20,15 @@ export class ArticleSketch extends Entity {
   id?: number;
 
   @property({
-    type: 'string',
+    type: 'number',
+    required: false,
     postgresql: {
       columnName: 'article_id',
-      dataType: 'uuid',
+      dataType: 'BIGINT',
       nullable: 'NO',
     }
   })
-  articleId: string;
+  articleId?: number;
 
   @property({
     type: 'number',

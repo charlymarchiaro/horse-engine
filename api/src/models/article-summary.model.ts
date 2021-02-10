@@ -8,16 +8,16 @@ import { Entity, model, property } from '@loopback/repository';
 })
 export class ArticleSummary extends Entity {
   @property({
-    type: 'string',
+    type: 'number',
+    required: false,
     id: true,
-    generated: true,
-    useDefaultIdType: false,
     postgresql: {
       columnName: 'id',
-      dataType: 'uuid',
+      // 64 bits
+      dataType: 'BIGSERIAL',
     },
   })
-  id?: string;
+  id?: number;
 
   @property({
     type: 'string',
