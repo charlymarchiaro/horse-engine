@@ -292,7 +292,7 @@ class ArticleDbHandler(object):
         return info
 
     def add_to_last_scraped_articles(
-        self, article: Article, article_id: str, scraped_at_str: str
+        self, article: Article, article_id: int, scraped_at_str: str
     ) -> None:
 
         cnxn = self.get_db_connection()
