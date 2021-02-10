@@ -1,4 +1,10 @@
 -- Create the article uuid <--> int id map
+CREATE TABLE scraper.article_id_map (
+    id bigint NOT NULL DEFAULT nextval('scraper.article_id_map_id_seq' :: regclass),
+    uuid uuid,
+    CONSTRAINT article_id_map_pkey PRIMARY KEY (id)
+);
+
 INSERT INTO
     scraper.article_id_map(uuid)
 SELECT
@@ -175,3 +181,9 @@ SELECT
     )
 FROM
     scraper.article_summary;
+
+--
+--
+--
+-- Delete artcicle_id_map table ==========================================================
+DROP TABLE scraper.article_id_map;
