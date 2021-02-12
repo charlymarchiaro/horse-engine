@@ -1,6 +1,6 @@
 -- Create the article uuid <--> int id map
 CREATE TABLE scraper.article_id_map (
-    id bigint NOT NULL DEFAULT nextval('scraper.article_id_map_id_seq' :: regclass),
+    id BIGSERIAL,
     uuid uuid,
     CONSTRAINT article_id_map_pkey PRIMARY KEY (id)
 );
