@@ -3,12 +3,12 @@ import { Entity, model, property } from '@loopback/repository';
 @model()
 export class ArticleSearchResultInfo extends Entity {
   @property({
-    type: 'string',
+    type: 'number',
     id: true,
     generated: false,
     required: true,
   })
-  articleId: string;
+  articleId: number;
 
   constructor(data?: Partial<ArticleSearchResultInfo>) {
     super(data);
